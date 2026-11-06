@@ -1,0 +1,67 @@
+{
+  "name": "@speedle/mcp",
+  "version": "0.1.0",
+  "description": "MCP server for Speedle+ and Speedle Cloud: authorization checks and policy management",
+  "license": "UPL-1.0",
+  "author": "The Speedle Authors",
+  "homepage": "https://github.com/teramoby/speedle-mcp#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/teramoby/speedle-mcp.git"
+  },
+  "bugs": "https://github.com/teramoby/speedle-mcp/issues",
+  "keywords": [
+    "speedle",
+    "mcp",
+    "model-context-protocol",
+    "authorization",
+    "policy",
+    "access-control"
+  ],
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "sideEffects": false,
+  "bin": {
+    "speedle-mcp": "./dist/cli.js"
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "LICENSE",
+    "README.md"
+  ],
+  "scripts": {
+    "clean": "node scripts/clean.mjs",
+    "build": "node scripts/clean.mjs dist && tsc -p tsconfig.build.json && chmod +x dist/cli.js",
+    "build:test": "node scripts/clean.mjs build && tsc -p tsconfig.test.json",
+    "typecheck": "tsc -p tsconfig.test.json --noEmit",
+    "lint": "eslint . && prettier --check . && npm run typecheck",
+    "format": "prettier --write .",
+    "test": "npm run build:test && node --test --test-concurrency=2 \"build/test/**/*.test.js\"",
+    "test:package": "npm run build && node scripts/smoke-pack.mjs",
+    "test:integration": "npm run build:test && node --test --test-concurrency=1 \"build/test/integration.test.js\""
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "1.32.2",
+    "zod": "3.25.76"
+  },
+  "devDependencies": {
+    "@eslint/js": "10.0.1",
+    "@types/node": "22.20.5",
+    "eslint": "10.14.0",
+    "globals": "17.14.0",
+    "prettier": "3.9.10",
+    "typescript": "5.9.3",
+    "typescript-eslint": "8.72.1"
+  }
+}
