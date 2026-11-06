@@ -61,11 +61,11 @@ function toolText(result: Awaited<ReturnType<Client["callTool"]>>): string {
 }
 
 test(
-  "integration: check mode MCP server over stdio against a real Speedle+ ADS",
+  "integration: check mode MCP server over stdio against a real Speedle ADS",
   {
     skip:
       !speedlePlusDir && !speedleAdsBin
-        ? "set SPEEDLE_PLUS_DIR (or SPEEDLE_ADS_BIN) to run the local Speedle+ integration test"
+        ? "set SPEEDLE_PLUS_DIR (or SPEEDLE_ADS_BIN) to run the local Speedle integration test"
         : false,
   },
   async () => {
@@ -255,11 +255,11 @@ test(
 );
 
 test(
-  "integration: manage mode MCP server over stdio against a real Speedle+ PMS",
+  "integration: manage mode MCP server over stdio against a real Speedle PMS",
   {
     skip:
       !speedlePlusDir && !speedlePmsBin
-        ? "set SPEEDLE_PLUS_DIR (or SPEEDLE_PMS_BIN) to run the local Speedle+ integration test"
+        ? "set SPEEDLE_PLUS_DIR (or SPEEDLE_PMS_BIN) to run the local Speedle integration test"
         : false,
   },
   async () => {

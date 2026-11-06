@@ -17,7 +17,7 @@ import {
 import type { Backend } from "./options.js";
 import type { RawResponse } from "./transport.js";
 
-/** Speedle+ and Speedle Cloud reason codes (design §3.3). */
+/** Self-hosted Speedle and Speedle Cloud reason codes (design §3.3). */
 export enum Reason {
   GrantPolicyFound = 0,
   DenyPolicyFound = 1,
@@ -33,7 +33,7 @@ export interface Decision {
   allowed: boolean;
   /** A {@link Reason}; unknown integers are kept as numbers. */
   reason: Reason | number;
-  /** Speedle+ evaluator error, returned with HTTP 200 and a denial. */
+  /** Self-hosted Speedle evaluator error, returned with HTTP 200 and a denial. */
   errorMessage?: string;
   /** Speedle Cloud `X-Quota-Daily-Remaining`. */
   quotaDailyRemaining?: number;
