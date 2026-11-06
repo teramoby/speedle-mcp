@@ -2,16 +2,20 @@
 import { realpathSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
+import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { createCheckServer } from "./check/server.js";
 import { SpeedleClient } from "./core/client.js";
-import { loadAdsConfig } from "./core/config.js";
+import { loadAdsConfig, loadPmsConfig } from "./core/config.js";
 import { redactSecret } from "./core/errors.js";
+import { PmsClient } from "./manage/client.js";
+import { createManageServer } from "./manage/server.js";
 
-export const USAGE = `Usage: speedle-mcp <mode>
+export const USAGE = `Usage: speedle-mcp <mode> [options]
 
 Modes:
-  check    Start the read-only authorization check MCP server (ADS)
-  manage   Start the policy management MCP server (PMS)
+  check                Start the read-only authorization check MCP server (ADS)
+  manage [--read-only] Start the policy management MCP server (PMS);
+                       --read-only registers only the read tools
 
 There is no default mode that exposes both tool sets.
 
@@ -22,11 +26,19 @@ Environment variables (check mode):
   SPEEDLE_BACKEND               Optional "speedle-cloud" or "speedle-plus"
   SPEEDLE_ALLOW_INSECURE_HTTP   Optional "true" to allow non-loopback http:// on speedle-plus
   SPEEDLE_CA_CERT               Optional extra PEM CA certificate for https://
+
+Environment variables (manage mode):
+  SPEEDLE_PMS_ENDPOINT              PMS base URL (e.g. http://127.0.0.1:6733)
+  SPEEDLE_PMS_TOKEN                 Optional bearer token (requires https://)
+  SPEEDLE_PMS_CERT, SPEEDLE_PMS_KEY Optional PEM client certificate and key for mutual TLS
+  SPEEDLE_PMS_ALLOW_INSECURE_HTTP   Optional "true" to allow non-loopback http://
+  SPEEDLE_PMS_CA_CERT               Optional extra PEM CA certificate for https://
+  SPEEDLE_PMS_READ_ONLY             Optional "true" to register only the read tools
 `;
 
 function redactEnvToken(text: string, env: NodeJS.ProcessEnv): string {
   let out = text;
-  for (const candidate of [env.SPEEDLE_TOKEN, env.SPEEDLE_ADS_TOKEN]) {
+  for (const candidate of [env.SPEEDLE_TOKEN, env.SPEEDLE_ADS_TOKEN, env.SPEEDLE_PMS_TOKEN, env.SPEEDLE_PMS_KEY]) {
     out = redactSecret(out, candidate);
   }
   return out;
@@ -39,32 +51,32 @@ export async function runCli(
     process.stderr.write(t);
   },
 ): Promise<number> {
-  if (argv.length !== 1) {
+  const [mode, ...flags] = argv;
+  const readOnlyFlag = mode === "manage" && flags.length === 1 && flags[0] === "--read-only";
+  if ((mode !== "check" && mode !== "manage") || (flags.length > 0 && !readOnlyFlag)) {
     writeStderr(USAGE);
     return 1;
   }
 
-  const mode = argv[0];
-  if (mode === "manage") {
-    writeStderr("speedle-mcp: manage mode is not implemented in this version.\n\n" + USAGE);
-    return 1;
-  }
-  if (mode !== "check") {
-    writeStderr(USAGE);
-    return 1;
-  }
-
-  let client: SpeedleClient;
+  let client: SpeedleClient | PmsClient;
+  let server: McpServer;
   try {
-    const config = loadAdsConfig(env);
-    client = new SpeedleClient(config);
+    if (mode === "check") {
+      const speedle = new SpeedleClient(loadAdsConfig(env));
+      client = speedle;
+      server = createCheckServer(speedle);
+    } else {
+      const { readOnly, ...options } = loadPmsConfig(env);
+      const pms = new PmsClient(options);
+      client = pms;
+      server = createManageServer(pms, { readOnly: readOnly || readOnlyFlag });
+    }
   } catch (err) {
     const raw = err instanceof Error ? err.message : String(err);
     writeStderr(`speedle-mcp: ${redactEnvToken(raw, env)}\n`);
     return 1;
   }
 
-  const server = createCheckServer(client);
   const transport = new StdioServerTransport();
 
   let cleanedUp = false;
