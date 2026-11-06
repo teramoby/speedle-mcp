@@ -11,7 +11,13 @@
  *
  * `renderPolicy` and `renderRolePolicy` go the other way, so an agent can read
  * stored policies as SPDL.
+ *
+ * test/spdl-golden.test.ts checks this port against the Go parser at
+ * `SPDL_SPEEDLE_PLUS_COMMIT` on every statement in test/fixtures/spdl/corpus.json.
  */
+
+/** The teramoby/speedle-plus commit whose `pkg/pdl` this port was last checked against. */
+export const SPDL_SPEEDLE_PLUS_COMMIT = "52f1bc7a39f02591a6e3cdfe26ea21e3fba2e53b";
 
 export interface Permission {
   resource?: string;
@@ -39,10 +45,12 @@ export interface RolePolicyBody {
 
 /** A parse error with the position of the offending input. */
 export class SpdlError extends Error {
+  readonly reason: string;
   readonly position: number;
   constructor(reason: string, cmd: string, position: number) {
     super(`${reason}\n${cmd}\n${" ".repeat(Math.max(0, position))}^`);
     this.name = "SpdlError";
+    this.reason = reason;
     this.position = position;
   }
 }
@@ -50,8 +58,17 @@ export class SpdlError extends Error {
 const PRINCIPAL_TYPES = ["user", "group", "role", "entity"] as const;
 const RES_EXPR_PREFIX = "expr:";
 
+/** Go's `unicode.IsSpace`, which differs from JavaScript's `\s` (U+0085 is a space, U+FEFF is not). */
+const GO_SPACE = /^[\t\n\v\f\r \u0085\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]$/u;
+
 function isSpace(ch: string | undefined): boolean {
-  return ch !== undefined && /\s/u.test(ch);
+  return ch !== undefined && GO_SPACE.test(ch);
+}
+
+function trimEnd(s: string): string {
+  let end = s.length;
+  while (end > 0 && isSpace(s[end - 1])) end--;
+  return s.slice(0, end);
 }
 
 function skipSpaces(cmd: string, i: number): number {
@@ -59,10 +76,15 @@ function skipSpaces(cmd: string, i: number): number {
   return i;
 }
 
+/** ASCII-only lower case. Go's `strings.EqualFold` matches the ASCII keywords only against ASCII letters. */
+function lowerAscii(s: string): string {
+  return s.replace(/[A-Z]/gu, (c) => c.toLowerCase());
+}
+
 /** Recognises a whole keyword (case-insensitive) followed by whitespace or the end. */
 function keyword(cmd: string, i: number, word: string): [number, boolean] {
   const end = i + word.length;
-  if (end > cmd.length || cmd.slice(i, end).toLowerCase() !== word) return [i, false];
+  if (end > cmd.length || lowerAscii(cmd.slice(i, end)) !== word) return [i, false];
   if (end === cmd.length) return [end, true];
   if (!isSpace(cmd[end])) return [i, false];
   return [end + 1, true];
@@ -161,7 +183,8 @@ function getAndPrincipals(cmd: string, i: number): [string[], number] {
   i = skipSpaces(cmd, i);
   expectMore(cmd, i);
   while (cmd[i] !== ")") {
-    if (cmd[i] !== ",") throw new SpdlError("Principals should be separated by commas", cmd, i);
+    // Same text (and spelling) as the Go parser.
+    if (cmd[i] !== ",") throw new SpdlError("Principals should be sepereated by commas", cmd, i);
     i++;
     expectMore(cmd, i);
     [p, i] = getPrincipal(cmd, i);
@@ -208,13 +231,13 @@ function getRoles(cmd: string, i: number): [string[], number] {
   const roles: string[] = [];
   let t: string;
   [t, i] = getToken(cmd, i);
-  if (t.toLowerCase() === "role") [t, i] = getToken(cmd, i);
+  if (lowerAscii(t) === "role") [t, i] = getToken(cmd, i);
   if (t === "") return [roles, i];
   roles.push(t);
   i = skipSpaces(cmd, i);
   while (i < cmd.length && cmd[i] === ",") {
     [t, i] = getToken(cmd, i + 1);
-    if (t.toLowerCase() === "role") [t, i] = getToken(cmd, i);
+    if (lowerAscii(t) === "role") [t, i] = getToken(cmd, i);
     if (t === "") throw new SpdlError("Not found role", cmd, i);
     roles.push(t);
     i = skipSpaces(cmd, i);
@@ -274,7 +297,12 @@ function getCondition(cmd: string, i: number): [string, number] {
   if (!ok) return ["", i];
   i = skipSpaces(cmd, end);
   expectMore(cmd, i);
-  return [cmd.slice(i).trimEnd(), cmd.length];
+  return [trimEnd(cmd.slice(i)), cmd.length];
+}
+
+/** A lone surrogate cannot be encoded as UTF-8, which the Go parser rejects first. */
+function checkWellFormed(cmd: string): void {
+  if (/\p{Cs}/u.test(cmd)) throw new SpdlError("Invalid UTF-8", cmd, 0);
 }
 
 function checkEnd(cmd: string, i: number): void {
@@ -283,6 +311,7 @@ function checkEnd(cmd: string, i: number): void {
 
 /** Parses one SPDL policy statement, for example `grant user alice get,write /books/123 if clearance >= 2`. */
 export function parsePolicy(cmd: string, name: string): PolicyBody {
+  checkWellFormed(cmd);
   const [effect, i1] = getEffect(cmd);
   const [principals, i2] = getOrPrincipals(cmd, i1);
   const [permissions, i3] = getPermissions(cmd, i2);
@@ -295,6 +324,7 @@ export function parsePolicy(cmd: string, name: string): PolicyBody {
 
 /** Parses one SPDL role policy statement, for example `grant user alice librarian on /books if clearance >= 2`. */
 export function parseRolePolicy(cmd: string, name: string): RolePolicyBody {
+  checkWellFormed(cmd);
   const [effect, i1] = getEffect(cmd);
   const [principals, i2] = getRolePolicyPrincipals(cmd, i1);
   const [roles, i3] = getRoles(cmd, i2);
