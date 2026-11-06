@@ -1,6 +1,6 @@
 # @speedle/mcp
 
-Local stdio [Model Context Protocol (MCP)](https://modelcontextprotocol.io) server for [Speedle+](https://github.com/teramoby/speedle-plus) and [Speedle Cloud](https://cloud.speedle.io): authorization checks (`check` mode) and policy management (`manage` mode).
+Local stdio [Model Context Protocol (MCP)](https://modelcontextprotocol.io) server for [self-hosted Speedle](https://github.com/teramoby/speedle-plus) and [Speedle Cloud](https://cloud.speedle.io): authorization checks (`check` mode) and policy management (`manage` mode).
 
 > **Note:** The shared HTTP client in `src/core` (used by both modes) follows the `teramoby/speedle-sdk` design specification (typed attributes, error model, and retry policy) and will move to `@speedle/sdk` once `@speedle/sdk` is published on npm.
 
@@ -50,7 +50,7 @@ npx @speedle/mcp check
 }
 ```
 
-### `check` mode — Self-hosted Speedle+ (loopback or internal ADS)
+### `check` mode — Self-hosted Speedle (loopback or internal ADS)
 
 ```json
 {
@@ -67,9 +67,9 @@ npx @speedle/mcp check
 }
 ```
 
-### `manage` mode — Speedle+ Policy Management (PMS)
+### `manage` mode — Self-hosted Speedle Policy Management (PMS)
 
-> **Security:** never give `manage` mode to an agent that is itself governed by the policies in this Speedle+ instance. Such an agent could be prompted into granting itself access. Run `manage` only for a human-supervised policy author, and prefer `--read-only` when the agent only needs to read policies.
+> **Security:** never give `manage` mode to an agent that is itself governed by the policies in this Speedle instance. Such an agent could be prompted into granting itself access. Run `manage` only for a human-supervised policy author, and prefer `--read-only` when the agent only needs to read policies.
 
 ```json
 {
@@ -131,14 +131,14 @@ All four tools query `/authz-check/v1/*` on the configured ADS endpoint using `s
 
 ## Tools (`manage` mode)
 
-All tools call the Speedle+ PMS REST API (`/policy-mgmt/v1`, see `api/swagger/policy-manage.yaml` in teramoby/speedle-plus). Policies and role policies are returned with an `spdl` field that renders them as one SPDL statement (or `null` when SPDL cannot express them).
+All tools call the self-hosted Speedle PMS REST API (`/policy-mgmt/v1`, see `api/swagger/policy-manage.yaml` in teramoby/speedle-plus). Policies and role policies are returned with an `spdl` field that renders them as one SPDL statement (or `null` when SPDL cannot express them).
 
 Read tools (registered in every `manage` run):
 
 - **`list_services`**, **`get_service`**: `GET /service`, `GET /service/{serviceName}`.
 - **`list_policies`**, **`get_policy`**: `GET /service/{serviceName}/policy[/{policyId}]`.
 - **`list_role_policies`**, **`get_role_policy`**: `GET /service/{serviceName}/role-policy[/{rolePolicyId}]`.
-- **`show_effective_policies`**: every policy and role policy Speedle+ evaluates for a service, as SPDL: the service's own policies and role policies plus the role policies of the `global` service, which apply to every service.
+- **`show_effective_policies`**: every policy and role policy Speedle evaluates for a service, as SPDL: the service's own policies and role policies plus the role policies of the `global` service, which apply to every service.
 
 Write tools (not registered with `--read-only`); each returns what changed:
 
@@ -153,7 +153,7 @@ The PMS bulk deletes (`DELETE /service`, `DELETE /service/{serviceName}/policy`,
 
 ### Policy-Design Walkthrough
 
-This session was run against a local Speedle+ PMS built from source (teramoby/speedle-plus `52f1bc7`, `speedle-pms --store-type file --insecure=true`) through `speedle-mcp manage`. Responses are shortened.
+This session was run against a local Speedle PMS built from source (teramoby/speedle-plus `52f1bc7`, `speedle-pms --store-type file --insecure=true`) through `speedle-mcp manage`. Responses are shortened.
 
 1. `create_service {"name":"books"}` returns `{"changed":"created","kind":"service","service":{"name":"books","type":"application",...}}`.
 2. `create_policy {"serviceName":"books","name":"librarians-edit-books","spdl":"grant librarian get /books/*"}` fails with `{"error":"SpdlError","message":"Not found principal type (user|group|role|entity)\ngrant librarian get /books/*\n      ^"}` and sends nothing. The principal needs a type.
@@ -173,7 +173,7 @@ npm test              # Unit and security tests against a mock HTTP server
 npm run test:package  # Build, npm pack, and smoke test the packed binary
 ```
 
-### Running the Local Speedle+ Integration Test
+### Running the Local Speedle Integration Test
 
 `test/integration.test.ts` builds `speedle-ads` and `speedle-pms` from a local checkout of [`teramoby/speedle-plus`](https://github.com/teramoby/speedle-plus) (requires Go) and starts each on a free loopback port against a temporary file store. The `check` test exercises all four check tools over stdio. The `manage` test creates a service, creates a policy and a role policy (and checks that PMS rejects an invalid condition), lists them, shows the effective policies, refuses a delete with the wrong confirmation, deletes with the right one, and deletes the service. When `SPEEDLE_PLUS_DIR` is unset (and `SPEEDLE_ADS_BIN` / `SPEEDLE_PMS_BIN` are unset), the tests are skipped, including in CI.
 

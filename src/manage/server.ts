@@ -43,7 +43,7 @@ export interface ManageServerOptions {
   readOnly?: boolean;
 }
 
-/** The service whose role policies Speedle+ also applies to every other service. */
+/** The service whose role policies Speedle also applies to every other service. */
 const GLOBAL_SERVICE = "global";
 
 class ConfirmationError extends SpeedleError {}
@@ -70,10 +70,10 @@ const deleteAnnotations = {
 } as const;
 
 const WRITE_NOTE =
-  "This tool changes live authorization policies in the configured Speedle+ Policy Management Service (PMS).";
+  "This tool changes live authorization policies in the configured self-hosted Speedle Policy Management Service (PMS).";
 const READ_NOTE = "Read-only: this tool does not change any policy.";
 
-const serviceNameSchema = z.string().describe('Speedle+ service name (for example "books").');
+const serviceNameSchema = z.string().describe('Speedle service name (for example "books").');
 const effectSchema = z.enum(["grant", "deny"]).describe('Policy effect: "grant" or "deny".');
 const nameSchema = z.string().describe("Human-readable policy name.");
 const spdlSchema = z
@@ -192,8 +192,8 @@ function rolePolicyBody(
 }
 
 /**
- * Creates the MCP server for `manage` mode. It registers only Speedle+ PMS
- * policy management tools (no authorization check tools); with
+ * Creates the MCP server for `manage` mode. It registers only self-hosted
+ * Speedle PMS policy management tools (no authorization check tools); with
  * `readOnly`, it registers only the read tools.
  */
 export function createManageServer(client: PmsClient, options: ManageServerOptions = {}): McpServer {
@@ -203,7 +203,7 @@ export function createManageServer(client: PmsClient, options: ManageServerOptio
     "list_services",
     {
       title: "List Services",
-      description: `List all Speedle+ services with their policies and role policies (GET /service). ${READ_NOTE}`,
+      description: `List all Speedle services with their policies and role policies (GET /service). ${READ_NOTE}`,
       inputSchema: {},
       annotations: readAnnotations,
     },
@@ -220,7 +220,7 @@ export function createManageServer(client: PmsClient, options: ManageServerOptio
     "get_service",
     {
       title: "Get Service",
-      description: `Get one Speedle+ service with its policies and role policies (GET /service/{serviceName}). ${READ_NOTE}`,
+      description: `Get one Speedle service with its policies and role policies (GET /service/{serviceName}). ${READ_NOTE}`,
       inputSchema: { serviceName: serviceNameSchema },
       annotations: readAnnotations,
     },
@@ -309,7 +309,7 @@ export function createManageServer(client: PmsClient, options: ManageServerOptio
     "show_effective_policies",
     {
       title: "Show Effective Policies",
-      description: `Show every policy and role policy Speedle+ evaluates for a service, as SPDL: the service's own policies and role policies plus the role policies of the "global" service, which apply to every service. Built from GET /service/{serviceName} and GET /service/global. ${READ_NOTE}`,
+      description: `Show every policy and role policy Speedle evaluates for a service, as SPDL: the service's own policies and role policies plus the role policies of the "global" service, which apply to every service. Built from GET /service/{serviceName} and GET /service/global. ${READ_NOTE}`,
       inputSchema: { serviceName: serviceNameSchema },
       annotations: readAnnotations,
     },
@@ -365,7 +365,7 @@ export function createManageServer(client: PmsClient, options: ManageServerOptio
     "create_service",
     {
       title: "Create Service",
-      description: `Create a Speedle+ service (POST /service) and return the created service. ${WRITE_NOTE}`,
+      description: `Create a Speedle service (POST /service) and return the created service. ${WRITE_NOTE}`,
       inputSchema: {
         name: serviceNameSchema,
         type: z

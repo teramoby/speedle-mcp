@@ -3,7 +3,7 @@
 // Copyright (c) 2026 The Speedle Authors
 // SPDX-License-Identifier: UPL-1.0
 
-// golden.go runs the real Speedle+ SPDL parser (teramoby/speedle-plus pkg/pdl)
+// golden.go runs the real Speedle SPDL parser (teramoby/speedle-plus pkg/pdl)
 // on every statement in corpus.json and writes golden.json, which
 // test/spdl-golden.test.ts uses to check the TypeScript port in src/manage/spdl.ts.
 //

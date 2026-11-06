@@ -1,6 +1,6 @@
 # Repository guidance
 
-speedle-mcp holds the official Model Context Protocol (MCP) server for Speedle+ and Speedle Cloud.
+speedle-mcp holds the official Model Context Protocol (MCP) server for self-hosted Speedle and Speedle Cloud.
 
 ## Spec and Modes
 

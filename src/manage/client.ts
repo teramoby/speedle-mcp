@@ -33,7 +33,7 @@ function segment(value: string, what: string): string {
 }
 
 /**
- * A client for the Speedle+ Policy Management Service REST API
+ * A client for the self-hosted Speedle Policy Management Service REST API
  * (`/policy-mgmt/v1`, teramoby/speedle-plus `api/swagger/policy-manage.yaml`).
  * Reads are retried like ADS calls; creates are sent at most once.
  */

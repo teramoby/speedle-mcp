@@ -28,7 +28,7 @@ const subjectSchema = z
 
 const typedAttributeSchema = z.object({
   name: z.string().describe("Attribute name (non-empty, unique within the request)."),
-  type: z.string().describe('Speedle+ attribute type: "string", "numeric", "bool", or "datetime".'),
+  type: z.string().describe('Speedle attribute type: "string", "numeric", "bool", or "datetime".'),
   value: z
     .unknown()
     .describe(
