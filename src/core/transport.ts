@@ -28,16 +28,17 @@ const TLS_ERROR_CODE = /^(ERR_TLS_|ERR_SSL_|CERT_|UNABLE_TO_|DEPTH_ZERO_|SELF_SI
 
 export interface SendOptions {
   url: URL;
+  method?: "GET" | "POST" | "DELETE";
   agent: http.Agent;
   headers: Record<string, string>;
-  body: string;
+  body?: string;
   timeoutMs: number;
   signal?: AbortSignal;
 }
 
 /** Sends one request. Never follows redirects. */
 export function send(options: SendOptions): Promise<RawResponse> {
-  const { url, agent, headers, body, timeoutMs, signal } = options;
+  const { url, method = "POST", agent, headers, body, timeoutMs, signal } = options;
   const isTls = url.protocol === "https:";
   const request = isTls ? https.request : http.request;
 
@@ -56,10 +57,12 @@ export function send(options: SendOptions): Promise<RawResponse> {
       else resolve(res as RawResponse);
     };
 
+    const reqHeaders =
+      body !== undefined ? { ...headers, "Content-Length": String(Buffer.byteLength(body)) } : { ...headers };
     const req = request(url, {
-      method: "POST",
+      method,
       agent,
-      headers: { ...headers, "Content-Length": String(Buffer.byteLength(body)) },
+      headers: reqHeaders,
     });
 
     const abortWith = (f: TransportFailure): void => {
@@ -133,6 +136,7 @@ export function send(options: SendOptions): Promise<RawResponse> {
       });
     });
 
-    req.end(body);
+    if (body !== undefined) req.end(body);
+    else req.end();
   });
 }

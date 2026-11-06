@@ -89,10 +89,13 @@ export interface CallOptions {
   signal?: AbortSignal;
 }
 
+export type PmsClientOptions = Omit<ClientOptions, "backend" | "serviceName" | "failureMode">;
+
 export const IS_ALLOWED_PATH = "/authz-check/v1/is-allowed";
 export const DIAGNOSE_PATH = "/authz-check/v1/diagnose";
 export const ALL_GRANTED_ROLES_PATH = "/authz-check/v1/all-granted-roles";
 export const ALL_GRANTED_PERMISSIONS_PATH = "/authz-check/v1/all-granted-permissions";
+export const PMS_BASE_PATH = "/policy-mgmt/v1";
 
 /** Validated, normalised options. Internal. */
 export interface ResolvedOptions {
@@ -101,6 +104,7 @@ export interface ResolvedOptions {
   agent: http.Agent;
   authorization: string | undefined;
   token: string | undefined;
+  secretKey: string | undefined;
   serviceName: string;
   maxAttempts: number;
   baseDelayMs: number;
@@ -216,6 +220,12 @@ export function resolveOptions(options: ClientOptions): ResolvedOptions {
     agent,
     authorization: auth.kind === "bearer" ? `Bearer ${secret.token as string}` : undefined,
     token: auth.kind === "bearer" ? secret.token : undefined,
+    secretKey:
+      auth.kind === "mutual-tls" && secret.key
+        ? Buffer.isBuffer(secret.key)
+          ? secret.key.toString("utf8")
+          : secret.key
+        : undefined,
     serviceName,
     maxAttempts: number(retry.maxAttempts, "retry.maxAttempts", 3, 1, true),
     baseDelayMs: number(retry.baseDelayMs, "retry.baseDelayMs", 100, 0),
@@ -227,4 +237,14 @@ export function resolveOptions(options: ClientOptions): ResolvedOptions {
     hooks,
     userAgentSuffix: suffix === "" ? undefined : suffix,
   };
+}
+
+export function resolvePmsOptions(options: PmsClientOptions): ResolvedOptions {
+  if (options === null || typeof options !== "object") fail("options are required");
+  return resolveOptions({
+    ...options,
+    backend: "speedle-plus",
+    serviceName: "__pms__",
+    failureMode: "error",
+  });
 }

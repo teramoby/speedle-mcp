@@ -1,6 +1,17 @@
 import { Auth } from "./auth.js";
 import { ConfigurationError } from "./errors.js";
-import { type Backend, type ClientOptions, resolveOptions } from "./options.js";
+import {
+  type Backend,
+  type ClientOptions,
+  type PmsClientOptions,
+  resolveOptions,
+  resolvePmsOptions,
+} from "./options.js";
+
+export interface PmsConfig extends PmsClientOptions {
+  /** When true, `manage` mode registers only read-only tools. */
+  readOnly: boolean;
+}
 
 /**
  * Reads ADS configuration from environment variables for `check` mode.
@@ -58,6 +69,78 @@ export function loadAdsConfig(env: NodeJS.ProcessEnv = process.env): ClientOptio
 
   // Validate options immediately and close the temporary agent created during validation.
   const resolved = resolveOptions(options);
+  resolved.agent.destroy();
+
+  return options;
+}
+
+/**
+ * Reads PMS configuration from environment variables for `manage` mode.
+ *
+ * Supported variables:
+ * - `SPEEDLE_PMS_ENDPOINT`: PMS base URL (required)
+ * - `SPEEDLE_PMS_TOKEN`: optional bearer token (requires `https://`)
+ * - `SPEEDLE_PMS_CERT` and `SPEEDLE_PMS_KEY`: optional PEM client certificate and private key for mutual TLS
+ * - `SPEEDLE_PMS_ALLOW_INSECURE_HTTP`: optional `"true"` or `"1"` to permit non-loopback `http://` without credentials
+ * - `SPEEDLE_PMS_CA_CERT`: optional PEM trust anchor for self-hosted HTTPS endpoints
+ * - `SPEEDLE_PMS_READ_ONLY`: optional `"true"` or `"1"` to register only read tools
+ *
+ * ADS configuration variables (`SPEEDLE_ENDPOINT`, `SPEEDLE_ADS_*`, `SPEEDLE_SERVICE_NAME`, `SPEEDLE_TOKEN`)
+ * are never read in `manage` mode.
+ */
+export function loadPmsConfig(env: NodeJS.ProcessEnv = process.env): PmsConfig {
+  const endpoint = (env.SPEEDLE_PMS_ENDPOINT ?? "").trim();
+  if (endpoint === "") {
+    throw new ConfigurationError(
+      "SPEEDLE_PMS_ENDPOINT is required (for example http://127.0.0.1:6733 or https://pms.example.com:6733)",
+    );
+  }
+
+  const rawToken = env.SPEEDLE_PMS_TOKEN;
+  const rawCert = env.SPEEDLE_PMS_CERT;
+  const rawKey = env.SPEEDLE_PMS_KEY;
+  const hasToken = rawToken !== undefined && rawToken !== "";
+  const hasCert = rawCert !== undefined && rawCert !== "";
+  const hasKey = rawKey !== undefined && rawKey !== "";
+
+  if (hasToken && (hasCert || hasKey)) {
+    throw new ConfigurationError("SPEEDLE_PMS_TOKEN cannot be combined with SPEEDLE_PMS_CERT/SPEEDLE_PMS_KEY");
+  }
+  if (hasCert !== hasKey) {
+    throw new ConfigurationError("Both SPEEDLE_PMS_CERT and SPEEDLE_PMS_KEY are required for mutual TLS");
+  }
+
+  const auth = hasToken
+    ? Auth.bearer(rawToken)
+    : hasCert && hasKey
+      ? Auth.mutualTls({ cert: rawCert, key: rawKey })
+      : Auth.none();
+
+  const allowInsecureRaw = env.SPEEDLE_PMS_ALLOW_INSECURE_HTTP?.trim().toLowerCase();
+  const allowInsecureHttp = allowInsecureRaw === "true" || allowInsecureRaw === "1";
+
+  const caCert =
+    env.SPEEDLE_PMS_CA_CERT !== undefined && env.SPEEDLE_PMS_CA_CERT !== "" ? env.SPEEDLE_PMS_CA_CERT : undefined;
+
+  const readOnlyRaw = env.SPEEDLE_PMS_READ_ONLY?.trim().toLowerCase();
+  let readOnly = false;
+  if (readOnlyRaw === "true" || readOnlyRaw === "1") {
+    readOnly = true;
+  } else if (readOnlyRaw !== undefined && readOnlyRaw !== "" && readOnlyRaw !== "false" && readOnlyRaw !== "0") {
+    throw new ConfigurationError('SPEEDLE_PMS_READ_ONLY must be "true", "false", "1", or "0"');
+  }
+
+  const options: PmsConfig = {
+    endpoint,
+    auth,
+    allowInsecureHttp,
+    caCert,
+    userAgentSuffix: "speedle-mcp",
+    readOnly,
+  };
+
+  // Validate options immediately and close the temporary agent created during validation.
+  const resolved = resolvePmsOptions(options);
   resolved.agent.destroy();
 
   return options;

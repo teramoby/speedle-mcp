@@ -23,31 +23,59 @@ try {
   assert.notEqual(noMode.status, 0, "expected non-zero exit when invoked with no mode");
   assert.match(noMode.stderr, /Usage: speedle-mcp <mode>/);
 
-  // 2. Smoke run in check mode over stdio: lists the exact four check tools.
-  const transport = new StdioClientTransport({
-    command: process.execPath,
-    args: [binPath, "check"],
-    env: {
-      PATH: process.env.PATH ?? "",
-      SPEEDLE_ENDPOINT: "http://127.0.0.1:6734",
-      SPEEDLE_SERVICE_NAME: "books",
-    },
-    stderr: "pipe",
-  });
-  const client = new Client({ name: "smoke-pack", version: "1.0.0" });
-  try {
-    await client.connect(transport);
-    const { tools } = await client.listTools();
-    assert.deepEqual(
-      tools.map((t) => t.name),
-      ["is_allowed", "diagnose", "all_granted_roles", "all_granted_permissions"],
-    );
-  } finally {
-    await client.close().catch(() => undefined);
-    await transport.close().catch(() => undefined);
-  }
+  const listTools = async (args, env) => {
+    const transport = new StdioClientTransport({
+      command: process.execPath,
+      args: [binPath, ...args],
+      env: { PATH: process.env.PATH ?? "", ...env },
+      stderr: "pipe",
+    });
+    const client = new Client({ name: "smoke-pack", version: "1.0.0" });
+    try {
+      await client.connect(transport);
+      const { tools } = await client.listTools();
+      return tools.map((t) => t.name);
+    } finally {
+      await client.close().catch(() => undefined);
+      await transport.close().catch(() => undefined);
+    }
+  };
 
-  console.log("pack smoke ok: no-mode exited non-zero with usage; check mode listed the 4 check tools");
+  // 2. check mode over stdio: lists exactly the four check tools.
+  const checkEnv = { SPEEDLE_ENDPOINT: "http://127.0.0.1:6734", SPEEDLE_SERVICE_NAME: "books" };
+  assert.deepEqual(await listTools(["check"], checkEnv), [
+    "is_allowed",
+    "diagnose",
+    "all_granted_roles",
+    "all_granted_permissions",
+  ]);
+
+  // 3. manage mode over stdio: lists exactly the management tools; --read-only lists only the read tools.
+  const readTools = [
+    "list_services",
+    "get_service",
+    "list_policies",
+    "get_policy",
+    "list_role_policies",
+    "get_role_policy",
+    "show_effective_policies",
+  ];
+  const writeTools = [
+    "create_service",
+    "create_policy",
+    "create_role_policy",
+    "delete_service",
+    "delete_policy",
+    "delete_role_policy",
+  ];
+  const manageEnv = { SPEEDLE_PMS_ENDPOINT: "http://127.0.0.1:6733" };
+  assert.deepEqual(await listTools(["manage"], manageEnv), [...readTools, ...writeTools]);
+  assert.deepEqual(await listTools(["manage", "--read-only"], manageEnv), readTools);
+  assert.deepEqual(await listTools(["manage"], { ...manageEnv, SPEEDLE_PMS_READ_ONLY: "true" }), readTools);
+
+  console.log(
+    `pack smoke ok: no-mode exited non-zero with usage; check listed the 4 check tools; manage listed the ${readTools.length + writeTools.length} management tools; manage --read-only and SPEEDLE_PMS_READ_ONLY listed only the ${readTools.length} read tools`,
+  );
 } finally {
   rmSync(workDir, { recursive: true, force: true });
 }

@@ -1,0 +1,3530 @@
+{
+  "speedlePlus": "52f1bc7a39f02591a6e3cdfe26ea21e3fba2e53b",
+  "speedleSdk": "d7153163731c00e49cfc82b6ebc1a082b3916ba6",
+  "entries": [
+    {
+      "source": "speedle-plus:pkg/pdl/parse_table_test.go",
+      "spdl": "grant user alice from corp get,put res1, list expr:/docs/.* if a > 1  "
+    },
+    {
+      "source": "speedle-plus:pkg/pdl/parse_table_test.go",
+      "spdl": "a > 1"
+    },
+    {
+      "source": "speedle-plus:pkg/pdl/parse_table_test.go",
+      "spdl": "DENY ( group devs , entity bot ), role admin delete 'my res'"
+    },
+    {
+      "source": "speedle-plus:pkg/pdl/parse_table_test.go",
+      "spdl": "my res"
+    },
+    {
+      "source": "speedle-plus:pkg/pdl/parse_table_test.go",
+      "spdl": ""
+    },
+    {
+      "source": "speedle-plus:pkg/pdl/parse_table_test.go",
+      "spdl": "permit user a get r"
+    },
+    {
+      "source": "speedle-plus:pkg/pdl/parse_table_test.go",
+      "spdl": "grant "
+    },
+    {
+      "source": "speedle-plus:pkg/pdl/parse_table_test.go",
+      "spdl": "grant user"
+    },
+    {
+      "source": "speedle-plus:pkg/pdl/parse_table_test.go",
+      "spdl": "grant user a"
+    },
+    {
+      "source": "speedle-plus:pkg/pdl/parse_table_test.go",
+      "spdl": "grant user a get"
+    },
+    {
+      "source": "speedle-plus:pkg/pdl/parse_table_test.go",
+      "spdl": "grant user a get r,"
+    },
+    {
+      "source": "speedle-plus:pkg/pdl/parse_table_test.go",
+      "spdl": "grant user a get r, list"
+    },
+    {
+      "source": "speedle-plus:pkg/pdl/parse_table_test.go",
+      "spdl": "grant user a get, r"
+    },
+    {
+      "source": "speedle-plus:pkg/pdl/parse_table_test.go",
+      "spdl": "grant thing a get r"
+    },
+    {
+      "source": "speedle-plus:pkg/pdl/parse_table_test.go",
+      "spdl": "grant user a from"
+    },
+    {
+      "source": "speedle-plus:pkg/pdl/parse_table_test.go",
+      "spdl": "grant ("
+    },
+    {
+      "source": "speedle-plus:pkg/pdl/parse_table_test.go",
+      "spdl": "grant ( "
+    },
+    {
+      "source": "speedle-plus:pkg/pdl/parse_table_test.go",
+      "spdl": "grant ()"
+    },
+    {
+      "source": "speedle-plus:pkg/pdl/parse_table_test.go",
+      "spdl": "grant (user a"
+    },
+    {
+      "source": "speedle-plus:pkg/pdl/parse_table_test.go",
+      "spdl": "grant (user a user b) get r"
+    },
+    {
+      "source": "speedle-plus:pkg/pdl/parse_table_test.go",
+      "spdl": "grant (user a,"
+    },
+    {
+      "source": "speedle-plus:pkg/pdl/parse_table_test.go",
+      "spdl": "grant (user a, nobody) get r"
+    },
+    {
+      "source": "speedle-plus:pkg/pdl/parse_table_test.go",
+      "spdl": "grant user a, "
+    },
+    {
+      "source": "speedle-plus:pkg/pdl/parse_table_test.go",
+      "spdl": "grant user a, nobody get r"
+    },
+    {
+      "source": "speedle-plus:pkg/pdl/parse_table_test.go",
+      "spdl": "grant user a get r if "
+    },
+    {
+      "source": "speedle-plus:pkg/pdl/parse_table_test.go",
+      "spdl": "grant user alice, group devs role admin, role ops on res1, expr:/x/.* if b == 'c'"
+    },
+    {
+      "source": "speedle-plus:pkg/pdl/parse_table_test.go",
+      "spdl": "b == 'c'"
+    },
+    {
+      "source": "speedle-plus:pkg/pdl/parse_table_test.go",
+      "spdl": "deny entity bot reader"
+    },
+    {
+      "source": "speedle-plus:pkg/pdl/parse_table_test.go",
+      "spdl": "grant user a,"
+    },
+    {
+      "source": "speedle-plus:pkg/pdl/parse_table_test.go",
+      "spdl": "grant user a, nobody r"
+    },
+    {
+      "source": "speedle-plus:pkg/pdl/parse_table_test.go",
+      "spdl": "grant user a role"
+    },
+    {
+      "source": "speedle-plus:pkg/pdl/parse_table_test.go",
+      "spdl": "grant user a r,"
+    },
+    {
+      "source": "speedle-plus:pkg/pdl/parse_table_test.go",
+      "spdl": "grant user a r on res,"
+    },
+    {
+      "source": "speedle-plus:pkg/pdl/parse_table_test.go",
+      "spdl": " in app rest"
+    },
+    {
+      "source": "speedle-plus:pkg/pdl/parse_table_test.go",
+      "spdl": "in "
+    },
+    {
+      "source": "speedle-plus:pkg/pdl/pdl_test.go",
+      "spdl": "grant user yufyu,group Developers role1, role2 on r1,r2, r3 in k8s if 'i > 30 && j < 4','t >= \"2012-05-06\"'"
+    },
+    {
+      "source": "speedle-plus:pkg/pdl/pdl_test.go",
+      "spdl": "grant user ..."
+    },
+    {
+      "source": "speedle-plus:pkg/pdl/pdl_test.go",
+      "spdl": "deny user ..."
+    },
+    {
+      "source": "speedle-plus:pkg/pdl/pdl_test.go",
+      "spdl": "GRANT user ..."
+    },
+    {
+      "source": "speedle-plus:pkg/pdl/pdl_test.go",
+      "spdl": "DENY user ..."
+    },
+    {
+      "source": "speedle-plus:pkg/pdl/pdl_test.go",
+      "spdl": "Grant user ..."
+    },
+    {
+      "source": "speedle-plus:pkg/pdl/pdl_test.go",
+      "spdl": "Deny user ..."
+    },
+    {
+      "source": "speedle-plus:pkg/pdl/pdl_test.go",
+      "spdl": "  Grant user ..."
+    },
+    {
+      "source": "speedle-plus:pkg/pdl/pdl_test.go",
+      "spdl": "  Deny user ..."
+    },
+    {
+      "source": "speedle-plus:pkg/pdl/pdl_test.go",
+      "spdl": "\t\tGrant user ..."
+    },
+    {
+      "source": "speedle-plus:pkg/pdl/pdl_test.go",
+      "spdl": "\t\tDeny user ..."
+    },
+    {
+      "source": "speedle-plus:pkg/pdl/pdl_test.go",
+      "spdl": "\tGrant user ..."
+    },
+    {
+      "source": "speedle-plus:pkg/pdl/pdl_test.go",
+      "spdl": "\tDeny user ..."
+    },
+    {
+      "source": "speedle-plus:pkg/pdl/pdl_test.go",
+      "spdl": " "
+    },
+    {
+      "source": "speedle-plus:pkg/pdl/pdl_test.go",
+      "spdl": "grent user ..."
+    },
+    {
+      "source": "speedle-plus:pkg/pdl/pdl_test.go",
+      "spdl": "Dany user ..."
+    },
+    {
+      "source": "speedle-plus:pkg/pdl/pdl_test.go",
+      "spdl": "grantuser ..."
+    },
+    {
+      "source": "speedle-plus:pkg/pdl/pdl_test.go",
+      "spdl": "denyuser ..."
+    },
+    {
+      "source": "speedle-plus:pkg/pdl/pdl_test.go",
+      "spdl": "grant, user ..."
+    },
+    {
+      "source": "speedle-plus:pkg/pdl/pdl_test.go",
+      "spdl": "deny, user ..."
+    },
+    {
+      "source": "speedle-plus:pkg/pdl/pdl_test.go",
+      "spdl": "user yufei.yu list ..."
+    },
+    {
+      "source": "speedle-plus:pkg/pdl/pdl_test.go",
+      "spdl": "   user      yufei.yu list ..."
+    },
+    {
+      "source": "speedle-plus:pkg/pdl/pdl_test.go",
+      "spdl": "group Developers list ..."
+    },
+    {
+      "source": "speedle-plus:pkg/pdl/pdl_test.go",
+      "spdl": "   group      Developers list ..."
+    },
+    {
+      "source": "speedle-plus:pkg/pdl/pdl_test.go",
+      "spdl": "role Dev list ..."
+    },
+    {
+      "source": "speedle-plus:pkg/pdl/pdl_test.go",
+      "spdl": "   role     Dev list ..."
+    },
+    {
+      "source": "speedle-plus:pkg/pdl/pdl_test.go",
+      "spdl": "USER yufei.yu list ..."
+    },
+    {
+      "source": "speedle-plus:pkg/pdl/pdl_test.go",
+      "spdl": "   USER      yufei.yu list ..."
+    },
+    {
+      "source": "speedle-plus:pkg/pdl/pdl_test.go",
+      "spdl": "Group Developers list ..."
+    },
+    {
+      "source": "speedle-plus:pkg/pdl/pdl_test.go",
+      "spdl": "   Group      Developers list ..."
+    },
+    {
+      "source": "speedle-plus:pkg/pdl/pdl_test.go",
+      "spdl": "RoLE Dev list ..."
+    },
+    {
+      "source": "speedle-plus:pkg/pdl/pdl_test.go",
+      "spdl": "   RoLE     Dev list ..."
+    },
+    {
+      "source": "speedle-plus:pkg/pdl/pdl_test.go",
+      "spdl": "user \"Yufei Yu\" list ..."
+    },
+    {
+      "source": "speedle-plus:pkg/pdl/pdl_test.go",
+      "spdl": "user:Yufei Yu"
+    },
+    {
+      "source": "speedle-plus:pkg/pdl/pdl_test.go",
+      "spdl": "user 'Yufei Yu' list ..."
+    },
+    {
+      "source": "speedle-plus:pkg/pdl/pdl_test.go",
+      "spdl": "user yufei.yu, user william.cai, user jiexiang.fu list ..."
+    },
+    {
+      "source": "speedle-plus:pkg/pdl/pdl_test.go",
+      "spdl": "user yufei.yu from cisco, user william.cai, user jiexiang.fu from oracle list ..."
+    },
+    {
+      "source": "speedle-plus:pkg/pdl/pdl_test.go",
+      "spdl": "user 'Yufei Yu', user 'William Cai', user 'Bill Fu' list ..."
+    },
+    {
+      "source": "speedle-plus:pkg/pdl/pdl_test.go",
+      "spdl": "user:William Cai"
+    },
+    {
+      "source": "speedle-plus:pkg/pdl/pdl_test.go",
+      "spdl": "user:Bill Fu"
+    },
+    {
+      "source": "speedle-plus:pkg/pdl/pdl_test.go",
+      "spdl": "user 'Yufei Yu',group Developers  ,   role 'Dev' list ..."
+    },
+    {
+      "source": "speedle-plus:pkg/pdl/pdl_test.go",
+      "spdl": "(user william) list ..."
+    },
+    {
+      "source": "speedle-plus:pkg/pdl/pdl_test.go",
+      "spdl": "(user william,group employee) list ..."
+    },
+    {
+      "source": "speedle-plus:pkg/pdl/pdl_test.go",
+      "spdl": "     (     user      william     ,     group     employee     )     list ..."
+    },
+    {
+      "source": "speedle-plus:pkg/pdl/pdl_test.go",
+      "spdl": "(user william,group employee),role finance list ..."
+    },
+    {
+      "source": "speedle-plus:pkg/pdl/pdl_test.go",
+      "spdl": "   (    user    william    ,   group   employee   )   ,   role    finance    list ..."
+    },
+    {
+      "source": "speedle-plus:pkg/pdl/pdl_test.go",
+      "spdl": "role finance,(user william,group employee) list ..."
+    },
+    {
+      "source": "speedle-plus:pkg/pdl/pdl_test.go",
+      "spdl": "    role    finance   ,   (   user    william   ,   group    employee   )    list ..."
+    },
+    {
+      "source": "speedle-plus:pkg/pdl/pdl_test.go",
+      "spdl": "(role finance),(user william,group employee) list ..."
+    },
+    {
+      "source": "speedle-plus:pkg/pdl/pdl_test.go",
+      "spdl": "  (   role    finance  )  ,   (   user    william   ,   group    employee   )    list ..."
+    },
+    {
+      "source": "speedle-plus:pkg/pdl/pdl_test.go",
+      "spdl": "(role finance,role erp),(user william,group employee) list ..."
+    },
+    {
+      "source": "speedle-plus:pkg/pdl/pdl_test.go",
+      "spdl": "  (   role    finance    ,    role   erp    )  ,   (   user    william   ,   group    employee   )    list ..."
+    },
+    {
+      "source": "speedle-plus:pkg/pdl/pdl_test.go",
+      "spdl": "Role1 on ..."
+    },
+    {
+      "source": "speedle-plus:pkg/pdl/pdl_test.go",
+      "spdl": "       Role1 on ..."
+    },
+    {
+      "source": "speedle-plus:pkg/pdl/pdl_test.go",
+      "spdl": "Role1,Role2,Role3 on ..."
+    },
+    {
+      "source": "speedle-plus:pkg/pdl/pdl_test.go",
+      "spdl": "   Role1,   Role2    ,Role3   ,  Role4 on ..."
+    },
+    {
+      "source": "speedle-plus:pkg/pdl/pdl_test.go",
+      "spdl": "role Role1 on ..."
+    },
+    {
+      "source": "speedle-plus:pkg/pdl/pdl_test.go",
+      "spdl": "   role Role1,   role Role2    , role Role3   ,  role Role4 on ..."
+    },
+    {
+      "source": "speedle-plus:pkg/pdl/pdl_test.go",
+      "spdl": "get core/pods ..."
+    },
+    {
+      "source": "speedle-plus:pkg/pdl/pdl_test.go",
+      "spdl": "   get core/pods ..."
+    },
+    {
+      "source": "speedle-plus:pkg/pdl/pdl_test.go",
+      "spdl": "get,list,watch core/pods ..."
+    },
+    {
+      "source": "speedle-plus:pkg/pdl/pdl_test.go",
+      "spdl": "get, list , watch core/pods ..."
+    },
+    {
+      "source": "speedle-plus:pkg/pdl/pdl_test.go",
+      "spdl": "get, list , watch 'res with whitespace' ..."
+    },
+    {
+      "source": "speedle-plus:pkg/pdl/pdl_test.go",
+      "spdl": "res with whitespace"
+    },
+    {
+      "source": "speedle-plus:pkg/pdl/pdl_test.go",
+      "spdl": "ON c1/default/core/pods/* ..."
+    },
+    {
+      "source": "speedle-plus:pkg/pdl/pdl_test.go",
+      "spdl": "on c1/default/core/pods/* ..."
+    },
+    {
+      "source": "speedle-plus:pkg/pdl/pdl_test.go",
+      "spdl": "ON       c1/default/core/pods/* ..."
+    },
+    {
+      "source": "speedle-plus:pkg/pdl/pdl_test.go",
+      "spdl": "       ON       c1/default/core/pods/* ..."
+    },
+    {
+      "source": "speedle-plus:pkg/pdl/pdl_test.go",
+      "spdl": "ON c1/default/core/pods/*,c2/test/core/pods/* ..."
+    },
+    {
+      "source": "speedle-plus:pkg/pdl/pdl_test.go",
+      "spdl": "ON r1, r2,r3 ..."
+    },
+    {
+      "source": "speedle-plus:pkg/pdl/pdl_test.go",
+      "spdl": " ..."
+    },
+    {
+      "source": "speedle-plus:pkg/pdl/pdl_test.go",
+      "spdl": "IN k8s ..."
+    },
+    {
+      "source": "speedle-plus:pkg/pdl/pdl_test.go",
+      "spdl": "in k8s ..."
+    },
+    {
+      "source": "speedle-plus:pkg/pdl/pdl_test.go",
+      "spdl": "IN       k8s ..."
+    },
+    {
+      "source": "speedle-plus:pkg/pdl/pdl_test.go",
+      "spdl": "       IN       k8s ..."
+    },
+    {
+      "source": "speedle-plus:pkg/pdl/pdl_test.go",
+      "spdl": "if a==3"
+    },
+    {
+      "source": "speedle-plus:pkg/pdl/pdl_test.go",
+      "spdl": "IF a==3"
+    },
+    {
+      "source": "speedle-plus:pkg/pdl/pdl_test.go",
+      "spdl": "if        a==3      "
+    },
+    {
+      "source": "speedle-plus:pkg/pdl/pdl_test.go",
+      "spdl": "if a == 3"
+    },
+    {
+      "source": "speedle-plus:pkg/pdl/pdl_test.go",
+      "spdl": "a == 3"
+    },
+    {
+      "source": "speedle-plus:pkg/pdl/pdl_test.go",
+      "spdl": "if a == 3 &&   b == 4     "
+    },
+    {
+      "source": "speedle-plus:pkg/pdl/pdl_test.go",
+      "spdl": "a == 3 &&   b == 4"
+    },
+    {
+      "source": "speedle-plus:pkg/pdl/pdl_test.go",
+      "spdl": "grant user  user_bool_equal1   get,del res_equal1 if x == false"
+    },
+    {
+      "source": "speedle-plus:pkg/pdl/pdl_test.go",
+      "spdl": "grant user alice approve /data1 if amount <="
+    },
+    {
+      "source": "speedle-plus:pkg/pdl/pdl_test.go",
+      "spdl": "Invalid condition: Unexpected end of expression\n"
+    },
+    {
+      "source": "speedle-plus:pkg/pdl/pdl_test.go",
+      "spdl": "grant user alice approve /data1 if amount <=\n"
+    },
+    {
+      "source": "speedle-plus:pkg/pdl/pdl_test.go",
+      "spdl": "                                            ^"
+    },
+    {
+      "source": "speedle-plus:pkg/pdl/pdl_test.go",
+      "spdl": "grant user alice manager on /x if (a > 1"
+    },
+    {
+      "source": "speedle-plus:pkg/pdl/pdl_test.go",
+      "spdl": "Invalid condition: Unbalanced parenthesis\n"
+    },
+    {
+      "source": "speedle-plus:pkg/pdl/pdl_test.go",
+      "spdl": "grant user alice manager on /x if (a > 1\n"
+    },
+    {
+      "source": "speedle-plus:pkg/pdl/pdl_test.go",
+      "spdl": "                                  ^"
+    },
+    {
+      "source": "speedle-plus:pkg/pdl/pdl_test.go",
+      "spdl": "grant user alice read /x if x =~ '['"
+    },
+    {
+      "source": "speedle-plus:pkg/pdl/pdl_test.go",
+      "spdl": "invalid condition"
+    },
+    {
+      "source": "speedle-plus:pkg/pdl/strict_test.go",
+      "spdl": "grant\t(user\talice from\tcorp, group devs), role admin\tread,write\t'book#1'\tif\tx > 0\r\n"
+    },
+    {
+      "source": "speedle-plus:pkg/pdl/strict_test.go",
+      "spdl": "x > 0"
+    },
+    {
+      "source": "speedle-plus:pkg/pdl/strict_test.go",
+      "spdl": "grant user \"ali'ce\" read 'book\"one'"
+    },
+    {
+      "source": "speedle-plus:pkg/pdl/strict_test.go",
+      "spdl": " ) trailing"
+    },
+    {
+      "source": "speedle-plus:pkg/pdl/strict_test.go",
+      "spdl": "accepted trailing input"
+    },
+    {
+      "source": "speedle-plus:pkg/pdl/strict_test.go",
+      "spdl": "a b"
+    },
+    {
+      "source": "speedle-plus:testutil/pdltest/corpus.go",
+      "spdl": "grant user alice read book"
+    },
+    {
+      "source": "speedle-plus:testutil/pdltest/corpus.go",
+      "spdl": "DENY (user alice from corp, group devs), entity bot read,write 'book one' if x > 0"
+    },
+    {
+      "source": "speedle-plus:testutil/pdltest/corpus.go",
+      "spdl": "\tgrant\tuser alice\tread　book\tif\tx > 0\r\n"
+    },
+    {
+      "source": "speedle-plus:testutil/pdltest/corpus.go",
+      "spdl": "grant user alice read 'book#1' if department == 'R#D'"
+    },
+    {
+      "source": "speedle-plus:testutil/pdltest/corpus.go",
+      "spdl": "grant user alice, group devs role admin, reader on book, expr:^docs/.* if x > 0"
+    },
+    {
+      "source": "speedle-plus:testutil/pdltest/corpus.go",
+      "spdl": "grant\tuser\talice admin\ton\tbook\tif\tx > 0"
+    },
+    {
+      "source": "speedle-plus:testutil/pdltest/corpus.go",
+      "spdl": "grant user alice admin on 'book#1'"
+    },
+    {
+      "source": "speedle-plus:testutil/pdltest/corpus.go",
+      "spdl": "grant user alice read book garbage"
+    },
+    {
+      "source": "speedle-plus:testutil/pdltest/corpus.go",
+      "spdl": "grant user alice read book iff amount < 10"
+    },
+    {
+      "source": "speedle-plus:testutil/pdltest/corpus.go",
+      "spdl": "grant user alice read book if"
+    },
+    {
+      "source": "speedle-plus:testutil/pdltest/corpus.go",
+      "spdl": "grant user alice read book if  "
+    },
+    {
+      "source": "speedle-plus:testutil/pdltest/corpus.go",
+      "spdl": "grant user alice read book)"
+    },
+    {
+      "source": "speedle-plus:testutil/pdltest/corpus.go",
+      "spdl": "grant user alice read 'book"
+    },
+    {
+      "source": "speedle-plus:testutil/pdltest/corpus.go",
+      "spdl": "grant user 'alice read book"
+    },
+    {
+      "source": "speedle-plus:testutil/pdltest/corpus.go",
+      "spdl": "grant user '' read book"
+    },
+    {
+      "source": "speedle-plus:testutil/pdltest/corpus.go",
+      "spdl": "grant user alice admin garbage"
+    },
+    {
+      "source": "speedle-plus:testutil/pdltest/corpus.go",
+      "spdl": "grant user alice admin iff x > 0"
+    },
+    {
+      "source": "speedle-plus:testutil/pdltest/corpus.go",
+      "spdl": "grant user alice admin if"
+    },
+    {
+      "source": "speedle-plus:testutil/pdltest/corpus.go",
+      "spdl": "grant user alice admin on 'book"
+    },
+    {
+      "source": "speedle-plus:testutil/pdltest/corpus.go",
+      "spdl": "grant user alice admin on"
+    },
+    {
+      "source": "speedle-plus:testutil/pdltest/corpus.go",
+      "spdl": "grant (user alice, group devs) admin"
+    },
+    {
+      "source": "speedle-plus:testutil/pdltest/corpus.go",
+      "spdl": "grant user alice read book if x === 1"
+    },
+    {
+      "source": "speedle-plus:benchmarks/private/benchmark-by-llm/scenarios_test.go",
+      "spdl": "Deny overrides grant"
+    },
+    {
+      "source": "speedle-plus:cmd/spctl/command/check_test.go",
+      "spdl": "grant user alice approve /orders if amount <= 1000"
+    },
+    {
+      "source": "speedle-plus:cmd/spctl/command/check_test.go",
+      "spdl": "grant user alice approve /orders if amount <="
+    },
+    {
+      "source": "speedle-plus:cmd/spctl/command/check_test.go",
+      "spdl": "grant user alice manager on /orders if (x"
+    },
+    {
+      "source": "speedle-plus:cmd/spctl/command/check_test.go",
+      "spdl": "grant user a read /x"
+    },
+    {
+      "source": "speedle-plus:cmd/spctl/command/cli_test.go",
+      "spdl": "grant user alice read res1"
+    },
+    {
+      "source": "speedle-plus:cmd/spctl/command/cli_test.go",
+      "spdl": "grant user alice admin"
+    },
+    {
+      "source": "speedle-plus:cmd/spctl/command/cli_test.go",
+      "spdl": "grant user alice read /x if a > 1"
+    },
+    {
+      "source": "speedle-plus:cmd/spctl/command/cli_test.go",
+      "spdl": "grant user alice read /x if a >"
+    },
+    {
+      "source": "speedle-plus:cmd/spctl/command/command_pdl_test.go",
+      "spdl": "grant user "
+    },
+    {
+      "source": "speedle-plus:cmd/spctl/command/command_test.go",
+      "spdl": "grant group Administrators list,watch,get c1:default/core/pods/*"
+    },
+    {
+      "source": "speedle-plus:cmd/spctl/command/command_test.go",
+      "spdl": "deny user userA get,delete c1:default/core/pods/*"
+    },
+    {
+      "source": "speedle-plus:cmd/spctl/command/command_test.go",
+      "spdl": "grant group Administrators from oracle list,watch,get c1:default/core/nodes/*"
+    },
+    {
+      "source": "speedle-plus:cmd/spctl/command/command_test.go",
+      "spdl": "grant user user1 role1 on res1"
+    },
+    {
+      "source": "speedle-plus:cmd/spctl/command/command_test.go",
+      "spdl": "grant user User1,role Role2 Role1,Role2 on res2"
+    },
+    {
+      "source": "speedle-plus:cmd/spctl/command/command_test.go",
+      "spdl": "grant entity spiffe://staging.acme.com/payments/mysql list,watch,get res1"
+    },
+    {
+      "source": "speedle-plus:cmd/spctl/command/command_test.go",
+      "spdl": "grant entity spiffe://staging.acme.com/payments/mysql role1 on res1"
+    },
+    {
+      "source": "speedle-plus:pkg/store/file/check_test.go",
+      "spdl": "grant user 'a\\' read 'book#1' # comment"
+    },
+    {
+      "source": "speedle-plus:pkg/store/file/check_test.go",
+      "spdl": "grant user \"a'b\" read 'book#1' if x == 'a\\' # b' # comment"
+    },
+    {
+      "source": "speedle-plus:pkg/store/file/check_test.go",
+      "spdl": "grant user if read 'book#1' # comment"
+    },
+    {
+      "source": "speedle-plus:pkg/store/file/spdl_test.go",
+      "spdl": "    grant user fdsa"
+    },
+    {
+      "source": "speedle-plus:pkg/store/file/spdl_test.go",
+      "spdl": "grant user fdsa"
+    },
+    {
+      "source": "speedle-plus:pkg/store/file/spdl_test.go",
+      "spdl": "    grant user fdsa   # fdsaqwer"
+    },
+    {
+      "source": "speedle-plus:pkg/store/mysql/integration_test.go",
+      "spdl": "GRANT SELECT ON `"
+    },
+    {
+      "source": "speedle-plus:pkg/svcs/adsrest/check_prepare_test.go",
+      "spdl": "grant user user_condtion1 role_condition1 if age > 10"
+    },
+    {
+      "source": "speedle-plus:pkg/svcs/adsrest/check_prepare_test.go",
+      "spdl": "grant user  userWithRole1  role1 on res_allow"
+    },
+    {
+      "source": "speedle-plus:pkg/svcs/adsrest/check_prepare_test.go",
+      "spdl": "grant user  userWithRole1  role1 on res_deny"
+    },
+    {
+      "source": "speedle-plus:pkg/svcs/adsrest/check_prepare_test.go",
+      "spdl": "deny  group groupWithRole2 role2 on res_deny"
+    },
+    {
+      "source": "speedle-plus:pkg/svcs/adsrest/check_prepare_test.go",
+      "spdl": "grant user  user1  get,del res_allow"
+    },
+    {
+      "source": "speedle-plus:pkg/svcs/adsrest/check_prepare_test.go",
+      "spdl": "grant group group1 get,del res_allow"
+    },
+    {
+      "source": "speedle-plus:pkg/svcs/adsrest/check_prepare_test.go",
+      "spdl": "grant role  role1  get,del res_allow"
+    },
+    {
+      "source": "speedle-plus:pkg/svcs/adsrest/check_prepare_test.go",
+      "spdl": "deny  user  user1  get,del res_deny"
+    },
+    {
+      "source": "speedle-plus:pkg/svcs/adsrest/check_prepare_test.go",
+      "spdl": "deny  group group1 get,del res_deny"
+    },
+    {
+      "source": "speedle-plus:pkg/svcs/adsrest/check_prepare_test.go",
+      "spdl": "deny  role  role1  get,del res_deny"
+    },
+    {
+      "source": "speedle-plus:pkg/svcs/adsrest/check_prepare_test.go",
+      "spdl": "grant role  role2  get,del res_deny"
+    },
+    {
+      "source": "speedle-plus:pkg/svcs/adsrest/check_prepare_test.go",
+      "spdl": "grant user  userWithRole1     role1 on res1"
+    },
+    {
+      "source": "speedle-plus:pkg/svcs/adsrest/check_prepare_test.go",
+      "spdl": "deny  group groupWithoutRole1 role1 on res1"
+    },
+    {
+      "source": "speedle-plus:pkg/svcs/adsrest/check_prepare_test.go",
+      "spdl": "deny  user  userWithRole1     get,del res1"
+    },
+    {
+      "source": "speedle-plus:pkg/svcs/adsrest/check_prepare_test.go",
+      "spdl": "grant role  role1             get,del res1"
+    },
+    {
+      "source": "speedle-plus:pkg/svcs/adsrest/check_prepare_test.go",
+      "spdl": "grant group groupWithoutRole1 get,del res1"
+    },
+    {
+      "source": "speedle-plus:pkg/svcs/adsrest/check_prepare_test.go",
+      "spdl": "grant user  user_allowed,group group_allowed  get,del res1"
+    },
+    {
+      "source": "speedle-plus:pkg/svcs/adsrest/check_prepare_test.go",
+      "spdl": "deny user  user_denied, group group_denied    get,del res1"
+    },
+    {
+      "source": "speedle-plus:pkg/svcs/adsrest/check_prepare_test.go",
+      "spdl": "grant user  user_cond_sqrt1    get,del res1 if Sqrt(16)<x"
+    },
+    {
+      "source": "speedle-plus:pkg/svcs/adsrest/check_prepare_test.go",
+      "spdl": "deny  user  user_cond_sqrt1    get,del res1 if Sqrt(64)>x"
+    },
+    {
+      "source": "speedle-plus:pkg/svcs/adsrest/check_prepare_test.go",
+      "spdl": "grant user  user_cond_sqrt2   get,del res1 if Sqrt(16) < x && Sqrt(64) > x"
+    },
+    {
+      "source": "speedle-plus:pkg/svcs/adsrest/check_prepare_test.go",
+      "spdl": "grant user  user_cond_sqrt3   get,del res1 if Sqrt(s1) < s2"
+    },
+    {
+      "source": "speedle-plus:pkg/svcs/adsrest/check_prepare_test.go",
+      "spdl": "grant user  user_cond_sum1   get,del res1 if Sum(s1,s2) < 10 || Sum(s1,s2) > 20"
+    },
+    {
+      "source": "speedle-plus:pkg/svcs/adsrest/check_prepare_test.go",
+      "spdl": "grant user  user_cond_avg1   get,del res1 if Avg(s1,s2) < 5 || Avg(s1,s2) > 10"
+    },
+    {
+      "source": "speedle-plus:pkg/svcs/adsrest/check_prepare_test.go",
+      "spdl": "grant user  user_cond_min1   get,del res1 if Min(s1,s2) < 5.5 || Min(s1,s2) > 10.5"
+    },
+    {
+      "source": "speedle-plus:pkg/svcs/adsrest/check_prepare_test.go",
+      "spdl": "grant user  user_cond_max1   get,del res1 if !(Max(s1,s2) < 5.5)"
+    },
+    {
+      "source": "speedle-plus:pkg/svcs/adsrest/check_prepare_test.go",
+      "spdl": "grant user  user_cond_max2   get,del res1 if Max(s1,s2) == 5"
+    },
+    {
+      "source": "speedle-plus:pkg/svcs/adsrest/check_prepare_test.go",
+      "spdl": "grant user  user_subset_str   get,del res1 if IsSubSet(s1,s2)"
+    },
+    {
+      "source": "speedle-plus:pkg/svcs/adsrest/check_prepare_test.go",
+      "spdl": "grant user  user_subset_int   get,del res1 if IsSubSet(s1,s2)"
+    },
+    {
+      "source": "speedle-plus:pkg/svcs/adsrest/check_prepare_test.go",
+      "spdl": "grant user  user_subset_datetime   get,del res1 if IsSubSet(s1,s2)"
+    },
+    {
+      "source": "speedle-plus:pkg/svcs/adsrest/check_prepare_test.go",
+      "spdl": "grant user  user_bool_equal2   get,del res_equal2 if !x == false"
+    },
+    {
+      "source": "speedle-plus:pkg/svcs/adsrest/check_prepare_test.go",
+      "spdl": "grant user  user_bool_notequal   get,del res_equal2 if x != true"
+    },
+    {
+      "source": "speedle-plus:pkg/svcs/adsrest/check_prepare_test.go",
+      "spdl": "grant user  user_bool_complex   get,del res_complex if s1 && !s2 || s3 == true"
+    },
+    {
+      "source": "speedle-plus:pkg/svcs/adsrest/check_prepare_test.go",
+      "spdl": "grant user  user_bool1   get,del res1 if s1&&!s2 || s3 == true"
+    },
+    {
+      "source": "speedle-plus:pkg/svcs/adsrest/check_prepare_test.go",
+      "spdl": "grant user  user_bool1   get,del res1 if s1 && !s2 || s3 == true"
+    },
+    {
+      "source": "speedle-plus:pkg/svcs/adsrest/check_prepare_test.go",
+      "spdl": "grant user  user_bool2   get,del res1 if s1 && (!s2)||s3 == true"
+    },
+    {
+      "source": "speedle-plus:pkg/svcs/adsrest/check_prepare_test.go",
+      "spdl": "grant user  user_bool3   get,del res1 if s1 && (!s2||s3) == true"
+    },
+    {
+      "source": "speedle-plus:pkg/svcs/adsrest/check_prepare_test.go",
+      "spdl": "grant user  user_num_notequal  get,del res_num3 if (s1+5)*2 != s2"
+    },
+    {
+      "source": "speedle-plus:pkg/svcs/adsrest/check_prepare_test.go",
+      "spdl": "grant user  user_num_greater_equal   get,del res_num5 if (s1+5)/2.0 >= s2"
+    },
+    {
+      "source": "speedle-plus:pkg/svcs/adsrest/check_prepare_test.go",
+      "spdl": "grant user  user_num_greater_equal2  get,del res_num6 if s1+s2 >= 1.41421356237309504880168872420969807856967187537694807317667974"
+    },
+    {
+      "source": "speedle-plus:pkg/svcs/adsrest/check_prepare_test.go",
+      "spdl": "grant user  user_str_equal1  get,del res_str1 if s1+s2 == '123'"
+    },
+    {
+      "source": "speedle-plus:pkg/svcs/adsrest/check_prepare_test.go",
+      "spdl": "grant user  user_str_notequal  get,del res_str2 if s1 != s2"
+    },
+    {
+      "source": "speedle-plus:pkg/svcs/adsrest/check_prepare_test.go",
+      "spdl": "grant user  user_str_regx  get,del res_str3 if s1+s2=~'.*abc$'"
+    },
+    {
+      "source": "speedle-plus:pkg/svcs/adsrest/check_prepare_test.go",
+      "spdl": "grant user  user_str_greater  get,del res_str4 if s1>s2"
+    },
+    {
+      "source": "speedle-plus:pkg/svcs/adsrest/check_prepare_test.go",
+      "spdl": "grant user  user_str_greater_equal  get,del res_str5 if s1>=s2"
+    },
+    {
+      "source": "speedle-plus:pkg/svcs/adsrest/check_prepare_test.go",
+      "spdl": "grant user  user_str_less_equal  get,del res_str6 if s1<=s2"
+    },
+    {
+      "source": "speedle-plus:pkg/svcs/adsrest/check_prepare_test.go",
+      "spdl": "grant user  user_str_less  get,del res_str7 if s1<s2"
+    },
+    {
+      "source": "speedle-plus:pkg/svcs/adsrest/check_prepare_test.go",
+      "spdl": "grant user  user_date_equal  get,del res1 if s1==s2"
+    },
+    {
+      "source": "speedle-plus:pkg/svcs/adsrest/check_prepare_test.go",
+      "spdl": "grant user  user_date_notequal  get,del res1 if s1!=s2"
+    },
+    {
+      "source": "speedle-plus:pkg/svcs/adsrest/check_prepare_test.go",
+      "spdl": "grant user  user_date_greater  get,del res1 if s1>s2"
+    },
+    {
+      "source": "speedle-plus:pkg/svcs/adsrest/check_prepare_test.go",
+      "spdl": "grant user  user_date_greater_equal  get,del res1 if s1>=s2"
+    },
+    {
+      "source": "speedle-plus:pkg/svcs/adsrest/check_prepare_test.go",
+      "spdl": "grant user  user_date_less_equal  get,del res1 if s1<=s2"
+    },
+    {
+      "source": "speedle-plus:pkg/svcs/adsrest/check_prepare_test.go",
+      "spdl": "grant user  user_date_less  get,del res1 if s1 < s2"
+    },
+    {
+      "source": "speedle-plus:pkg/svcs/adsrest/check_prepare_test.go",
+      "spdl": "grant user  user_array_str  get,del res1 if x in ('a','c','1')"
+    },
+    {
+      "source": "speedle-plus:pkg/svcs/adsrest/check_prepare_test.go",
+      "spdl": "grant user  user_array_num_single  get,del res1 if x in (1)"
+    },
+    {
+      "source": "speedle-plus:pkg/svcs/adsrest/check_prepare_test.go",
+      "spdl": "grant user  user_array_num  get,del res_in2 if x in (1,2.0,-2.1,3.567)"
+    },
+    {
+      "source": "speedle-plus:pkg/svcs/adsrest/check_prepare_test.go",
+      "spdl": "grant user  user_array_str_single  get,del res1 if x in ('a')"
+    },
+    {
+      "source": "speedle-plus:pkg/svcs/adsrest/check_prepare_test.go",
+      "spdl": "grant user  user_array_str_single1  get,del res1 if s1 in s2"
+    },
+    {
+      "source": "speedle-plus:pkg/svcs/adsrest/check_prepare_test.go",
+      "spdl": "grant user  user_array_str_multi  get,del res1 if s1 in (s2, s3)"
+    },
+    {
+      "source": "speedle-plus:pkg/svcs/adsrest/check_prepare_test.go",
+      "spdl": "grant user  user_array_date  get,del res_in2 if x in ('2017-01-02T15:04:05-07:00', '2017-01-02T15:04:05-09:00')"
+    },
+    {
+      "source": "speedle-plus:pkg/svcs/adsrest/check_prepare_test.go",
+      "spdl": "grant user  user_array_date_single  get,del res_in2 if x in ('2017-01-02T15:04:05-07:00')"
+    },
+    {
+      "source": "speedle-plus:pkg/svcs/adsrest/check_prepare_test.go",
+      "spdl": "grant user  user_array_issubset1  get,del res_subset if IsSubSet(s1,s2)"
+    },
+    {
+      "source": "speedle-plus:pkg/svcs/adsrest/check_prepare_test.go",
+      "spdl": "grant user  user_array_issubset2  get,del res_subset if IsSubSet(s1,('a1','b1','c1'))"
+    },
+    {
+      "source": "speedle-plus:pkg/svcs/adsrest/check_prepare_test.go",
+      "spdl": "grant user  user_attri1    get,del res_request_time1 if request_time > '2017-09-04 12:00:00'"
+    },
+    {
+      "source": "speedle-plus:pkg/svcs/adsrest/check_prepare_test.go",
+      "spdl": "grant group  group_attri1    get,del res_request_user1 if request_user == 'admin'"
+    },
+    {
+      "source": "speedle-plus:pkg/svcs/adsrest/check_prepare_test.go",
+      "spdl": "grant group  group1    get,del res_request_groups1 if  IsSubSet(request_groups, ('group1','group2','group3'))"
+    },
+    {
+      "source": "speedle-plus:pkg/svcs/adsrest/check_prepare_test.go",
+      "spdl": "grant user  user_attri1    wget,uget,del res_request_action1 if request_action =~ 'get'"
+    },
+    {
+      "source": "speedle-plus:pkg/svcs/adsrest/check_prepare_test.go",
+      "spdl": "grant user  user_attri1   get,del res_request_resource1  if request_resource =~ 'resource1'"
+    },
+    {
+      "source": "speedle-plus:pkg/svcs/adsrest/check_prepare_test.go",
+      "spdl": "grant user  user_attri1   get,del res_request_resource2  if request_resource =~ 'resource1'"
+    },
+    {
+      "source": "speedle-plus:pkg/svcs/adsrest/check_prepare_test.go",
+      "spdl": "grant user  user_attri1   get,del res_request_weekday1 if request_weekday == 'Monday'"
+    },
+    {
+      "source": "speedle-plus:pkg/svcs/adsrest/check_prepare_test.go",
+      "spdl": "grant user  user_attri1   get,del res_request_year_equal_2017 if request_year == 2017"
+    },
+    {
+      "source": "speedle-plus:pkg/svcs/adsrest/check_prepare_test.go",
+      "spdl": "grant user  user_attri1   get,del res_request_year_greater_2017 if request_year >= 2017"
+    },
+    {
+      "source": "speedle-plus:pkg/svcs/adsrest/check_prepare_test.go",
+      "spdl": "grant user  user_attri1   get,del res_request_month_nov if request_month == 11"
+    },
+    {
+      "source": "speedle-plus:pkg/svcs/adsrest/check_prepare_test.go",
+      "spdl": "grant user  user_attri1   get,del res_request_day_14 if request_day == 14"
+    },
+    {
+      "source": "speedle-plus:pkg/svcs/adsrest/check_prepare_test.go",
+      "spdl": "grant user user_complex1, user user_complex1A,user user_complex1B role_complex1"
+    },
+    {
+      "source": "speedle-plus:pkg/svcs/adsrest/check_prepare_test.go",
+      "spdl": "grant role role_complex1 get,del res_complex1 if request_user != 'user_complex1'"
+    },
+    {
+      "source": "speedle-plus:pkg/svcs/adsrest/check_prepare_test.go",
+      "spdl": "deny user user_complex1A del res_complex1"
+    },
+    {
+      "source": "speedle-plus:pkg/svcs/adsrest/check_prepare_test.go",
+      "spdl": "grant user user1, user user11, group group1 role1"
+    },
+    {
+      "source": "speedle-plus:pkg/svcs/adsrest/check_prepare_test.go",
+      "spdl": "grant user user2, user user22, group group2, role role1 role2"
+    },
+    {
+      "source": "speedle-plus:pkg/svcs/adsrest/check_prepare_test.go",
+      "spdl": "grant role role2 role3"
+    },
+    {
+      "source": "speedle-plus:pkg/svcs/adsrest/check_prepare_test.go",
+      "spdl": "grant role role3 role4"
+    },
+    {
+      "source": "speedle-plus:pkg/svcs/adsrest/check_prepare_test.go",
+      "spdl": "grant role role4 role5"
+    },
+    {
+      "source": "speedle-plus:pkg/svcs/adsrest/check_prepare_test.go",
+      "spdl": "grant role role5 role6"
+    },
+    {
+      "source": "speedle-plus:pkg/svcs/adsrest/check_prepare_test.go",
+      "spdl": "grant role role6 role7"
+    },
+    {
+      "source": "speedle-plus:pkg/svcs/adsrest/check_prepare_test.go",
+      "spdl": "grant role role7 role8"
+    },
+    {
+      "source": "speedle-plus:pkg/svcs/adsrest/check_prepare_test.go",
+      "spdl": "grant role role8 role9"
+    },
+    {
+      "source": "speedle-plus:pkg/svcs/adsrest/check_prepare_test.go",
+      "spdl": "grant user user11, user user22 role-denined"
+    },
+    {
+      "source": "speedle-plus:pkg/svcs/adsrest/check_prepare_test.go",
+      "spdl": "grant role role-denined role-denined1"
+    },
+    {
+      "source": "speedle-plus:pkg/svcs/adsrest/check_prepare_test.go",
+      "spdl": "deny user user22 role5"
+    },
+    {
+      "source": "speedle-plus:pkg/svcs/adsrest/check_prepare_test.go",
+      "spdl": "grant user userRes1 role10  on res1"
+    },
+    {
+      "source": "speedle-plus:pkg/svcs/adsrest/check_prepare_test.go",
+      "spdl": "grant user userRes1 role11 if request_action == 'get'"
+    },
+    {
+      "source": "speedle-plus:pkg/svcs/adsrest/check_prepare_test.go",
+      "spdl": "grant role role10 role12 on res1"
+    },
+    {
+      "source": "speedle-plus:pkg/svcs/adsrest/check_prepare_test.go",
+      "spdl": "grant role role10 role12 on res2"
+    },
+    {
+      "source": "speedle-plus:pkg/svcs/adsrest/check_prepare_test.go",
+      "spdl": "grant role role1 get,del res1"
+    },
+    {
+      "source": "speedle-plus:pkg/svcs/adsrest/check_prepare_test.go",
+      "spdl": "grant role role2 get,del res2"
+    },
+    {
+      "source": "speedle-plus:pkg/svcs/adsrest/check_prepare_test.go",
+      "spdl": "grant role role3 get,del res3"
+    },
+    {
+      "source": "speedle-plus:pkg/svcs/adsrest/check_prepare_test.go",
+      "spdl": "grant role role9 get,del res9"
+    },
+    {
+      "source": "speedle-plus:pkg/svcs/adsrest/check_prepare_test.go",
+      "spdl": "deny role role-denined1 del res3"
+    },
+    {
+      "source": "speedle-plus:pkg/svcs/adsrest/check_prepare_test.go",
+      "spdl": "grant user user2 get res1"
+    },
+    {
+      "source": "speedle-plus:pkg/svcs/adsrest/check_prepare_test.go",
+      "spdl": "grant user user2 role2 on expr:.*res.*"
+    },
+    {
+      "source": "speedle-plus:pkg/svcs/adsrest/check_prepare_test.go",
+      "spdl": "grant user user1 get,del expr:res*"
+    },
+    {
+      "source": "speedle-plus:pkg/svcs/adsrest/check_prepare_test.go",
+      "spdl": "grant role role2 get,del expr:.*res.*"
+    },
+    {
+      "source": "speedle-plus:pkg/svcs/adsrest/check_prepare_test.go",
+      "spdl": "deny user user1, user user2 get,del expr:.*res-denied*"
+    },
+    {
+      "source": "speedle-plus:pkg/svcs/adsrest/check_prepare_test.go",
+      "spdl": "grant user user1 get,del expr:*res*"
+    },
+    {
+      "source": "speedle-plus:pkg/svcs/adsrest/check_prepare_test.go",
+      "spdl": "grant (user user1, user user11, group group1), (user user2, group group2, group group22), (group group3, group group33) get,del res1"
+    },
+    {
+      "source": "speedle-plus:pkg/svcs/adsrest/check_prepare_test.go",
+      "spdl": "grant (user user1, group group1), (user user2, group group2, group group22) get,del res2"
+    },
+    {
+      "source": "speedle-plus:pkg/svcs/adsrest/check_prepare_test.go",
+      "spdl": "grant (user user1, user user11, group group1), (user user2, group group2, group group22), (group group3, group group33) role1"
+    },
+    {
+      "source": "speedle-plus:pkg/svcs/adsrest/check_prepare_test.go",
+      "spdl": "grant role role1 role2"
+    },
+    {
+      "source": "speedle-plus:pkg/svcs/adsrest/check_prepare_test.go",
+      "spdl": "grant (group group4, role role2),(user user4, role role2) get,del res4"
+    },
+    {
+      "source": "speedle-plus:pkg/svcs/adsrest/check_prepare_test.go",
+      "spdl": "grant group group5, role role2 get,del res5"
+    },
+    {
+      "source": "speedle-plus:pkg/svcs/adsrest/check_prepare_test.go",
+      "spdl": "grant entity schema://domain.name/path1, entity schema://domain.name/path2 role1"
+    },
+    {
+      "source": "speedle-plus:pkg/svcs/adsrest/check_prepare_test.go",
+      "spdl": "grant (entity spiffe://domain.name/path1, entity spiffe://domain.name/ns/user1) role2"
+    },
+    {
+      "source": "speedle-plus:pkg/svcs/adsrest/check_prepare_test.go",
+      "spdl": "grant role role1  get,del res1"
+    },
+    {
+      "source": "speedle-plus:pkg/svcs/adsrest/check_prepare_test.go",
+      "spdl": "grant (group group1, entity spiffe://acme.com/9eebccd2-12bf-40a6-b262-65fe0487d453), role role1 get,del res2"
+    },
+    {
+      "source": "speedle-plus:pkg/svcs/adsrest/check_prepare_test.go",
+      "spdl": "deny entity schema://domain.name/path2 get,del res2"
+    },
+    {
+      "source": "speedle-plus:pkg/svcs/adsrest/check_prepare_test.go",
+      "spdl": "grant (entity special-schema.1+2://user1:pwd@domain1/path1/path-2/a), role role1 get,del res3"
+    },
+    {
+      "source": "speedle-plus:pkg/svcs/adsrest/granted_perms_test.go",
+      "spdl": "grant user  userWithRole1 role1 on res_allow"
+    },
+    {
+      "source": "speedle-plus:pkg/svcs/adsrest/is_allowed_cond_attribute_test.go",
+      "spdl": "grant user  user_bool1   get,del res1 if s1&&!s2||s3==true"
+    },
+    {
+      "source": "speedle-plus:pkg/svcs/adsrest/is_allowed_cond_attribute_test.go",
+      "spdl": "grant user  user_bool2   get,del res1 if s1&&(!s2)||s3==true"
+    },
+    {
+      "source": "speedle-plus:pkg/svcs/adsrest/is_allowed_cond_attribute_test.go",
+      "spdl": "grant user  user_bool3   get,del res1 if s1&&(!s2||s3)==true"
+    },
+    {
+      "source": "speedle-plus:pkg/svcs/adsrest/is_allowed_cond_attribute_test.go",
+      "spdl": "grant user  user_str_regx  get,del res_str3 if s1+s2=~'.*abc'"
+    },
+    {
+      "source": "speedle-plus:pkg/svcs/adsrest/is_allowed_cond_attribute_test.go",
+      "spdl": "grant user  user_date_equal  get,del res1 if s1=s2"
+    },
+    {
+      "source": "speedle-plus:pkg/svcs/adsrest/is_allowed_cond_attribute_test.go",
+      "spdl": "grant user  user_date_less  get,del res1 if s1<s2"
+    },
+    {
+      "source": "speedle-plus:pkg/svcs/adsrest/is_allowed_cond_attribute_test.go",
+      "spdl": "grant user  user_array_issubset2  get,del res_subset if IsSubSet(s1,('a1','b1'))"
+    },
+    {
+      "source": "speedle-plus:pkg/svcs/adsrest/is_allowed_test.go",
+      "spdl": "grant user  userWithRole1  role1 on res1"
+    },
+    {
+      "source": "speedle-plus:pkg/svcs/adsrest/is_allowed_test.go",
+      "spdl": "deny  group groupWithRole1 role1 on res1"
+    },
+    {
+      "source": "speedle-plus:pkg/svcs/adsrest/is_allowed_test.go",
+      "spdl": "deny  user  userWithRole1  get,del res1"
+    },
+    {
+      "source": "speedle-plus:pkg/svcs/adsrest/is_allowed_test.go",
+      "spdl": "grant role  role1          get,del res1"
+    },
+    {
+      "source": "speedle-plus:pkg/svcs/adsrest/is_allowed_test.go",
+      "spdl": "grant group groupWithRole1 get,del res1"
+    },
+    {
+      "source": "speedle-plus:pkg/svcs/adsrest/is_allowed_test.go",
+      "spdl": "grant user  user_allowed,group group_allowed   get,del res1"
+    },
+    {
+      "source": "speedle-plus:pkg/svcs/adsrest/is_allowed_test.go",
+      "spdl": "grant group group_allowed  get,del res1"
+    },
+    {
+      "source": "speedle-plus:pkg/svcs/adsrest/is_allowed_test.go",
+      "spdl": "grant group  group1    get,del res_request_groups1 if IsSubSet(request_groups,('group1','group2','group3')"
+    },
+    {
+      "source": "speedle-plus:pkg/svcs/adsrest/is_allowed_test.go",
+      "spdl": "grant (entity schema://domain.name/path1), (entity schema://domain.name/path2) role1"
+    },
+    {
+      "source": "speedle-plus:website/playground-engine/playground/evaluate_test.go",
+      "spdl": "grant user bob read book"
+    },
+    {
+      "source": "speedle-plus:website/playground-engine/playground/evaluate_test.go",
+      "spdl": "deny wins"
+    },
+    {
+      "source": "speedle-plus:website/playground-engine/playground/evaluate_test.go",
+      "spdl": "deny first"
+    },
+    {
+      "source": "speedle-plus:website/playground-engine/playground/evaluate_test.go",
+      "spdl": "deny role"
+    },
+    {
+      "source": "speedle-plus:website/playground-engine/playground/evaluate_test.go",
+      "spdl": "grant user alice read expr:^bo.*$"
+    },
+    {
+      "source": "speedle-plus:website/playground-engine/playground/evaluate_test.go",
+      "spdl": "grant user alice read *"
+    },
+    {
+      "source": "speedle-plus:website/playground-engine/playground/evaluate_test.go",
+      "spdl": "grant user alice write,read book"
+    },
+    {
+      "source": "speedle-plus:website/playground-engine/playground/evaluate_test.go",
+      "spdl": "grant user bob, user alice read book"
+    },
+    {
+      "source": "speedle-plus:website/playground-engine/playground/evaluate_test.go",
+      "spdl": "grant (user alice, group admin) read book"
+    },
+    {
+      "source": "speedle-plus:website/playground-engine/playground/evaluate_test.go",
+      "spdl": "grant user alice read book if request_user == 'alice'"
+    },
+    {
+      "source": "speedle-plus:website/playground-engine/playground/evaluate_test.go",
+      "spdl": "grant user alice read book if 2 > 3"
+    },
+    {
+      "source": "speedle-plus:website/playground-engine/playground/evaluate_test.go",
+      "spdl": "grant user alice read book if Sqrt(16)==4 && Max(1,5,3)==5"
+    },
+    {
+      "source": "speedle-plus:website/playground-engine/playground/evaluate_test.go",
+      "spdl": "GRANT user alice read book"
+    },
+    {
+      "source": "speedle-plus:website/playground-engine/playground/evaluate_test.go",
+      "spdl": "grant role everyone_role read book"
+    },
+    {
+      "source": "speedle-plus:website/playground-engine/playground/evaluate_test.go",
+      "spdl": "grant role authenticated_role read book"
+    },
+    {
+      "source": "speedle-plus:website/playground-engine/playground/evaluate_test.go",
+      "spdl": "grant user alice read book trailing"
+    },
+    {
+      "source": "speedle-plus:website/playground-engine/playground/evaluate_test.go",
+      "spdl": "grant user alice read book if missing > 3"
+    },
+    {
+      "source": "speedle-plus:website/playground-engine/playground/evaluate_test.go",
+      "spdl": "grant user alice read book if 3"
+    },
+    {
+      "source": "speedle-plus:website/playground-engine/playground/evaluate_test.go",
+      "spdl": "grant user alice read book if clearance >>> 3"
+    },
+    {
+      "source": "speedle-plus:website/playground-engine/playground/evaluate_test.go",
+      "spdl": "grant user alice read expr:["
+    },
+    {
+      "source": "speedle-plus:website/playground-engine/playground/evaluate_test.go",
+      "spdl": "grant user alice read book if RemoteFunction(3)"
+    },
+    {
+      "source": "speedle-plus:website/playground-engine/playground/evaluate_test.go",
+      "spdl": "grant (user alice, group admin) read book if clearance >= 3 && department == 'eng' && active && 'eng' in teams && expiry > '2020-01-01T00:00:00Z'"
+    },
+    {
+      "source": "speedle-plus:website/playground-engine/playground/evaluate_test.go",
+      "spdl": "grant user alice from github read book"
+    },
+    {
+      "source": "speedle-plus:website/playground-engine/playground/evaluate_test.go",
+      "spdl": "grant role anonymous_role read book"
+    },
+    {
+      "source": "speedle-plus:website/tests/docscheck/spdl_test.go",
+      "spdl": "grant group Administrators list,watch,get expr:^c1/default/core/pods/.*$"
+    },
+    {
+      "source": "speedle-plus:pkg/store/file/spdl_test.spdl",
+      "spdl": "grant role employee read books"
+    },
+    {
+      "source": "speedle-plus:pkg/store/file/spdl_test.spdl",
+      "spdl": "grant user bill role employee"
+    },
+    {
+      "source": "speedle-plus:pkg/store/file/spdl_test.spdl",
+      "spdl": "grant group customer role other"
+    },
+    {
+      "source": "speedle-plus:samples/embedded/expenses/expenses.spdl",
+      "spdl": "GRANT ROLE employee get, post, delete /reports"
+    },
+    {
+      "source": "speedle-plus:samples/embedded/expenses/expenses.spdl",
+      "spdl": "GRANT ROLE auditor get, modify /reports"
+    },
+    {
+      "source": "speedle-plus:samples/embedded/expenses/expenses.spdl",
+      "spdl": "GRANT USER alice employee"
+    },
+    {
+      "source": "speedle-plus:docs/hugo/content/docs/custom-function.md",
+      "spdl": "grant user Ally access library if isValid(attr1)"
+    },
+    {
+      "source": "speedle-plus:docs/hugo/content/docs/deployment-embeded.md",
+      "spdl": "grant user alice get res1"
+    },
+    {
+      "source": "speedle-plus:docs/hugo/content/docs/idd.md",
+      "spdl": "grant user user1 from github read book"
+    },
+    {
+      "source": "speedle-plus:docs/hugo/content/docs/idd.md",
+      "spdl": "grant user user1 from IDCS.tenant01 read book"
+    },
+    {
+      "source": "speedle-plus:docs/hugo/content/docs/overview.md",
+      "spdl": "grant role librarian read,update book"
+    },
+    {
+      "source": "speedle-plus:docs/hugo/content/docs/overview.md",
+      "spdl": "grant user alice librarian"
+    },
+    {
+      "source": "speedle-plus:docs/hugo/content/docs/overview.md",
+      "spdl": "grant user bob read report if department == 'finance'"
+    },
+    {
+      "source": "speedle-plus:docs/hugo/content/docs/overview.md",
+      "spdl": "grant group staff read,delete journal"
+    },
+    {
+      "source": "speedle-plus:docs/hugo/content/docs/overview.md",
+      "spdl": "deny user carol delete journal"
+    },
+    {
+      "source": "speedle-plus:docs/hugo/content/docs/overview.md",
+      "spdl": "grant user dave from github read code"
+    },
+    {
+      "source": "speedle-plus:docs/hugo/content/docs/pms/global-policy.md",
+      "spdl": "grant user Emma AdminRole"
+    },
+    {
+      "source": "speedle-plus:docs/hugo/content/docs/pms/global-policy.md",
+      "spdl": "grant role AdminRole borrow books"
+    },
+    {
+      "source": "speedle-plus:docs/hugo/content/docs/pms/policy-mgmt.md",
+      "spdl": "grant user alan manager on res1"
+    },
+    {
+      "source": "speedle-plus:docs/hugo/content/docs/pms/policy-mgmt.md",
+      "spdl": "grant role manager update res1"
+    },
+    {
+      "source": "speedle-plus:docs/hugo/content/docs/pms/policy-mgmt.md",
+      "spdl": "grant (role designer, role dba) update db_design_doc"
+    },
+    {
+      "source": "speedle-plus:docs/hugo/content/docs/pms/policy-mgmt.md",
+      "spdl": "grant user alan read book"
+    },
+    {
+      "source": "speedle-plus:docs/hugo/content/docs/store/mysql.md",
+      "spdl": "GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, REFERENCES ON speedle.* TO 'speedle_pms'@'%';"
+    },
+    {
+      "source": "speedle-plus:docs/hugo/content/docs/store/mysql.md",
+      "spdl": "GRANT SELECT ON speedle.* TO 'speedle_ads'@'%';"
+    },
+    {
+      "source": "speedle-plus:docs/hugo/content/integrations/docker.md",
+      "spdl": "grant user root GET,POST,PUT,DELETE expr:.*"
+    },
+    {
+      "source": "speedle-plus:docs/hugo/content/integrations/docker.md",
+      "spdl": "deny user root GET expr:.*"
+    },
+    {
+      "source": "speedle-plus:docs/hugo/content/integrations/kubernetes.md",
+      "spdl": "grant user joe get expr:/pods/.* if labels_component == \\"
+    },
+    {
+      "source": "speedle-plus:docs/hugo/content/integrations/kubernetes.md",
+      "spdl": "grant user joe get,watch expr:/pods/.* if owner_Deployment == \\"
+    },
+    {
+      "source": "speedle-plus:docs/hugo/content/quick-start.md",
+      "spdl": "grant user user1 get,del res1"
+    },
+    {
+      "source": "speedle-plus:docs/hugo/content/quick-start.md",
+      "spdl": "grant user user2 role2 on res2"
+    },
+    {
+      "source": "speedle-plus:docs/hugo/content/quick-start.zh.md",
+      "spdl": "grant user ZhangSan borrow book"
+    },
+    {
+      "source": "speedle-plus:docs/hugo/static/index.html",
+      "spdl": "grant group employee read,borrow book"
+    },
+    {
+      "source": "speedle-plus:docs/hugo/static/index.html",
+      "spdl": "deny user bob borrow book if is_card_valid == false"
+    },
+    {
+      "source": "speedle-sdk:e2e/policies.json",
+      "spdl": "grant group writers editor"
+    },
+    {
+      "source": "speedle-sdk:e2e/policies.json",
+      "spdl": "grant user bob editor"
+    },
+    {
+      "source": "speedle-sdk:e2e/policies.json",
+      "spdl": "deny user ivan editor"
+    },
+    {
+      "source": "speedle-sdk:e2e/policies.json",
+      "spdl": "grant user carol owner on /projects/apollo"
+    },
+    {
+      "source": "speedle-sdk:e2e/policies.json",
+      "spdl": "grant user olga auditor if onDuty == true"
+    },
+    {
+      "source": "speedle-sdk:e2e/policies.json",
+      "spdl": "grant user alice get,list /docs/public"
+    },
+    {
+      "source": "speedle-sdk:e2e/policies.json",
+      "spdl": "grant role editor get,update /docs/drafts"
+    },
+    {
+      "source": "speedle-sdk:e2e/policies.json",
+      "spdl": "deny role editor update /docs/drafts if locked == true"
+    },
+    {
+      "source": "speedle-sdk:e2e/policies.json",
+      "spdl": "grant role owner delete expr:^/projects/[a-z]+$"
+    },
+    {
+      "source": "speedle-sdk:e2e/policies.json",
+      "spdl": "grant group staff get /reports if department == 'finance'"
+    },
+    {
+      "source": "speedle-sdk:e2e/policies.json",
+      "spdl": "deny user henry get /reports"
+    },
+    {
+      "source": "speedle-sdk:e2e/policies.json",
+      "spdl": "grant user dave read /vault if clearance >= 3"
+    },
+    {
+      "source": "speedle-sdk:e2e/policies.json",
+      "spdl": "grant user frank get /archive if issuedAt >= '2026-01-01T00:00:00Z' && issuedAt < '2027-01-01T00:00:00Z'"
+    },
+    {
+      "source": "speedle-sdk:e2e/policies.json",
+      "spdl": "grant user frank restore /backups if '2026-11-01T00:00:00Z' in snapshots"
+    },
+    {
+      "source": "speedle-sdk:e2e/policies.json",
+      "spdl": "grant user gina tag /labels if IsSubSet(labels, ('red', 'green', 'blue'))"
+    },
+    {
+      "source": "speedle-sdk:e2e/policies.json",
+      "spdl": "grant user gina rank /leaderboard if 90 in scores"
+    },
+    {
+      "source": "speedle-sdk:e2e/policies.json",
+      "spdl": "grant user gina merge /reviews if !(false in approvals)"
+    },
+    {
+      "source": "speedle-sdk:e2e/policies.json",
+      "spdl": "grant role auditor get /logs"
+    },
+    {
+      "source": "speedle-sdk:e2e/policies.json",
+      "spdl": "grant group staff approve /expenses if amount <= 1000 && mfa == true && region in ('eu', 'us')"
+    },
+    {
+      "source": "generated:drop-effect",
+      "spdl": "user alice read book"
+    },
+    {
+      "source": "generated:bad-effect",
+      "spdl": "allow user alice read book"
+    },
+    {
+      "source": "generated:upper",
+      "spdl": "GRANT USER ALICE READ BOOK"
+    },
+    {
+      "source": "generated:drop-principal-type",
+      "spdl": "grant alice read book"
+    },
+    {
+      "source": "generated:drop-last-token",
+      "spdl": "grant user alice read"
+    },
+    {
+      "source": "generated:empty-condition",
+      "spdl": "grant user alice read book if   "
+    },
+    {
+      "source": "generated:trailing-word",
+      "spdl": "grant user alice read book extra"
+    },
+    {
+      "source": "generated:trailing-comma",
+      "spdl": "grant user alice read book,"
+    },
+    {
+      "source": "generated:trailing-semicolon",
+      "spdl": "grant user alice read book;"
+    },
+    {
+      "source": "generated:trailing-crlf",
+      "spdl": "grant user alice read book\r\n"
+    },
+    {
+      "source": "generated:leading-space",
+      "spdl": "  \tgrant user alice read book"
+    },
+    {
+      "source": "generated:nbsp",
+      "spdl": "grant user alice read book"
+    },
+    {
+      "source": "generated:ideographic-space",
+      "spdl": "grant　user alice read book"
+    },
+    {
+      "source": "generated:nel",
+      "spdl": "grantuser alice read book"
+    },
+    {
+      "source": "generated:bom-separator",
+      "spdl": "grant﻿user alice read book"
+    },
+    {
+      "source": "generated:zero-width-space",
+      "spdl": "grant​user alice read book"
+    },
+    {
+      "source": "generated:line-separator",
+      "spdl": "grant user alice read book"
+    },
+    {
+      "source": "generated:cjk-name",
+      "spdl": "grant user 书籍 read book"
+    },
+    {
+      "source": "generated:emoji-name",
+      "spdl": "grant user 🦊 read book"
+    },
+    {
+      "source": "generated:combining-name",
+      "spdl": "grant user é read book"
+    },
+    {
+      "source": "generated:kelvin-keyword",
+      "spdl": "grant userK alice read book"
+    },
+    {
+      "source": "generated:quoted-name",
+      "spdl": "grant user 'Ann Lee' read book"
+    },
+    {
+      "source": "generated:double-quoted-name",
+      "spdl": "grant user \"Ann Lee\" read book"
+    },
+    {
+      "source": "generated:unclosed-quote",
+      "spdl": "grant user 'Ann read book"
+    },
+    {
+      "source": "generated:mixed-quote",
+      "spdl": "grant user 'Ann\" read book"
+    },
+    {
+      "source": "generated:quote-in-name",
+      "spdl": "grant user al'ice read book"
+    },
+    {
+      "source": "generated:missing-idd",
+      "spdl": "grant user alice from read book"
+    },
+    {
+      "source": "generated:idd",
+      "spdl": "grant user alice from corp read book"
+    },
+    {
+      "source": "generated:paren-principals",
+      "spdl": "grant (user alice, group g) read book"
+    },
+    {
+      "source": "generated:unbalanced-paren",
+      "spdl": "grant (user alice, group g read book"
+    },
+    {
+      "source": "generated:paren-missing-comma",
+      "spdl": "grant (user alice group g) read book"
+    },
+    {
+      "source": "generated:empty-parens",
+      "spdl": "grant () read book"
+    },
+    {
+      "source": "generated:role-keyword-only",
+      "spdl": "grant user alice read role"
+    },
+    {
+      "source": "generated:condition",
+      "spdl": "grant user alice read book if a >"
+    },
+    {
+      "source": "generated:condition",
+      "spdl": "grant user alice read book if (a > 1"
+    },
+    {
+      "source": "generated:condition",
+      "spdl": "grant user alice read book if a > 1)"
+    },
+    {
+      "source": "generated:condition",
+      "spdl": "grant user alice read book if a > 1 &&"
+    },
+    {
+      "source": "generated:condition",
+      "spdl": "grant user alice read book if 'unterminated"
+    },
+    {
+      "source": "generated:condition",
+      "spdl": "grant user alice read book if \"unterminated"
+    },
+    {
+      "source": "generated:condition",
+      "spdl": "grant user alice read book if a in (1, 2"
+    },
+    {
+      "source": "generated:condition",
+      "spdl": "grant user alice read book if a in (1, 2)"
+    },
+    {
+      "source": "generated:condition",
+      "spdl": "grant user alice read book if s =~ '['"
+    },
+    {
+      "source": "generated:condition",
+      "spdl": "grant user alice read book if s =~ 'a.*'"
+    },
+    {
+      "source": "generated:condition",
+      "spdl": "grant user alice read book if f("
+    },
+    {
+      "source": "generated:condition",
+      "spdl": "grant user alice read book if f(1, 2)"
+    },
+    {
+      "source": "generated:condition",
+      "spdl": "grant user alice read book if IsSubSet(a, b)"
+    },
+    {
+      "source": "generated:condition",
+      "spdl": "grant user alice read book if x == 'a' || y"
+    },
+    {
+      "source": "generated:condition",
+      "spdl": "grant user alice read book if true"
+    },
+    {
+      "source": "generated:condition",
+      "spdl": "grant user alice read book if 1 + "
+    },
+    {
+      "source": "generated:condition",
+      "spdl": "grant user alice read book if [a b] > 1"
+    },
+    {
+      "source": "generated:condition",
+      "spdl": "grant user alice read book if [unclosed > 1"
+    },
+    {
+      "source": "generated:condition",
+      "spdl": "grant user alice read book if a ? b : c"
+    },
+    {
+      "source": "generated:condition",
+      "spdl": "grant user alice read book if a ?? b"
+    },
+    {
+      "source": "generated:condition",
+      "spdl": "grant user alice read book if x == 'R#D'"
+    },
+    {
+      "source": "generated:condition",
+      "spdl": "grant user alice read book if 名 == 1"
+    },
+    {
+      "source": "generated:condition",
+      "spdl": "grant user alice read book if a >= 1 garbage word"
+    },
+    {
+      "source": "generated:condition",
+      "spdl": "grant user alice read book if a == 1.2.3"
+    },
+    {
+      "source": "generated:condition",
+      "spdl": "grant user alice read book if 0x == 1"
+    },
+    {
+      "source": "generated:condition",
+      "spdl": "grant user alice read book if !a"
+    },
+    {
+      "source": "generated:condition",
+      "spdl": "grant user alice read book if a !"
+    },
+    {
+      "source": "generated:condition",
+      "spdl": "grant user alice read book if request_time > '2020-01-01'"
+    },
+    {
+      "source": "generated:condition",
+      "spdl": "grant user alice read book if a == b == c"
+    },
+    {
+      "source": "generated:drop-effect",
+      "spdl": "group employee read,borrow book"
+    },
+    {
+      "source": "generated:bad-effect",
+      "spdl": "allow group employee read,borrow book"
+    },
+    {
+      "source": "generated:upper",
+      "spdl": "GRANT GROUP EMPLOYEE READ,BORROW BOOK"
+    },
+    {
+      "source": "generated:drop-principal-type",
+      "spdl": "grant employee read,borrow book"
+    },
+    {
+      "source": "generated:drop-last-token",
+      "spdl": "grant group employee read,borrow"
+    },
+    {
+      "source": "generated:empty-condition",
+      "spdl": "grant group employee read,borrow book if   "
+    },
+    {
+      "source": "generated:trailing-word",
+      "spdl": "grant group employee read,borrow book extra"
+    },
+    {
+      "source": "generated:trailing-paren",
+      "spdl": "grant group employee read,borrow book)"
+    },
+    {
+      "source": "generated:trailing-comma",
+      "spdl": "grant group employee read,borrow book,"
+    },
+    {
+      "source": "generated:trailing-semicolon",
+      "spdl": "grant group employee read,borrow book;"
+    },
+    {
+      "source": "generated:trailing-crlf",
+      "spdl": "grant group employee read,borrow book\r\n"
+    },
+    {
+      "source": "generated:leading-space",
+      "spdl": "  \tgrant group employee read,borrow book"
+    },
+    {
+      "source": "generated:nbsp",
+      "spdl": "grant group employee read,borrow book"
+    },
+    {
+      "source": "generated:ideographic-space",
+      "spdl": "grant　group employee read,borrow book"
+    },
+    {
+      "source": "generated:nel",
+      "spdl": "grantgroup employee read,borrow book"
+    },
+    {
+      "source": "generated:bom-separator",
+      "spdl": "grant﻿group employee read,borrow book"
+    },
+    {
+      "source": "generated:zero-width-space",
+      "spdl": "grant​group employee read,borrow book"
+    },
+    {
+      "source": "generated:line-separator",
+      "spdl": "grant group employee read,borrow book"
+    },
+    {
+      "source": "generated:double-comma",
+      "spdl": "grant group employee read,,borrow book"
+    },
+    {
+      "source": "generated:space-comma",
+      "spdl": "grant group employee read , borrow book"
+    },
+    {
+      "source": "generated:role-keyword-only",
+      "spdl": "grant group employee read,borrow role"
+    },
+    {
+      "source": "generated:condition",
+      "spdl": "grant group employee read,borrow book if x === 1"
+    },
+    {
+      "source": "generated:condition",
+      "spdl": "grant group employee read,borrow book if a >"
+    },
+    {
+      "source": "generated:condition",
+      "spdl": "grant group employee read,borrow book if (a > 1"
+    },
+    {
+      "source": "generated:condition",
+      "spdl": "grant group employee read,borrow book if a > 1)"
+    },
+    {
+      "source": "generated:condition",
+      "spdl": "grant group employee read,borrow book if a > 1 &&"
+    },
+    {
+      "source": "generated:condition",
+      "spdl": "grant group employee read,borrow book if 'unterminated"
+    },
+    {
+      "source": "generated:condition",
+      "spdl": "grant group employee read,borrow book if \"unterminated"
+    },
+    {
+      "source": "generated:condition",
+      "spdl": "grant group employee read,borrow book if a in (1, 2"
+    },
+    {
+      "source": "generated:condition",
+      "spdl": "grant group employee read,borrow book if a in (1, 2)"
+    },
+    {
+      "source": "generated:condition",
+      "spdl": "grant group employee read,borrow book if s =~ '['"
+    },
+    {
+      "source": "generated:condition",
+      "spdl": "grant group employee read,borrow book if s =~ 'a.*'"
+    },
+    {
+      "source": "generated:condition",
+      "spdl": "grant group employee read,borrow book if f("
+    },
+    {
+      "source": "generated:condition",
+      "spdl": "grant group employee read,borrow book if f(1, 2)"
+    },
+    {
+      "source": "generated:condition",
+      "spdl": "grant group employee read,borrow book if IsSubSet(a, b)"
+    },
+    {
+      "source": "generated:condition",
+      "spdl": "grant group employee read,borrow book if x == 'a' || y"
+    },
+    {
+      "source": "generated:condition",
+      "spdl": "grant group employee read,borrow book if true"
+    },
+    {
+      "source": "generated:condition",
+      "spdl": "grant group employee read,borrow book if 1 + "
+    },
+    {
+      "source": "generated:condition",
+      "spdl": "grant group employee read,borrow book if [a b] > 1"
+    },
+    {
+      "source": "generated:condition",
+      "spdl": "grant group employee read,borrow book if [unclosed > 1"
+    },
+    {
+      "source": "generated:condition",
+      "spdl": "grant group employee read,borrow book if a ? b : c"
+    },
+    {
+      "source": "generated:condition",
+      "spdl": "grant group employee read,borrow book if a ?? b"
+    },
+    {
+      "source": "generated:condition",
+      "spdl": "grant group employee read,borrow book if x == 'R#D'"
+    },
+    {
+      "source": "generated:condition",
+      "spdl": "grant group employee read,borrow book if 名 == 1"
+    },
+    {
+      "source": "generated:condition",
+      "spdl": "grant group employee read,borrow book if a >= 1 garbage word"
+    },
+    {
+      "source": "generated:condition",
+      "spdl": "grant group employee read,borrow book if a == 1.2.3"
+    },
+    {
+      "source": "generated:condition",
+      "spdl": "grant group employee read,borrow book if 0x == 1"
+    },
+    {
+      "source": "generated:condition",
+      "spdl": "grant group employee read,borrow book if !a"
+    },
+    {
+      "source": "generated:condition",
+      "spdl": "grant group employee read,borrow book if a !"
+    },
+    {
+      "source": "generated:condition",
+      "spdl": "grant group employee read,borrow book if request_time > '2020-01-01'"
+    },
+    {
+      "source": "generated:condition",
+      "spdl": "grant group employee read,borrow book if a == b == c"
+    },
+    {
+      "source": "generated:drop-effect",
+      "spdl": "user bob borrow book if is_card_valid == false"
+    },
+    {
+      "source": "generated:bad-effect",
+      "spdl": "allow user bob borrow book if is_card_valid == false"
+    },
+    {
+      "source": "generated:upper",
+      "spdl": "DENY USER BOB BORROW BOOK IF IS_CARD_VALID == FALSE"
+    },
+    {
+      "source": "generated:drop-principal-type",
+      "spdl": "deny bob borrow book if is_card_valid == false"
+    },
+    {
+      "source": "generated:drop-last-token",
+      "spdl": "deny user bob borrow book if is_card_valid =="
+    },
+    {
+      "source": "generated:drop-condition",
+      "spdl": "deny user bob borrow book if"
+    },
+    {
+      "source": "generated:empty-condition",
+      "spdl": "deny user bob borrow book if   "
+    },
+    {
+      "source": "generated:trailing-word",
+      "spdl": "deny user bob borrow book if is_card_valid == false extra"
+    },
+    {
+      "source": "generated:trailing-paren",
+      "spdl": "deny user bob borrow book if is_card_valid == false)"
+    },
+    {
+      "source": "generated:trailing-comma",
+      "spdl": "deny user bob borrow book if is_card_valid == false,"
+    },
+    {
+      "source": "generated:trailing-semicolon",
+      "spdl": "deny user bob borrow book if is_card_valid == false;"
+    },
+    {
+      "source": "generated:trailing-crlf",
+      "spdl": "deny user bob borrow book if is_card_valid == false\r\n"
+    },
+    {
+      "source": "generated:leading-space",
+      "spdl": "  \tdeny user bob borrow book if is_card_valid == false"
+    },
+    {
+      "source": "generated:nbsp",
+      "spdl": "deny user bob borrow book if is_card_valid == false"
+    },
+    {
+      "source": "generated:ideographic-space",
+      "spdl": "deny　user bob borrow book if is_card_valid == false"
+    },
+    {
+      "source": "generated:nel",
+      "spdl": "denyuser bob borrow book if is_card_valid == false"
+    },
+    {
+      "source": "generated:bom-separator",
+      "spdl": "deny﻿user bob borrow book if is_card_valid == false"
+    },
+    {
+      "source": "generated:zero-width-space",
+      "spdl": "deny​user bob borrow book if is_card_valid == false"
+    },
+    {
+      "source": "generated:line-separator",
+      "spdl": "deny user bob borrow book if is_card_valid == false"
+    },
+    {
+      "source": "generated:cjk-name",
+      "spdl": "deny user 书籍 borrow book if is_card_valid == false"
+    },
+    {
+      "source": "generated:emoji-name",
+      "spdl": "deny user 🦊 borrow book if is_card_valid == false"
+    },
+    {
+      "source": "generated:combining-name",
+      "spdl": "deny user é borrow book if is_card_valid == false"
+    },
+    {
+      "source": "generated:kelvin-keyword",
+      "spdl": "deny userK bob borrow book if is_card_valid == false"
+    },
+    {
+      "source": "generated:dotted-i-keyword",
+      "spdl": "deny user bob borrow book İf is_card_valid == false"
+    },
+    {
+      "source": "generated:quoted-name",
+      "spdl": "deny user 'Ann Lee' borrow book if is_card_valid == false"
+    },
+    {
+      "source": "generated:double-quoted-name",
+      "spdl": "deny user \"Ann Lee\" borrow book if is_card_valid == false"
+    },
+    {
+      "source": "generated:unclosed-quote",
+      "spdl": "deny user 'Ann borrow book if is_card_valid == false"
+    },
+    {
+      "source": "generated:mixed-quote",
+      "spdl": "deny user 'Ann\" borrow book if is_card_valid == false"
+    },
+    {
+      "source": "generated:empty-quote",
+      "spdl": "deny user '' borrow book if is_card_valid == false"
+    },
+    {
+      "source": "generated:quote-in-name",
+      "spdl": "deny user al'ice borrow book if is_card_valid == false"
+    },
+    {
+      "source": "generated:missing-idd",
+      "spdl": "deny user bob from borrow book if is_card_valid == false"
+    },
+    {
+      "source": "generated:idd",
+      "spdl": "deny user bob from corp borrow book if is_card_valid == false"
+    },
+    {
+      "source": "generated:paren-principals",
+      "spdl": "deny (user bob, group g) borrow book if is_card_valid == false"
+    },
+    {
+      "source": "generated:unbalanced-paren",
+      "spdl": "deny (user bob, group g borrow book if is_card_valid == false"
+    },
+    {
+      "source": "generated:paren-missing-comma",
+      "spdl": "deny (user bob group g) borrow book if is_card_valid == false"
+    },
+    {
+      "source": "generated:empty-parens",
+      "spdl": "deny () borrow book if is_card_valid == false"
+    },
+    {
+      "source": "generated:role-keyword-only",
+      "spdl": "deny user bob borrow book if is_card_valid == role"
+    },
+    {
+      "source": "generated:condition",
+      "spdl": "deny user bob borrow book if x === 1"
+    },
+    {
+      "source": "generated:condition",
+      "spdl": "deny user bob borrow book if a >"
+    },
+    {
+      "source": "generated:condition",
+      "spdl": "deny user bob borrow book if (a > 1"
+    },
+    {
+      "source": "generated:condition",
+      "spdl": "deny user bob borrow book if a > 1)"
+    },
+    {
+      "source": "generated:condition",
+      "spdl": "deny user bob borrow book if a > 1 &&"
+    },
+    {
+      "source": "generated:condition",
+      "spdl": "deny user bob borrow book if 'unterminated"
+    },
+    {
+      "source": "generated:condition",
+      "spdl": "deny user bob borrow book if \"unterminated"
+    },
+    {
+      "source": "generated:condition",
+      "spdl": "deny user bob borrow book if a in (1, 2"
+    },
+    {
+      "source": "generated:condition",
+      "spdl": "deny user bob borrow book if a in (1, 2)"
+    },
+    {
+      "source": "generated:condition",
+      "spdl": "deny user bob borrow book if s =~ '['"
+    },
+    {
+      "source": "generated:condition",
+      "spdl": "deny user bob borrow book if s =~ 'a.*'"
+    },
+    {
+      "source": "generated:condition",
+      "spdl": "deny user bob borrow book if f("
+    },
+    {
+      "source": "generated:condition",
+      "spdl": "deny user bob borrow book if f(1, 2)"
+    },
+    {
+      "source": "generated:condition",
+      "spdl": "deny user bob borrow book if IsSubSet(a, b)"
+    },
+    {
+      "source": "generated:condition",
+      "spdl": "deny user bob borrow book if x == 'a' || y"
+    },
+    {
+      "source": "generated:condition",
+      "spdl": "deny user bob borrow book if true"
+    },
+    {
+      "source": "generated:condition",
+      "spdl": "deny user bob borrow book if 1 + "
+    },
+    {
+      "source": "generated:condition",
+      "spdl": "deny user bob borrow book if [a b] > 1"
+    },
+    {
+      "source": "generated:condition",
+      "spdl": "deny user bob borrow book if [unclosed > 1"
+    },
+    {
+      "source": "generated:condition",
+      "spdl": "deny user bob borrow book if a ? b : c"
+    },
+    {
+      "source": "generated:condition",
+      "spdl": "deny user bob borrow book if a ?? b"
+    },
+    {
+      "source": "generated:condition",
+      "spdl": "deny user bob borrow book if x == 'R#D'"
+    },
+    {
+      "source": "generated:condition",
+      "spdl": "deny user bob borrow book if 名 == 1"
+    },
+    {
+      "source": "generated:condition",
+      "spdl": "deny user bob borrow book if a >= 1 garbage word"
+    },
+    {
+      "source": "generated:condition",
+      "spdl": "deny user bob borrow book if a == 1.2.3"
+    },
+    {
+      "source": "generated:condition",
+      "spdl": "deny user bob borrow book if 0x == 1"
+    },
+    {
+      "source": "generated:condition",
+      "spdl": "deny user bob borrow book if !a"
+    },
+    {
+      "source": "generated:condition",
+      "spdl": "deny user bob borrow book if a !"
+    },
+    {
+      "source": "generated:condition",
+      "spdl": "deny user bob borrow book if request_time > '2020-01-01'"
+    },
+    {
+      "source": "generated:condition",
+      "spdl": "deny user bob borrow book if a == b == c"
+    },
+    {
+      "source": "generated:drop-effect",
+      "spdl": "(user alice from corp, group devs), role admin get,put /res1, list expr:/docs/.* if a > 1"
+    },
+    {
+      "source": "generated:bad-effect",
+      "spdl": "allow (user alice from corp, group devs), role admin get,put /res1, list expr:/docs/.* if a > 1"
+    },
+    {
+      "source": "generated:upper",
+      "spdl": "GRANT (USER ALICE FROM CORP, GROUP DEVS), ROLE ADMIN GET,PUT /RES1, LIST EXPR:/DOCS/.* IF A > 1"
+    },
+    {
+      "source": "generated:drop-principal-type",
+      "spdl": "grant (alice from corp, group devs), role admin get,put /res1, list expr:/docs/.* if a > 1"
+    },
+    {
+      "source": "generated:drop-last-token",
+      "spdl": "grant (user alice from corp, group devs), role admin get,put /res1, list expr:/docs/.* if a >"
+    },
+    {
+      "source": "generated:drop-condition",
+      "spdl": "grant (user alice from corp, group devs), role admin get,put /res1, list expr:/docs/.* if"
+    },
+    {
+      "source": "generated:empty-condition",
+      "spdl": "grant (user alice from corp, group devs), role admin get,put /res1, list expr:/docs/.* if   "
+    },
+    {
+      "source": "generated:trailing-word",
+      "spdl": "grant (user alice from corp, group devs), role admin get,put /res1, list expr:/docs/.* if a > 1 extra"
+    },
+    {
+      "source": "generated:trailing-paren",
+      "spdl": "grant (user alice from corp, group devs), role admin get,put /res1, list expr:/docs/.* if a > 1)"
+    },
+    {
+      "source": "generated:trailing-comma",
+      "spdl": "grant (user alice from corp, group devs), role admin get,put /res1, list expr:/docs/.* if a > 1,"
+    },
+    {
+      "source": "generated:trailing-semicolon",
+      "spdl": "grant (user alice from corp, group devs), role admin get,put /res1, list expr:/docs/.* if a > 1;"
+    },
+    {
+      "source": "generated:trailing-crlf",
+      "spdl": "grant (user alice from corp, group devs), role admin get,put /res1, list expr:/docs/.* if a > 1\r\n"
+    },
+    {
+      "source": "generated:leading-space",
+      "spdl": "  \tgrant (user alice from corp, group devs), role admin get,put /res1, list expr:/docs/.* if a > 1"
+    },
+    {
+      "source": "generated:nbsp",
+      "spdl": "grant (user alice from corp, group devs), role admin get,put /res1, list expr:/docs/.* if a > 1"
+    },
+    {
+      "source": "generated:ideographic-space",
+      "spdl": "grant　(user alice from corp, group devs), role admin get,put /res1, list expr:/docs/.* if a > 1"
+    },
+    {
+      "source": "generated:nel",
+      "spdl": "grant(user alice from corp, group devs), role admin get,put /res1, list expr:/docs/.* if a > 1"
+    },
+    {
+      "source": "generated:bom-separator",
+      "spdl": "grant﻿(user alice from corp, group devs), role admin get,put /res1, list expr:/docs/.* if a > 1"
+    },
+    {
+      "source": "generated:zero-width-space",
+      "spdl": "grant​(user alice from corp, group devs), role admin get,put /res1, list expr:/docs/.* if a > 1"
+    },
+    {
+      "source": "generated:line-separator",
+      "spdl": "grant (user alice from corp, group devs), role admin get,put /res1, list expr:/docs/.* if a > 1"
+    },
+    {
+      "source": "generated:cjk-name",
+      "spdl": "grant (user 书籍 from corp, group devs), role admin get,put /res1, list expr:/docs/.* if a > 1"
+    },
+    {
+      "source": "generated:emoji-name",
+      "spdl": "grant (user 🦊 from corp, group devs), role admin get,put /res1, list expr:/docs/.* if a > 1"
+    },
+    {
+      "source": "generated:combining-name",
+      "spdl": "grant (user é from corp, group devs), role admin get,put /res1, list expr:/docs/.* if a > 1"
+    },
+    {
+      "source": "generated:kelvin-keyword",
+      "spdl": "grant (userK alice from corp, group devs), role admin get,put /res1, list expr:/docs/.* if a > 1"
+    },
+    {
+      "source": "generated:dotted-i-keyword",
+      "spdl": "grant (user alice from corp, group devs), role admin get,put /res1, list expr:/docs/.* İf a > 1"
+    },
+    {
+      "source": "generated:quoted-name",
+      "spdl": "grant (user 'Ann Lee' from corp, group devs), role admin get,put /res1, list expr:/docs/.* if a > 1"
+    },
+    {
+      "source": "generated:double-quoted-name",
+      "spdl": "grant (user \"Ann Lee\" from corp, group devs), role admin get,put /res1, list expr:/docs/.* if a > 1"
+    },
+    {
+      "source": "generated:unclosed-quote",
+      "spdl": "grant (user 'Ann from corp, group devs), role admin get,put /res1, list expr:/docs/.* if a > 1"
+    },
+    {
+      "source": "generated:mixed-quote",
+      "spdl": "grant (user 'Ann\" from corp, group devs), role admin get,put /res1, list expr:/docs/.* if a > 1"
+    },
+    {
+      "source": "generated:empty-quote",
+      "spdl": "grant (user '' from corp, group devs), role admin get,put /res1, list expr:/docs/.* if a > 1"
+    },
+    {
+      "source": "generated:quote-in-name",
+      "spdl": "grant (user al'ice from corp, group devs), role admin get,put /res1, list expr:/docs/.* if a > 1"
+    },
+    {
+      "source": "generated:missing-idd",
+      "spdl": "grant (user alice from from corp, group devs), role admin get,put /res1, list expr:/docs/.* if a > 1"
+    },
+    {
+      "source": "generated:idd",
+      "spdl": "grant (user alice from corp from corp, group devs), role admin get,put /res1, list expr:/docs/.* if a > 1"
+    },
+    {
+      "source": "generated:double-comma",
+      "spdl": "grant (user alice from corp,, group devs), role admin get,put /res1, list expr:/docs/.* if a > 1"
+    },
+    {
+      "source": "generated:space-comma",
+      "spdl": "grant (user alice from corp , group devs), role admin get,put /res1, list expr:/docs/.* if a > 1"
+    },
+    {
+      "source": "generated:missing-resource-after-on",
+      "spdl": "grant (user alice from corp, group devs), role admin get,put /res1, list expr:/docs/.* if a > 1"
+    },
+    {
+      "source": "generated:paren-principals",
+      "spdl": "grant ((user alice, group g) from corp, group devs), role admin get,put /res1, list expr:/docs/.* if a > 1"
+    },
+    {
+      "source": "generated:unbalanced-paren",
+      "spdl": "grant ((user alice, group g from corp, group devs), role admin get,put /res1, list expr:/docs/.* if a > 1"
+    },
+    {
+      "source": "generated:paren-missing-comma",
+      "spdl": "grant ((user alice group g) from corp, group devs), role admin get,put /res1, list expr:/docs/.* if a > 1"
+    },
+    {
+      "source": "generated:empty-parens",
+      "spdl": "grant (() from corp, group devs), role admin get,put /res1, list expr:/docs/.* if a > 1"
+    },
+    {
+      "source": "generated:role-keyword-only",
+      "spdl": "grant (user alice from corp, group devs), role admin get,put /res1, list expr:/docs/.* if a > role"
+    },
+    {
+      "source": "generated:condition",
+      "spdl": "grant (user alice from corp, group devs), role admin get,put /res1, list expr:/docs/.* if x === 1"
+    },
+    {
+      "source": "generated:condition",
+      "spdl": "grant (user alice from corp, group devs), role admin get,put /res1, list expr:/docs/.* if (a > 1"
+    },
+    {
+      "source": "generated:condition",
+      "spdl": "grant (user alice from corp, group devs), role admin get,put /res1, list expr:/docs/.* if a > 1 &&"
+    },
+    {
+      "source": "generated:condition",
+      "spdl": "grant (user alice from corp, group devs), role admin get,put /res1, list expr:/docs/.* if 'unterminated"
+    },
+    {
+      "source": "generated:condition",
+      "spdl": "grant (user alice from corp, group devs), role admin get,put /res1, list expr:/docs/.* if \"unterminated"
+    },
+    {
+      "source": "generated:condition",
+      "spdl": "grant (user alice from corp, group devs), role admin get,put /res1, list expr:/docs/.* if a in (1, 2"
+    },
+    {
+      "source": "generated:condition",
+      "spdl": "grant (user alice from corp, group devs), role admin get,put /res1, list expr:/docs/.* if a in (1, 2)"
+    },
+    {
+      "source": "generated:condition",
+      "spdl": "grant (user alice from corp, group devs), role admin get,put /res1, list expr:/docs/.* if s =~ '['"
+    },
+    {
+      "source": "generated:condition",
+      "spdl": "grant (user alice from corp, group devs), role admin get,put /res1, list expr:/docs/.* if s =~ 'a.*'"
+    },
+    {
+      "source": "generated:condition",
+      "spdl": "grant (user alice from corp, group devs), role admin get,put /res1, list expr:/docs/.* if f("
+    },
+    {
+      "source": "generated:condition",
+      "spdl": "grant (user alice from corp, group devs), role admin get,put /res1, list expr:/docs/.* if f(1, 2)"
+    },
+    {
+      "source": "generated:condition",
+      "spdl": "grant (user alice from corp, group devs), role admin get,put /res1, list expr:/docs/.* if IsSubSet(a, b)"
+    },
+    {
+      "source": "generated:condition",
+      "spdl": "grant (user alice from corp, group devs), role admin get,put /res1, list expr:/docs/.* if x == 'a' || y"
+    },
+    {
+      "source": "generated:condition",
+      "spdl": "grant (user alice from corp, group devs), role admin get,put /res1, list expr:/docs/.* if true"
+    },
+    {
+      "source": "generated:condition",
+      "spdl": "grant (user alice from corp, group devs), role admin get,put /res1, list expr:/docs/.* if 1 + "
+    },
+    {
+      "source": "generated:condition",
+      "spdl": "grant (user alice from corp, group devs), role admin get,put /res1, list expr:/docs/.* if [a b] > 1"
+    },
+    {
+      "source": "generated:condition",
+      "spdl": "grant (user alice from corp, group devs), role admin get,put /res1, list expr:/docs/.* if [unclosed > 1"
+    },
+    {
+      "source": "generated:condition",
+      "spdl": "grant (user alice from corp, group devs), role admin get,put /res1, list expr:/docs/.* if a ? b : c"
+    },
+    {
+      "source": "generated:condition",
+      "spdl": "grant (user alice from corp, group devs), role admin get,put /res1, list expr:/docs/.* if a ?? b"
+    },
+    {
+      "source": "generated:condition",
+      "spdl": "grant (user alice from corp, group devs), role admin get,put /res1, list expr:/docs/.* if x == 'R#D'"
+    },
+    {
+      "source": "generated:condition",
+      "spdl": "grant (user alice from corp, group devs), role admin get,put /res1, list expr:/docs/.* if 名 == 1"
+    },
+    {
+      "source": "generated:condition",
+      "spdl": "grant (user alice from corp, group devs), role admin get,put /res1, list expr:/docs/.* if a >= 1 garbage word"
+    },
+    {
+      "source": "generated:condition",
+      "spdl": "grant (user alice from corp, group devs), role admin get,put /res1, list expr:/docs/.* if a == 1.2.3"
+    },
+    {
+      "source": "generated:condition",
+      "spdl": "grant (user alice from corp, group devs), role admin get,put /res1, list expr:/docs/.* if 0x == 1"
+    },
+    {
+      "source": "generated:condition",
+      "spdl": "grant (user alice from corp, group devs), role admin get,put /res1, list expr:/docs/.* if !a"
+    },
+    {
+      "source": "generated:condition",
+      "spdl": "grant (user alice from corp, group devs), role admin get,put /res1, list expr:/docs/.* if a !"
+    },
+    {
+      "source": "generated:condition",
+      "spdl": "grant (user alice from corp, group devs), role admin get,put /res1, list expr:/docs/.* if request_time > '2020-01-01'"
+    },
+    {
+      "source": "generated:condition",
+      "spdl": "grant (user alice from corp, group devs), role admin get,put /res1, list expr:/docs/.* if a == b == c"
+    },
+    {
+      "source": "generated:drop-effect",
+      "spdl": "user bob editor"
+    },
+    {
+      "source": "generated:bad-effect",
+      "spdl": "allow user bob editor"
+    },
+    {
+      "source": "generated:upper",
+      "spdl": "GRANT USER BOB EDITOR"
+    },
+    {
+      "source": "generated:drop-principal-type",
+      "spdl": "grant bob editor"
+    },
+    {
+      "source": "generated:drop-last-token",
+      "spdl": "grant user bob"
+    },
+    {
+      "source": "generated:empty-condition",
+      "spdl": "grant user bob editor if   "
+    },
+    {
+      "source": "generated:trailing-word",
+      "spdl": "grant user bob editor extra"
+    },
+    {
+      "source": "generated:trailing-paren",
+      "spdl": "grant user bob editor)"
+    },
+    {
+      "source": "generated:trailing-comma",
+      "spdl": "grant user bob editor,"
+    },
+    {
+      "source": "generated:trailing-semicolon",
+      "spdl": "grant user bob editor;"
+    },
+    {
+      "source": "generated:trailing-crlf",
+      "spdl": "grant user bob editor\r\n"
+    },
+    {
+      "source": "generated:leading-space",
+      "spdl": "  \tgrant user bob editor"
+    },
+    {
+      "source": "generated:nbsp",
+      "spdl": "grant user bob editor"
+    },
+    {
+      "source": "generated:ideographic-space",
+      "spdl": "grant　user bob editor"
+    },
+    {
+      "source": "generated:nel",
+      "spdl": "grantuser bob editor"
+    },
+    {
+      "source": "generated:bom-separator",
+      "spdl": "grant﻿user bob editor"
+    },
+    {
+      "source": "generated:zero-width-space",
+      "spdl": "grant​user bob editor"
+    },
+    {
+      "source": "generated:line-separator",
+      "spdl": "grant user bob editor"
+    },
+    {
+      "source": "generated:cjk-name",
+      "spdl": "grant user 书籍 editor"
+    },
+    {
+      "source": "generated:emoji-name",
+      "spdl": "grant user 🦊 editor"
+    },
+    {
+      "source": "generated:combining-name",
+      "spdl": "grant user é editor"
+    },
+    {
+      "source": "generated:kelvin-keyword",
+      "spdl": "grant userK bob editor"
+    },
+    {
+      "source": "generated:quoted-name",
+      "spdl": "grant user 'Ann Lee' editor"
+    },
+    {
+      "source": "generated:double-quoted-name",
+      "spdl": "grant user \"Ann Lee\" editor"
+    },
+    {
+      "source": "generated:unclosed-quote",
+      "spdl": "grant user 'Ann editor"
+    },
+    {
+      "source": "generated:mixed-quote",
+      "spdl": "grant user 'Ann\" editor"
+    },
+    {
+      "source": "generated:empty-quote",
+      "spdl": "grant user '' editor"
+    },
+    {
+      "source": "generated:quote-in-name",
+      "spdl": "grant user al'ice editor"
+    },
+    {
+      "source": "generated:missing-idd",
+      "spdl": "grant user bob from editor"
+    },
+    {
+      "source": "generated:idd",
+      "spdl": "grant user bob from corp editor"
+    },
+    {
+      "source": "generated:paren-principals",
+      "spdl": "grant (user bob, group g) editor"
+    },
+    {
+      "source": "generated:unbalanced-paren",
+      "spdl": "grant (user bob, group g editor"
+    },
+    {
+      "source": "generated:paren-missing-comma",
+      "spdl": "grant (user bob group g) editor"
+    },
+    {
+      "source": "generated:empty-parens",
+      "spdl": "grant () editor"
+    },
+    {
+      "source": "generated:role-keyword-only",
+      "spdl": "grant user bob role"
+    },
+    {
+      "source": "generated:condition",
+      "spdl": "grant user bob editor if x === 1"
+    },
+    {
+      "source": "generated:condition",
+      "spdl": "grant user bob editor if a >"
+    },
+    {
+      "source": "generated:condition",
+      "spdl": "grant user bob editor if (a > 1"
+    },
+    {
+      "source": "generated:condition",
+      "spdl": "grant user bob editor if a > 1)"
+    },
+    {
+      "source": "generated:condition",
+      "spdl": "grant user bob editor if a > 1 &&"
+    },
+    {
+      "source": "generated:condition",
+      "spdl": "grant user bob editor if 'unterminated"
+    },
+    {
+      "source": "generated:condition",
+      "spdl": "grant user bob editor if \"unterminated"
+    },
+    {
+      "source": "generated:condition",
+      "spdl": "grant user bob editor if a in (1, 2"
+    },
+    {
+      "source": "generated:condition",
+      "spdl": "grant user bob editor if a in (1, 2)"
+    },
+    {
+      "source": "generated:condition",
+      "spdl": "grant user bob editor if s =~ '['"
+    },
+    {
+      "source": "generated:drop-effect",
+      "spdl": "user alice, group devs role admin, reader on book, expr:^docs/.* if x > 0"
+    },
+    {
+      "source": "generated:bad-effect",
+      "spdl": "allow user alice, group devs role admin, reader on book, expr:^docs/.* if x > 0"
+    },
+    {
+      "source": "generated:upper",
+      "spdl": "GRANT USER ALICE, GROUP DEVS ROLE ADMIN, READER ON BOOK, EXPR:^DOCS/.* IF X > 0"
+    },
+    {
+      "source": "generated:drop-principal-type",
+      "spdl": "grant alice, group devs role admin, reader on book, expr:^docs/.* if x > 0"
+    },
+    {
+      "source": "generated:drop-last-token",
+      "spdl": "grant user alice, group devs role admin, reader on book, expr:^docs/.* if x >"
+    },
+    {
+      "source": "generated:drop-condition",
+      "spdl": "grant user alice, group devs role admin, reader on book, expr:^docs/.* if"
+    },
+    {
+      "source": "generated:empty-condition",
+      "spdl": "grant user alice, group devs role admin, reader on book, expr:^docs/.* if   "
+    },
+    {
+      "source": "generated:trailing-word",
+      "spdl": "grant user alice, group devs role admin, reader on book, expr:^docs/.* if x > 0 extra"
+    },
+    {
+      "source": "generated:trailing-paren",
+      "spdl": "grant user alice, group devs role admin, reader on book, expr:^docs/.* if x > 0)"
+    },
+    {
+      "source": "generated:trailing-comma",
+      "spdl": "grant user alice, group devs role admin, reader on book, expr:^docs/.* if x > 0,"
+    },
+    {
+      "source": "generated:trailing-semicolon",
+      "spdl": "grant user alice, group devs role admin, reader on book, expr:^docs/.* if x > 0;"
+    },
+    {
+      "source": "generated:trailing-crlf",
+      "spdl": "grant user alice, group devs role admin, reader on book, expr:^docs/.* if x > 0\r\n"
+    },
+    {
+      "source": "generated:leading-space",
+      "spdl": "  \tgrant user alice, group devs role admin, reader on book, expr:^docs/.* if x > 0"
+    },
+    {
+      "source": "generated:nbsp",
+      "spdl": "grant user alice, group devs role admin, reader on book, expr:^docs/.* if x > 0"
+    },
+    {
+      "source": "generated:ideographic-space",
+      "spdl": "grant　user alice, group devs role admin, reader on book, expr:^docs/.* if x > 0"
+    },
+    {
+      "source": "generated:nel",
+      "spdl": "grantuser alice, group devs role admin, reader on book, expr:^docs/.* if x > 0"
+    },
+    {
+      "source": "generated:bom-separator",
+      "spdl": "grant﻿user alice, group devs role admin, reader on book, expr:^docs/.* if x > 0"
+    },
+    {
+      "source": "generated:zero-width-space",
+      "spdl": "grant​user alice, group devs role admin, reader on book, expr:^docs/.* if x > 0"
+    },
+    {
+      "source": "generated:line-separator",
+      "spdl": "grant user alice, group devs role admin, reader on book, expr:^docs/.* if x > 0"
+    },
+    {
+      "source": "generated:cjk-name",
+      "spdl": "grant user 书籍, group devs role admin, reader on book, expr:^docs/.* if x > 0"
+    },
+    {
+      "source": "generated:emoji-name",
+      "spdl": "grant user 🦊, group devs role admin, reader on book, expr:^docs/.* if x > 0"
+    },
+    {
+      "source": "generated:combining-name",
+      "spdl": "grant user é, group devs role admin, reader on book, expr:^docs/.* if x > 0"
+    },
+    {
+      "source": "generated:kelvin-keyword",
+      "spdl": "grant userK alice, group devs role admin, reader on book, expr:^docs/.* if x > 0"
+    },
+    {
+      "source": "generated:dotted-i-keyword",
+      "spdl": "grant user alice, group devs role admin, reader on book, expr:^docs/.* İf x > 0"
+    },
+    {
+      "source": "generated:quoted-name",
+      "spdl": "grant user 'Ann Lee', group devs role admin, reader on book, expr:^docs/.* if x > 0"
+    },
+    {
+      "source": "generated:double-quoted-name",
+      "spdl": "grant user \"Ann Lee\", group devs role admin, reader on book, expr:^docs/.* if x > 0"
+    },
+    {
+      "source": "generated:unclosed-quote",
+      "spdl": "grant user 'Ann, group devs role admin, reader on book, expr:^docs/.* if x > 0"
+    },
+    {
+      "source": "generated:mixed-quote",
+      "spdl": "grant user 'Ann\", group devs role admin, reader on book, expr:^docs/.* if x > 0"
+    },
+    {
+      "source": "generated:empty-quote",
+      "spdl": "grant user '', group devs role admin, reader on book, expr:^docs/.* if x > 0"
+    },
+    {
+      "source": "generated:quote-in-name",
+      "spdl": "grant user al'ice, group devs role admin, reader on book, expr:^docs/.* if x > 0"
+    },
+    {
+      "source": "generated:missing-idd",
+      "spdl": "grant user alice from, group devs role admin, reader on book, expr:^docs/.* if x > 0"
+    },
+    {
+      "source": "generated:idd",
+      "spdl": "grant user alice from corp, group devs role admin, reader on book, expr:^docs/.* if x > 0"
+    },
+    {
+      "source": "generated:double-comma",
+      "spdl": "grant user alice,, group devs role admin, reader on book, expr:^docs/.* if x > 0"
+    },
+    {
+      "source": "generated:space-comma",
+      "spdl": "grant user alice , group devs role admin, reader on book, expr:^docs/.* if x > 0"
+    },
+    {
+      "source": "generated:missing-resource-after-on",
+      "spdl": "grant user alice, group devs role admin, reader on"
+    },
+    {
+      "source": "generated:paren-principals",
+      "spdl": "grant (user alice, group g), group devs role admin, reader on book, expr:^docs/.* if x > 0"
+    },
+    {
+      "source": "generated:unbalanced-paren",
+      "spdl": "grant (user alice, group g, group devs role admin, reader on book, expr:^docs/.* if x > 0"
+    },
+    {
+      "source": "generated:paren-missing-comma",
+      "spdl": "grant (user alice group g), group devs role admin, reader on book, expr:^docs/.* if x > 0"
+    },
+    {
+      "source": "generated:empty-parens",
+      "spdl": "grant (), group devs role admin, reader on book, expr:^docs/.* if x > 0"
+    },
+    {
+      "source": "generated:role-keyword-only",
+      "spdl": "grant user alice, group devs role admin, reader on book, expr:^docs/.* if x > role"
+    },
+    {
+      "source": "generated:condition",
+      "spdl": "grant user alice, group devs role admin, reader on book, expr:^docs/.* if x === 1"
+    },
+    {
+      "source": "generated:condition",
+      "spdl": "grant user alice, group devs role admin, reader on book, expr:^docs/.* if a >"
+    },
+    {
+      "source": "generated:condition",
+      "spdl": "grant user alice, group devs role admin, reader on book, expr:^docs/.* if (a > 1"
+    },
+    {
+      "source": "generated:condition",
+      "spdl": "grant user alice, group devs role admin, reader on book, expr:^docs/.* if a > 1)"
+    },
+    {
+      "source": "generated:condition",
+      "spdl": "grant user alice, group devs role admin, reader on book, expr:^docs/.* if a > 1 &&"
+    },
+    {
+      "source": "generated:condition",
+      "spdl": "grant user alice, group devs role admin, reader on book, expr:^docs/.* if 'unterminated"
+    },
+    {
+      "source": "generated:condition",
+      "spdl": "grant user alice, group devs role admin, reader on book, expr:^docs/.* if \"unterminated"
+    },
+    {
+      "source": "generated:condition",
+      "spdl": "grant user alice, group devs role admin, reader on book, expr:^docs/.* if a in (1, 2"
+    },
+    {
+      "source": "generated:condition",
+      "spdl": "grant user alice, group devs role admin, reader on book, expr:^docs/.* if a in (1, 2)"
+    },
+    {
+      "source": "generated:condition",
+      "spdl": "grant user alice, group devs role admin, reader on book, expr:^docs/.* if s =~ '['"
+    },
+    {
+      "source": "rendered",
+      "spdl": "grant user alice from corp get,put res1, list expr:/docs/.* if a > 1"
+    },
+    {
+      "source": "rendered",
+      "spdl": "deny (group devs, entity bot), role admin delete \"my res\""
+    },
+    {
+      "source": "rendered",
+      "spdl": "grant user alice, group devs admin, ops on res1, expr:/x/.* if b == 'c'"
+    },
+    {
+      "source": "rendered",
+      "spdl": "grant user user_bool_equal1 get,del res_equal1 if x == false"
+    },
+    {
+      "source": "rendered",
+      "spdl": "grant (user alice from corp, group devs), role admin read,write book#1 if x > 0"
+    },
+    {
+      "source": "rendered",
+      "spdl": "grant user ali'ce read book\"one"
+    },
+    {
+      "source": "rendered",
+      "spdl": "deny (user alice from corp, group devs), entity bot read,write \"book one\" if x > 0"
+    },
+    {
+      "source": "rendered",
+      "spdl": "grant user alice read book if x > 0"
+    },
+    {
+      "source": "rendered",
+      "spdl": "grant user alice read book#1 if department == 'R#D'"
+    },
+    {
+      "source": "rendered",
+      "spdl": "grant user alice, group devs admin, reader on book, expr:^docs/.* if x > 0"
+    },
+    {
+      "source": "rendered",
+      "spdl": "grant user alice admin on book if x > 0"
+    },
+    {
+      "source": "rendered",
+      "spdl": "grant user alice admin on book#1"
+    },
+    {
+      "source": "rendered",
+      "spdl": "grant user alice admin \"if\""
+    },
+    {
+      "source": "rendered",
+      "spdl": "grant user alice admin \"on\""
+    },
+    {
+      "source": "rendered",
+      "spdl": "grant user User1, role Role2 Role1, Role2 on res2"
+    },
+    {
+      "source": "rendered",
+      "spdl": "grant user a'b read book#1 if x == 'a\\' # b' # comment"
+    },
+    {
+      "source": "rendered",
+      "spdl": "grant user fdsa # fdsaqwer"
+    },
+    {
+      "source": "rendered",
+      "spdl": "grant user userWithRole1 role1 on res_allow"
+    },
+    {
+      "source": "rendered",
+      "spdl": "grant user userWithRole1 role1 on res_deny"
+    },
+    {
+      "source": "rendered",
+      "spdl": "deny group groupWithRole2 role2 on res_deny"
+    },
+    {
+      "source": "rendered",
+      "spdl": "grant user user1 get,del res_allow"
+    },
+    {
+      "source": "rendered",
+      "spdl": "grant role role1 get,del res_allow"
+    },
+    {
+      "source": "rendered",
+      "spdl": "deny user user1 get,del res_deny"
+    },
+    {
+      "source": "rendered",
+      "spdl": "deny group group1 get,del res_deny"
+    },
+    {
+      "source": "rendered",
+      "spdl": "deny role role1 get,del res_deny"
+    },
+    {
+      "source": "rendered",
+      "spdl": "grant role role2 get,del res_deny"
+    },
+    {
+      "source": "rendered",
+      "spdl": "grant user userWithRole1 role1 on res1"
+    },
+    {
+      "source": "rendered",
+      "spdl": "deny group groupWithoutRole1 role1 on res1"
+    },
+    {
+      "source": "rendered",
+      "spdl": "deny user userWithRole1 get,del res1"
+    },
+    {
+      "source": "rendered",
+      "spdl": "grant user user_allowed, group group_allowed get,del res1"
+    },
+    {
+      "source": "rendered",
+      "spdl": "deny user user_denied, group group_denied get,del res1"
+    },
+    {
+      "source": "rendered",
+      "spdl": "grant user user_cond_sqrt1 get,del res1 if Sqrt(16)<x"
+    },
+    {
+      "source": "rendered",
+      "spdl": "deny user user_cond_sqrt1 get,del res1 if Sqrt(64)>x"
+    },
+    {
+      "source": "rendered",
+      "spdl": "grant user user_cond_sqrt2 get,del res1 if Sqrt(16) < x && Sqrt(64) > x"
+    },
+    {
+      "source": "rendered",
+      "spdl": "grant user user_cond_sqrt3 get,del res1 if Sqrt(s1) < s2"
+    },
+    {
+      "source": "rendered",
+      "spdl": "grant user user_cond_sum1 get,del res1 if Sum(s1,s2) < 10 || Sum(s1,s2) > 20"
+    },
+    {
+      "source": "rendered",
+      "spdl": "grant user user_cond_avg1 get,del res1 if Avg(s1,s2) < 5 || Avg(s1,s2) > 10"
+    },
+    {
+      "source": "rendered",
+      "spdl": "grant user user_cond_min1 get,del res1 if Min(s1,s2) < 5.5 || Min(s1,s2) > 10.5"
+    },
+    {
+      "source": "rendered",
+      "spdl": "grant user user_cond_max1 get,del res1 if !(Max(s1,s2) < 5.5)"
+    },
+    {
+      "source": "rendered",
+      "spdl": "grant user user_cond_max2 get,del res1 if Max(s1,s2) == 5"
+    },
+    {
+      "source": "rendered",
+      "spdl": "grant user user_subset_str get,del res1 if IsSubSet(s1,s2)"
+    },
+    {
+      "source": "rendered",
+      "spdl": "grant user user_subset_int get,del res1 if IsSubSet(s1,s2)"
+    },
+    {
+      "source": "rendered",
+      "spdl": "grant user user_subset_datetime get,del res1 if IsSubSet(s1,s2)"
+    },
+    {
+      "source": "rendered",
+      "spdl": "grant user user_bool_equal2 get,del res_equal2 if !x == false"
+    },
+    {
+      "source": "rendered",
+      "spdl": "grant user user_bool_notequal get,del res_equal2 if x != true"
+    },
+    {
+      "source": "rendered",
+      "spdl": "grant user user_bool_complex get,del res_complex if s1 && !s2 || s3 == true"
+    },
+    {
+      "source": "rendered",
+      "spdl": "grant user user_bool1 get,del res1 if s1&&!s2 || s3 == true"
+    },
+    {
+      "source": "rendered",
+      "spdl": "grant user user_bool1 get,del res1 if s1 && !s2 || s3 == true"
+    },
+    {
+      "source": "rendered",
+      "spdl": "grant user user_bool2 get,del res1 if s1 && (!s2)||s3 == true"
+    },
+    {
+      "source": "rendered",
+      "spdl": "grant user user_bool3 get,del res1 if s1 && (!s2||s3) == true"
+    },
+    {
+      "source": "rendered",
+      "spdl": "grant user user_num_notequal get,del res_num3 if (s1+5)*2 != s2"
+    },
+    {
+      "source": "rendered",
+      "spdl": "grant user user_num_greater_equal get,del res_num5 if (s1+5)/2.0 >= s2"
+    },
+    {
+      "source": "rendered",
+      "spdl": "grant user user_num_greater_equal2 get,del res_num6 if s1+s2 >= 1.41421356237309504880168872420969807856967187537694807317667974"
+    },
+    {
+      "source": "rendered",
+      "spdl": "grant user user_str_equal1 get,del res_str1 if s1+s2 == '123'"
+    },
+    {
+      "source": "rendered",
+      "spdl": "grant user user_str_notequal get,del res_str2 if s1 != s2"
+    },
+    {
+      "source": "rendered",
+      "spdl": "grant user user_str_regx get,del res_str3 if s1+s2=~'.*abc$'"
+    },
+    {
+      "source": "rendered",
+      "spdl": "grant user user_str_greater get,del res_str4 if s1>s2"
+    },
+    {
+      "source": "rendered",
+      "spdl": "grant user user_str_greater_equal get,del res_str5 if s1>=s2"
+    },
+    {
+      "source": "rendered",
+      "spdl": "grant user user_str_less_equal get,del res_str6 if s1<=s2"
+    },
+    {
+      "source": "rendered",
+      "spdl": "grant user user_str_less get,del res_str7 if s1<s2"
+    },
+    {
+      "source": "rendered",
+      "spdl": "grant user user_date_equal get,del res1 if s1==s2"
+    },
+    {
+      "source": "rendered",
+      "spdl": "grant user user_date_notequal get,del res1 if s1!=s2"
+    },
+    {
+      "source": "rendered",
+      "spdl": "grant user user_date_greater get,del res1 if s1>s2"
+    },
+    {
+      "source": "rendered",
+      "spdl": "grant user user_date_greater_equal get,del res1 if s1>=s2"
+    },
+    {
+      "source": "rendered",
+      "spdl": "grant user user_date_less_equal get,del res1 if s1<=s2"
+    },
+    {
+      "source": "rendered",
+      "spdl": "grant user user_date_less get,del res1 if s1 < s2"
+    },
+    {
+      "source": "rendered",
+      "spdl": "grant user user_array_str get,del res1 if x in ('a','c','1')"
+    },
+    {
+      "source": "rendered",
+      "spdl": "grant user user_array_num_single get,del res1 if x in (1)"
+    },
+    {
+      "source": "rendered",
+      "spdl": "grant user user_array_num get,del res_in2 if x in (1,2.0,-2.1,3.567)"
+    },
+    {
+      "source": "rendered",
+      "spdl": "grant user user_array_str_single get,del res1 if x in ('a')"
+    },
+    {
+      "source": "rendered",
+      "spdl": "grant user user_array_str_single1 get,del res1 if s1 in s2"
+    },
+    {
+      "source": "rendered",
+      "spdl": "grant user user_array_str_multi get,del res1 if s1 in (s2, s3)"
+    },
+    {
+      "source": "rendered",
+      "spdl": "grant user user_array_date get,del res_in2 if x in ('2017-01-02T15:04:05-07:00', '2017-01-02T15:04:05-09:00')"
+    },
+    {
+      "source": "rendered",
+      "spdl": "grant user user_array_date_single get,del res_in2 if x in ('2017-01-02T15:04:05-07:00')"
+    },
+    {
+      "source": "rendered",
+      "spdl": "grant user user_array_issubset1 get,del res_subset if IsSubSet(s1,s2)"
+    },
+    {
+      "source": "rendered",
+      "spdl": "grant user user_array_issubset2 get,del res_subset if IsSubSet(s1,('a1','b1','c1'))"
+    },
+    {
+      "source": "rendered",
+      "spdl": "grant user user_attri1 get,del res_request_time1 if request_time > '2017-09-04 12:00:00'"
+    },
+    {
+      "source": "rendered",
+      "spdl": "grant group group_attri1 get,del res_request_user1 if request_user == 'admin'"
+    },
+    {
+      "source": "rendered",
+      "spdl": "grant group group1 get,del res_request_groups1 if IsSubSet(request_groups, ('group1','group2','group3'))"
+    },
+    {
+      "source": "rendered",
+      "spdl": "grant user user_attri1 wget,uget,del res_request_action1 if request_action =~ 'get'"
+    },
+    {
+      "source": "rendered",
+      "spdl": "grant user user_attri1 get,del res_request_resource1 if request_resource =~ 'resource1'"
+    },
+    {
+      "source": "rendered",
+      "spdl": "grant user user_attri1 get,del res_request_resource2 if request_resource =~ 'resource1'"
+    },
+    {
+      "source": "rendered",
+      "spdl": "grant user user_attri1 get,del res_request_weekday1 if request_weekday == 'Monday'"
+    },
+    {
+      "source": "rendered",
+      "spdl": "grant user user_attri1 get,del res_request_year_equal_2017 if request_year == 2017"
+    },
+    {
+      "source": "rendered",
+      "spdl": "grant user user_attri1 get,del res_request_year_greater_2017 if request_year >= 2017"
+    },
+    {
+      "source": "rendered",
+      "spdl": "grant user user_attri1 get,del res_request_month_nov if request_month == 11"
+    },
+    {
+      "source": "rendered",
+      "spdl": "grant user user_attri1 get,del res_request_day_14 if request_day == 14"
+    },
+    {
+      "source": "rendered",
+      "spdl": "grant user user_complex1, user user_complex1A, user user_complex1B role_complex1"
+    },
+    {
+      "source": "rendered",
+      "spdl": "grant user userRes1 role10 on res1"
+    },
+    {
+      "source": "rendered",
+      "spdl": "grant (group group4, role role2), (user user4, role role2) get,del res4"
+    },
+    {
+      "source": "rendered",
+      "spdl": "grant entity special-schema.1+2://user1:pwd@domain1/path1/path-2/a, role role1 get,del res3"
+    },
+    {
+      "source": "rendered",
+      "spdl": "grant user user_bool1 get,del res1 if s1&&!s2||s3==true"
+    },
+    {
+      "source": "rendered",
+      "spdl": "grant user user_bool2 get,del res1 if s1&&(!s2)||s3==true"
+    },
+    {
+      "source": "rendered",
+      "spdl": "grant user user_bool3 get,del res1 if s1&&(!s2||s3)==true"
+    },
+    {
+      "source": "rendered",
+      "spdl": "grant user user_str_regx get,del res_str3 if s1+s2=~'.*abc'"
+    },
+    {
+      "source": "rendered",
+      "spdl": "grant user user_date_equal get,del res1 if s1=s2"
+    },
+    {
+      "source": "rendered",
+      "spdl": "grant user user_date_less get,del res1 if s1<s2"
+    },
+    {
+      "source": "rendered",
+      "spdl": "grant user user_array_issubset2 get,del res_subset if IsSubSet(s1,('a1','b1'))"
+    },
+    {
+      "source": "rendered",
+      "spdl": "deny group groupWithRole1 role1 on res1"
+    },
+    {
+      "source": "rendered",
+      "spdl": "grant group group_allowed get,del res1"
+    },
+    {
+      "source": "rendered",
+      "spdl": "grant group group1 get,del res_request_groups1 if IsSubSet(request_groups,('group1','group2','group3')"
+    },
+    {
+      "source": "rendered",
+      "spdl": "grant user bill \"role\" employee"
+    },
+    {
+      "source": "rendered",
+      "spdl": "grant user bill employee"
+    },
+    {
+      "source": "rendered",
+      "spdl": "grant group customer \"role\" other"
+    },
+    {
+      "source": "rendered",
+      "spdl": "grant group customer other"
+    },
+    {
+      "source": "rendered",
+      "spdl": "grant role employee get,post,delete /reports"
+    },
+    {
+      "source": "rendered",
+      "spdl": "grant role auditor get,modify /reports"
+    },
+    {
+      "source": "rendered",
+      "spdl": "grant user alice employee"
+    },
+    {
+      "source": "rendered",
+      "spdl": "grant user ALICE READ BOOK"
+    },
+    {
+      "source": "rendered",
+      "spdl": "grant user alice read \"role\""
+    },
+    {
+      "source": "rendered",
+      "spdl": "grant user alice read book if 1 +"
+    },
+    {
+      "source": "rendered",
+      "spdl": "grant group EMPLOYEE READ,BORROW BOOK"
+    },
+    {
+      "source": "rendered",
+      "spdl": "grant group employee read, borrow"
+    },
+    {
+      "source": "rendered",
+      "spdl": "grant group employee read,borrow \"role\""
+    },
+    {
+      "source": "rendered",
+      "spdl": "grant group employee read,borrow book if 1 +"
+    },
+    {
+      "source": "rendered",
+      "spdl": "deny user BOB BORROW BOOK if IS_CARD_VALID == FALSE"
+    },
+    {
+      "source": "rendered",
+      "spdl": "deny user bob borrow book if is_card_valid == false"
+    },
+    {
+      "source": "rendered",
+      "spdl": "deny user bob borrow book if 1 +"
+    },
+    {
+      "source": "rendered",
+      "spdl": "grant (user ALICE from CORP, group DEVS), role ADMIN GET,PUT /RES1, LIST EXPR:/DOCS/.* if A > 1"
+    },
+    {
+      "source": "rendered",
+      "spdl": "grant (user alice from corp, group devs), role admin get,put /res1, list expr:/docs/.* if a > 1"
+    },
+    {
+      "source": "rendered",
+      "spdl": "grant (user alice from corp, group devs), role admin get,put /res1, list expr:/docs/.* if 1 +"
+    },
+    {
+      "source": "rendered",
+      "spdl": "grant user BOB EDITOR"
+    },
+    {
+      "source": "rendered",
+      "spdl": "grant user bob editor \"if\""
+    },
+    {
+      "source": "rendered",
+      "spdl": "grant user ALICE, group DEVS ADMIN, READER on BOOK, EXPR:^DOCS/.* if X > 0"
+    },
+    {
+      "source": "rendered",
+      "spdl": "grant user alice, group devs admin, reader on book, expr:^docs/.* if x >"
+    },
+    {
+      "source": "rendered",
+      "spdl": "grant user alice, group devs admin, reader on book, expr:^docs/.* if x > 0 extra"
+    },
+    {
+      "source": "rendered",
+      "spdl": "grant user alice, group devs admin, reader on book, expr:^docs/.* if x > 0)"
+    },
+    {
+      "source": "rendered",
+      "spdl": "grant user alice, group devs admin, reader on book, expr:^docs/.* if x > 0,"
+    },
+    {
+      "source": "rendered",
+      "spdl": "grant user alice, group devs admin, reader on book, expr:^docs/.* if x > 0;"
+    },
+    {
+      "source": "rendered",
+      "spdl": "grant user alice, group devs admin, reader on book, expr:^docs/.* if x > 0"
+    },
+    {
+      "source": "rendered",
+      "spdl": "grant user 书籍, group devs admin, reader on book, expr:^docs/.* if x > 0"
+    },
+    {
+      "source": "rendered",
+      "spdl": "grant user 🦊, group devs admin, reader on book, expr:^docs/.* if x > 0"
+    },
+    {
+      "source": "rendered",
+      "spdl": "grant user é, group devs admin, reader on book, expr:^docs/.* if x > 0"
+    },
+    {
+      "source": "rendered",
+      "spdl": "grant user \"Ann Lee\", group devs admin, reader on book, expr:^docs/.* if x > 0"
+    },
+    {
+      "source": "rendered",
+      "spdl": "grant user al'ice, group devs admin, reader on book, expr:^docs/.* if x > 0"
+    },
+    {
+      "source": "rendered",
+      "spdl": "grant user alice from corp, group devs admin, reader on book, expr:^docs/.* if x > 0"
+    },
+    {
+      "source": "rendered",
+      "spdl": "grant user alice, group devs \"role\" admin, reader \"on\""
+    },
+    {
+      "source": "rendered",
+      "spdl": "grant user alice, group devs admin, reader on book, expr:^docs/.* if x > role"
+    },
+    {
+      "source": "rendered",
+      "spdl": "grant user alice, group devs admin, reader on book, expr:^docs/.* if x === 1"
+    },
+    {
+      "source": "rendered",
+      "spdl": "grant user alice, group devs admin, reader on book, expr:^docs/.* if a >"
+    },
+    {
+      "source": "rendered",
+      "spdl": "grant user alice, group devs admin, reader on book, expr:^docs/.* if (a > 1"
+    },
+    {
+      "source": "rendered",
+      "spdl": "grant user alice, group devs admin, reader on book, expr:^docs/.* if a > 1)"
+    },
+    {
+      "source": "rendered",
+      "spdl": "grant user alice, group devs admin, reader on book, expr:^docs/.* if a > 1 &&"
+    },
+    {
+      "source": "rendered",
+      "spdl": "grant user alice, group devs admin, reader on book, expr:^docs/.* if 'unterminated"
+    },
+    {
+      "source": "rendered",
+      "spdl": "grant user alice, group devs admin, reader on book, expr:^docs/.* if \"unterminated"
+    },
+    {
+      "source": "rendered",
+      "spdl": "grant user alice, group devs admin, reader on book, expr:^docs/.* if a in (1, 2"
+    },
+    {
+      "source": "rendered",
+      "spdl": "grant user alice, group devs admin, reader on book, expr:^docs/.* if a in (1, 2)"
+    },
+    {
+      "source": "rendered",
+      "spdl": "grant user alice, group devs admin, reader on book, expr:^docs/.* if s =~ '['"
+    }
+  ]
+}

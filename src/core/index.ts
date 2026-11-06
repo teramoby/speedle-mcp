@@ -14,13 +14,16 @@ export { Auth, type MutualTlsOptions } from "./auth.js";
 export {
   createClientForTesting,
   type GrantQueryOptions,
+  HttpEngine,
   type Principal,
   PrincipalType,
+  type Result,
   SpeedleClient,
   type Subject,
+  withTestingSeams,
 } from "./client.js";
 export { type Clock, type RandomSource } from "./clock.js";
-export { loadAdsConfig } from "./config.js";
+export { loadAdsConfig, loadPmsConfig, type PmsConfig } from "./config.js";
 export {
   CircuitOpenError,
   ConfigurationError,
@@ -59,10 +62,17 @@ export {
   type GiveUpReason,
   type Hooks,
   IS_ALLOWED_PATH,
+  PMS_BASE_PATH,
+  type PmsClientOptions,
+  type ResolvedOptions,
+  resolveOptions,
+  resolvePmsOptions,
   type RetryEvent,
   type RetryPolicy,
 } from "./options.js";
 export {
+  type Classified,
+  classifyError,
   type Decision,
   type DiagnosedPermission,
   type DiagnosedPolicy,
@@ -70,5 +80,7 @@ export {
   type DiagnoseResult,
   type EvaluatedCondition,
   type GrantedPermission,
+  isObject,
+  parseJson,
   Reason,
 } from "./response.js";

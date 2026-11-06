@@ -175,8 +175,8 @@ test("security: the bearer token never appears in tool output, errors, inspect o
   assert.ok(!stderrText.includes(TOKEN), `token leaked in CLI stderr: ${stderrText}`);
 });
 
-test("CLI: running with no mode, unknown mode, or manage mode prints usage and exits non-zero", async () => {
-  for (const argv of [[], ["unknown"], ["manage"], ["check", "extra"]]) {
+test("CLI: running with no mode, an unknown mode, or extra check arguments prints usage and exits non-zero", async () => {
+  for (const argv of [[], ["unknown"], ["check", "extra"]]) {
     const out: string[] = [];
     const code = await runCli(argv, {}, (t) => out.push(t));
     assert.notEqual(code, 0, `expected non-zero exit for argv=${JSON.stringify(argv)}`);
