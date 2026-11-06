@@ -121,7 +121,7 @@ function nonNegativeInt(value: string | undefined, positive: boolean): number | 
   return n;
 }
 
-function parseJson(body: Buffer): unknown {
+export function parseJson(body: Buffer): unknown {
   try {
     return JSON.parse(body.toString("utf8")) as unknown;
   } catch {
@@ -129,7 +129,7 @@ function parseJson(body: Buffer): unknown {
   }
 }
 
-function isObject(value: unknown): value is Record<string, unknown> {
+export function isObject(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
 }
 
@@ -141,7 +141,7 @@ function unexpected<T>(why: string, status: number, quotaDailyRemaining: number 
   };
 }
 
-function classifyError<T>(
+export function classifyError<T>(
   backend: Backend,
   res: RawResponse,
   parsed: unknown,
