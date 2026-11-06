@@ -59,7 +59,6 @@ try {
     "list_role_policies",
     "get_role_policy",
     "show_effective_policies",
-    "validate_spdl",
   ];
   const writeTools = [
     "create_service",
@@ -75,7 +74,7 @@ try {
   assert.deepEqual(await listTools(["manage"], { ...manageEnv, SPEEDLE_PMS_READ_ONLY: "true" }), readTools);
 
   console.log(
-    "pack smoke ok: no-mode exited non-zero with usage; check listed the 4 check tools; manage listed the 14 management tools; manage --read-only and SPEEDLE_PMS_READ_ONLY listed only the 8 read tools",
+    `pack smoke ok: no-mode exited non-zero with usage; check listed the 4 check tools; manage listed the ${readTools.length + writeTools.length} management tools; manage --read-only and SPEEDLE_PMS_READ_ONLY listed only the ${readTools.length} read tools`,
   );
 } finally {
   rmSync(workDir, { recursive: true, force: true });

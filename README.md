@@ -139,27 +139,29 @@ Read tools (registered in every `manage` run):
 - **`list_policies`**, **`get_policy`**: `GET /service/{serviceName}/policy[/{policyId}]`.
 - **`list_role_policies`**, **`get_role_policy`**: `GET /service/{serviceName}/role-policy[/{rolePolicyId}]`.
 - **`show_effective_policies`**: every policy and role policy Speedle+ evaluates for a service, as SPDL: the service's own policies and role policies plus the role policies of the `global` service, which apply to every service.
-- **`validate_spdl`**: parses one SPDL policy or role policy statement locally (no PMS call) and returns the JSON body a create would send, or the parse error with its position. PMS has no validation endpoint, so the condition after `if` is checked by PMS when the policy is created.
 
 Write tools (not registered with `--read-only`); each returns what changed:
 
 - **`create_service`**: `POST /service`; returns the created service.
 - **`create_policy`**, **`create_role_policy`**: `POST /service/{serviceName}/policy` or `/role-policy` from one SPDL statement (`spdl`) or a structured body; returns the created policy with its ID. Creates are sent once and never retried.
+
+PMS validates every policy on create, and it is authoritative. There is no separate SPDL validation tool, because PMS has no validation endpoint and a local validator could disagree with it. `spdl` is converted to the PMS JSON body by a TypeScript port of the speedle-plus `pkg/pdl` parser (`src/manage/spdl.ts`). It rejects the statements that parser rejects, with the same message and position, before anything is sent; the condition after `if` is checked by PMS. A differential test keeps the port in step with the Go parser (see [`test/fixtures/spdl/README.md`](test/fixtures/spdl/README.md)).
+
 - **`delete_service`**, **`delete_policy`**, **`delete_role_policy`**: carry the MCP `destructiveHint` annotation and require `confirm` to equal the target's `serviceName`, `policyId` or `rolePolicyId`. A missing or different `confirm` fails without sending any request. They return the deleted object as it was before the delete.
 
 The PMS bulk deletes (`DELETE /service`, `DELETE /service/{serviceName}/policy`, `/role-policy`), functions and discover requests are not exposed.
 
 ### Policy-Design Walkthrough
 
-This session was run against a local Speedle+ PMS built from source (`speedle-pms --store-type file --insecure=true`) through `speedle-mcp manage`. Responses are shortened.
+This session was run against a local Speedle+ PMS built from source (teramoby/speedle-plus `52f1bc7`, `speedle-pms --store-type file --insecure=true`) through `speedle-mcp manage`. Responses are shortened.
 
 1. `create_service {"name":"books"}` returns `{"changed":"created","kind":"service","service":{"name":"books","type":"application",...}}`.
-2. `validate_spdl {"kind":"policy","spdl":"grant librarian get /books/*"}` returns `{"valid":false,"error":"Not found principal type (user|group|role|entity)\ngrant librarian get /books/*\n      ^","position":6}`. The principal needs a type.
-3. `validate_spdl {"kind":"policy","spdl":"grant role librarian get,write /books/* if hour < 18"}` returns `{"valid":true,"body":{"effect":"grant","permissions":[{"resource":"/books/*","actions":["get","write"]}],"principals":[["role:librarian"]],"condition":"hour < 18"},...}`.
-4. `create_policy {"serviceName":"books","name":"librarians-edit-books","spdl":"grant role librarian get,write /books/* if hour < 18"}` returns `{"changed":"created","kind":"policy","policy":{"id":"mxfusc3jrvguv3y7q7nd",...,"spdl":"grant role librarian get,write /books/* if hour < 18"}}`.
+2. `create_policy {"serviceName":"books","name":"librarians-edit-books","spdl":"grant librarian get /books/*"}` fails with `{"error":"SpdlError","message":"Not found principal type (user|group|role|entity)\ngrant librarian get /books/*\n      ^"}` and sends nothing. The principal needs a type.
+3. `create_policy` with `"spdl":"grant role librarian get,write /books/* if hour <"` reaches PMS, which rejects the condition: `{"error":"InvalidRequestError","message":"HTTP 400: SPDL-0004 policy \"librarians-edit-books\": invalid condition at character 7: Unexpected end of expression\nhour <\n      ^","status":400}`.
+4. `create_policy {"serviceName":"books","name":"librarians-edit-books","spdl":"grant role librarian get,write /books/* if hour < 18"}` returns `{"changed":"created","kind":"policy","serviceName":"books","policy":{"id":"zfcic2a7fyjknvtzjhfz",...,"condition":"hour < 18",...,"spdl":"grant role librarian get,write /books/* if hour < 18"}}`.
 5. `create_role_policy {"serviceName":"books","name":"alice-is-librarian","spdl":"grant user alice librarian"}` returns the role policy with its ID.
-6. `show_effective_policies {"serviceName":"books"}` returns `{"counts":{"policies":1,"rolePolicies":1,"globalRolePolicies":0},"policies":[{"id":"mxfusc3jrvguv3y7q7nd","name":"librarians-edit-books","spdl":"grant role librarian get,write /books/* if hour < 18"}],"rolePolicies":[{"name":"alice-is-librarian","spdl":"grant user alice librarian",...}],...}`.
-7. `delete_policy {"serviceName":"books","policyId":"mxfusc3jrvguv3y7q7nd","confirm":"books"}` fails with `ConfirmationError` and sends nothing. With `"confirm":"mxfusc3jrvguv3y7q7nd"` it returns `{"changed":"deleted","kind":"policy","policy":{...}}`.
+6. `show_effective_policies {"serviceName":"books"}` returns `{"counts":{"policies":1,"rolePolicies":1,"globalRolePolicies":0},"policies":[{"id":"zfcic2a7fyjknvtzjhfz","name":"librarians-edit-books","spdl":"grant role librarian get,write /books/* if hour < 18"}],"rolePolicies":[{"id":"32cruluw4kforfpgfvjq","name":"alice-is-librarian","spdl":"grant user alice librarian"}],...}`.
+7. `delete_policy {"serviceName":"books","policyId":"zfcic2a7fyjknvtzjhfz","confirm":"books"}` fails with `ConfirmationError` and sends nothing. With `"confirm":"zfcic2a7fyjknvtzjhfz"` it returns `{"changed":"deleted","kind":"policy","policy":{...}}`.
 8. `delete_service {"serviceName":"books","confirm":"books"}` returns `{"changed":"deleted","deletedPolicies":0,"deletedRolePolicies":1,"service":{...}}`.
 
 ## Development & Testing
@@ -173,7 +175,7 @@ npm run test:package  # Build, npm pack, and smoke test the packed binary
 
 ### Running the Local Speedle+ Integration Test
 
-`test/integration.test.ts` builds `speedle-ads` and `speedle-pms` from a local checkout of [`teramoby/speedle-plus`](https://github.com/teramoby/speedle-plus) (requires Go) and starts each on a free loopback port against a temporary file store. The `check` test exercises all four check tools over stdio. The `manage` test creates a service, validates and creates a policy and a role policy, lists them, shows the effective policies, refuses a delete with the wrong confirmation, deletes with the right one, and deletes the service. When `SPEEDLE_PLUS_DIR` is unset (and `SPEEDLE_ADS_BIN` / `SPEEDLE_PMS_BIN` are unset), the tests are skipped, including in CI.
+`test/integration.test.ts` builds `speedle-ads` and `speedle-pms` from a local checkout of [`teramoby/speedle-plus`](https://github.com/teramoby/speedle-plus) (requires Go) and starts each on a free loopback port against a temporary file store. The `check` test exercises all four check tools over stdio. The `manage` test creates a service, creates a policy and a role policy (and checks that PMS rejects an invalid condition), lists them, shows the effective policies, refuses a delete with the wrong confirmation, deletes with the right one, and deletes the service. When `SPEEDLE_PLUS_DIR` is unset (and `SPEEDLE_ADS_BIN` / `SPEEDLE_PMS_BIN` are unset), the tests are skipped, including in CI.
 
 ```sh
 SPEEDLE_PLUS_DIR=/path/to/speedle-plus npm run test:integration

@@ -11,6 +11,7 @@ import {
   renderPolicy,
   renderRolePolicy,
   type RolePolicyBody,
+  SPDL_SPEEDLE_PLUS_COMMIT,
   SpdlError,
 } from "./spdl.js";
 
@@ -22,7 +23,6 @@ export const MANAGE_READ_TOOL_NAMES = [
   "list_role_policies",
   "get_role_policy",
   "show_effective_policies",
-  "validate_spdl",
 ] as const;
 
 export const MANAGE_WRITE_TOOL_NAMES = [
@@ -79,7 +79,8 @@ const nameSchema = z.string().describe("Human-readable policy name.");
 const spdlSchema = z
   .string()
   .describe(
-    "One SPDL statement. Policy: `grant user alice get,write /books/123 if clearance >= 2` (principals: user|group|role|entity NAME [from IDD]; AND principals in parentheses; `expr:REGEX` for resource expressions). Role policy: `grant user alice librarian on /books if clearance >= 2`.",
+    `One SPDL statement, converted to the PMS JSON body locally by a port of the teramoby/speedle-plus pkg/pdl parser that is tested against the real parser at commit ${SPDL_SPEEDLE_PLUS_COMMIT.slice(0, 7)}. A statement the parser rejects fails here with its position and nothing is sent. The condition after "if" is checked by PMS when the policy is created; PMS is authoritative and rejects anything it cannot accept.` +
+      " Policy: `grant user alice get,write /books/123 if clearance >= 2` (principals: user|group|role|entity NAME [from IDD]; AND principals in parentheses; `expr:REGEX` for resource expressions). Role policy: `grant user alice librarian on /books if clearance >= 2`.",
   );
 
 const policySchema = z
@@ -358,35 +359,6 @@ export function createManageServer(client: PmsClient, options: ManageServerOptio
     },
   );
 
-  server.registerTool(
-    "validate_spdl",
-    {
-      title: "Validate SPDL",
-      description: `Parse one SPDL statement locally (no PMS call) and return the JSON body that create_policy or create_role_policy would send, or the parse error with its position. The condition after "if" is checked by PMS when the policy is created, because the PMS API has no separate validation endpoint. ${READ_NOTE}`,
-      inputSchema: {
-        kind: z.enum(["policy", "role_policy"]).describe('"policy" or "role_policy".'),
-        spdl: spdlSchema,
-        name: z.string().optional().describe("Optional policy name to put in the body."),
-      },
-      annotations: { ...readAnnotations, openWorldHint: false },
-    },
-    (args) => {
-      try {
-        const name = args.name ?? "";
-        const body = args.kind === "policy" ? parsePolicy(args.spdl, name) : parseRolePolicy(args.spdl, name);
-        const canonical = args.kind === "policy" ? renderPolicy(body) : renderRolePolicy(body as RolePolicyBody);
-        return Promise.resolve(ok(client, { valid: true, kind: args.kind, body, spdl: canonical ?? null }));
-      } catch (err) {
-        if (err instanceof SpdlError) {
-          return Promise.resolve(
-            ok(client, { valid: false, kind: args.kind, error: err.message, position: err.position }),
-          );
-        }
-        return Promise.resolve(fail(client, err));
-      }
-    },
-  );
-
   if (options.readOnly) return server;
 
   server.registerTool(
@@ -420,7 +392,7 @@ export function createManageServer(client: PmsClient, options: ManageServerOptio
     "create_policy",
     {
       title: "Create Policy",
-      description: `Create a policy in a service from one SPDL statement or a structured body (POST /service/{serviceName}/policy) and return the created policy with its ID. Use validate_spdl first to check the statement. ${WRITE_NOTE}`,
+      description: `Create a policy in a service from one SPDL statement or a structured body (POST /service/{serviceName}/policy) and return the created policy with its ID. ${WRITE_NOTE}`,
       inputSchema: {
         serviceName: serviceNameSchema,
         name: nameSchema,
@@ -449,7 +421,7 @@ export function createManageServer(client: PmsClient, options: ManageServerOptio
     "create_role_policy",
     {
       title: "Create Role Policy",
-      description: `Create a role policy in a service from one SPDL statement or a structured body (POST /service/{serviceName}/role-policy) and return the created role policy with its ID. Use validate_spdl first to check the statement. ${WRITE_NOTE}`,
+      description: `Create a role policy in a service from one SPDL statement or a structured body (POST /service/{serviceName}/role-policy) and return the created role policy with its ID. ${WRITE_NOTE}`,
       inputSchema: {
         serviceName: serviceNameSchema,
         name: nameSchema,

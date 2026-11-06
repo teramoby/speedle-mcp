@@ -324,10 +324,8 @@ test(
       assert.equal(svc.isError, false, JSON.stringify(svc.body));
       assert.equal(svc.body.changed, "created");
 
-      // 2. Validate, then create a policy from SPDL and a role policy.
+      // 2. Create a policy from SPDL and a role policy.
       const spdl = "grant role librarian get,write /books/123";
-      const valid = await call("validate_spdl", { kind: "policy", spdl });
-      assert.equal(valid.body.valid, true);
       const created = await call("create_policy", { serviceName: "books", name: "librarians", spdl });
       assert.equal(created.isError, false, JSON.stringify(created.body));
       const policy = created.body.policy as { id: string; spdl: string };

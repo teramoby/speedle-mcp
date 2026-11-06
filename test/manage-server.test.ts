@@ -321,7 +321,7 @@ test("create tools send the PMS body, return what changed, and are not retried",
   });
 });
 
-test("read tools: list, get, effective policies and validate_spdl", async () => {
+test("read tools: list, get and effective policies", async () => {
   const policy = {
     id: "p1",
     name: "readers",
@@ -358,19 +358,6 @@ test("read tools: list, get, effective policies and validate_spdl", async () => 
   assert.equal(json(missing).status, 404);
 
   const before = server.requests.length;
-  const valid = json(
-    await mcp.callTool({
-      name: "validate_spdl",
-      arguments: { kind: "role_policy", spdl: "grant user alice reader on /books" },
-    }),
-  );
-  assert.equal(valid.valid, true);
-  const invalid = json(
-    await mcp.callTool({ name: "validate_spdl", arguments: { kind: "policy", spdl: "grant user alice" } }),
-  );
-  assert.equal(invalid.valid, false);
-  assert.equal(server.requests.length, before, "validate_spdl must not call PMS");
-
   const bad = await mcp.callTool({ name: "get_service", arguments: { serviceName: "a/b" } });
   assert.equal(bad.isError, true);
   assert.equal(server.requests.length, before);
