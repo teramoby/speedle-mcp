@@ -11,7 +11,7 @@ export interface ServiceBody {
   type?: string;
 }
 
-function classifyPms(backend: "speedle-cloud" | "speedle-plus", res: RawResponse, token?: string): Classified<unknown> {
+function classifyPms(backend: "speedle-cloud" | "speedle", res: RawResponse, token?: string): Classified<unknown> {
   const parsed = parseJson(res.body);
   if (res.status === 204) return { value: null };
   if (res.status === 200 || res.status === 201) {

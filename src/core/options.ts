@@ -7,7 +7,7 @@ import { ConfigurationError, type SpeedleError } from "./errors.js";
 
 export type { BreakerState } from "./breaker.js";
 
-export type Backend = "speedle-cloud" | "speedle-plus";
+export type Backend = "speedle-cloud" | "speedle";
 
 export interface RetryPolicy {
   /** Attempts per call, counting the first; 1 disables retries. Default 3. */
@@ -79,7 +79,7 @@ export interface ClientOptions {
   hooks?: Hooks;
   /** Extra trust anchor (PEM) for self-hosted servers, added to the default roots. */
   caCert?: string | Buffer;
-  /** Allows `http://` to non-loopback hosts for speedle-plus with Auth.none(). Default false. */
+  /** Allows `http://` to non-loopback hosts for backend "speedle" with Auth.none(). Default false. */
   allowInsecureHttp?: boolean;
   userAgentSuffix?: string;
 }
@@ -143,8 +143,8 @@ const CONTROL = /[\u0000-\u001f\u007f]/;
 export function resolveOptions(options: ClientOptions): ResolvedOptions {
   if (options === null || typeof options !== "object") fail("options are required");
   const { backend, endpoint, auth, serviceName } = options;
-  if (backend !== "speedle-cloud" && backend !== "speedle-plus") {
-    fail('backend must be "speedle-cloud" or "speedle-plus"');
+  if (backend !== "speedle-cloud" && backend !== "speedle") {
+    fail('backend must be "speedle-cloud" or "speedle"');
   }
   const secret = auth === null || typeof auth !== "object" ? undefined : authSecret(auth);
   if (!secret) fail("auth must come from Auth.none(), Auth.bearer() or Auth.mutualTls()");
@@ -161,8 +161,8 @@ export function resolveOptions(options: ClientOptions): ResolvedOptions {
   }
   if (baseUrl.username || baseUrl.password) fail("endpoint must not contain credentials");
   if (baseUrl.protocol === "http:") {
-    if (backend !== "speedle-plus" || auth.kind !== "none") {
-      fail("http:// is accepted only for speedle-plus with Auth.none()");
+    if (backend !== "speedle" || auth.kind !== "none") {
+      fail('http:// is accepted only for backend "speedle" with Auth.none()');
     }
     if (!isLoopback(baseUrl.hostname) && options.allowInsecureHttp !== true) {
       fail("http:// is accepted only for loopback hosts unless allowInsecureHttp is set");
@@ -243,7 +243,7 @@ export function resolvePmsOptions(options: PmsClientOptions): ResolvedOptions {
   if (options === null || typeof options !== "object") fail("options are required");
   return resolveOptions({
     ...options,
-    backend: "speedle-plus",
+    backend: "speedle",
     serviceName: "__pms__",
     failureMode: "error",
   });

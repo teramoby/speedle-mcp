@@ -29,8 +29,8 @@ Environment variables (check mode):
   SPEEDLE_ENDPOINT                         ADS base URL (e.g. https://cloud.speedle.io or http://127.0.0.1:6734)
   SPEEDLE_SERVICE_NAME                     Service name to evaluate against
   SPEEDLE_TOKEN                            Optional bearer token (spdl_... for Speedle Cloud; requires https://)
-  SPEEDLE_BACKEND                          Optional "speedle-cloud" or "speedle-plus"
-  SPEEDLE_ALLOW_INSECURE_HTTP              Optional "true" to allow non-loopback http:// on speedle-plus
+  SPEEDLE_BACKEND                          Optional "speedle-cloud" or "speedle"
+  SPEEDLE_ALLOW_INSECURE_HTTP              Optional "true" to allow non-loopback http:// on backend "speedle"
   SPEEDLE_CA_CERT                          Optional extra PEM CA certificate for https://
   SPEEDLE_EXPOSE_DIAGNOSE                  Optional "true" to register diagnose (self-hosted Speedle only)
   SPEEDLE_EXPOSE_ALL_GRANTED_ROLES         Optional "true" to register all_granted_roles

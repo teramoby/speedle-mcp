@@ -1,0 +1,11 @@
+# Changelog
+
+## 0.2.0 (unreleased)
+
+- Breaking: the self-hosted backend value `"speedle-plus"` is now `"speedle"`, in `SPEEDLE_BACKEND` and in the `Backend` type. There is no alias for the old name.
+- The local integration test reads the Speedle checkout from `SPEEDLE_DIR` instead of `SPEEDLE_PLUS_DIR`.
+- First release on npm.
+
+## 0.1.0 (not published)
+
+- First version: one `speedle-mcp` binary with `check` mode (`is_allowed` by default; `diagnose`, `all_granted_roles` and `all_granted_permissions` behind explicit opt-ins) and `manage` mode (policy management through the PMS REST API, with SPDL input and output).
