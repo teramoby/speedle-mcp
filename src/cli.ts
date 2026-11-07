@@ -3,7 +3,7 @@ import { realpathSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { createCheckServer } from "./check/server.js";
+import { assertCheckServerOptions, type CheckServerOptions, createCheckServer } from "./check/server.js";
 import { SpeedleClient } from "./core/client.js";
 import { loadAdsConfig, loadPmsConfig } from "./core/config.js";
 import { redactSecret } from "./core/errors.js";
@@ -13,19 +13,28 @@ import { createManageServer } from "./manage/server.js";
 export const USAGE = `Usage: speedle-mcp <mode> [options]
 
 Modes:
-  check                Start the read-only authorization check MCP server (ADS)
+  check [options]      Start the read-only authorization check MCP server (ADS);
+                       only is_allowed is registered by default
   manage [--read-only] Start the policy management MCP server (PMS);
                        --read-only registers only the read tools
+
+Check options:
+  --expose-diagnose                 Also register diagnose (self-hosted Speedle only)
+  --expose-all-granted-roles        Also register all_granted_roles
+  --expose-all-granted-permissions  Also register all_granted_permissions
 
 There is no default mode that exposes both tool sets.
 
 Environment variables (check mode):
-  SPEEDLE_ENDPOINT              ADS base URL (e.g. https://cloud.speedle.io or http://127.0.0.1:6734)
-  SPEEDLE_SERVICE_NAME          Service name to evaluate against
-  SPEEDLE_TOKEN                 Optional bearer token (spdl_... for Speedle Cloud; requires https://)
-  SPEEDLE_BACKEND               Optional "speedle-cloud" or "speedle-plus"
-  SPEEDLE_ALLOW_INSECURE_HTTP   Optional "true" to allow non-loopback http:// on speedle-plus
-  SPEEDLE_CA_CERT               Optional extra PEM CA certificate for https://
+  SPEEDLE_ENDPOINT                         ADS base URL (e.g. https://cloud.speedle.io or http://127.0.0.1:6734)
+  SPEEDLE_SERVICE_NAME                     Service name to evaluate against
+  SPEEDLE_TOKEN                            Optional bearer token (spdl_... for Speedle Cloud; requires https://)
+  SPEEDLE_BACKEND                          Optional "speedle-cloud" or "speedle-plus"
+  SPEEDLE_ALLOW_INSECURE_HTTP              Optional "true" to allow non-loopback http:// on speedle-plus
+  SPEEDLE_CA_CERT                          Optional extra PEM CA certificate for https://
+  SPEEDLE_EXPOSE_DIAGNOSE                  Optional "true" to register diagnose (self-hosted Speedle only)
+  SPEEDLE_EXPOSE_ALL_GRANTED_ROLES         Optional "true" to register all_granted_roles
+  SPEEDLE_EXPOSE_ALL_GRANTED_PERMISSIONS   Optional "true" to register all_granted_permissions
 
 Environment variables (manage mode):
   SPEEDLE_PMS_ENDPOINT              PMS base URL (e.g. http://127.0.0.1:6733)
@@ -53,7 +62,23 @@ export async function runCli(
 ): Promise<number> {
   const [mode, ...flags] = argv;
   const readOnlyFlag = mode === "manage" && flags.length === 1 && flags[0] === "--read-only";
-  if ((mode !== "check" && mode !== "manage") || (flags.length > 0 && !readOnlyFlag)) {
+  const checkFlags: Required<CheckServerOptions> = {
+    exposeDiagnose: false,
+    exposeAllGrantedRoles: false,
+    exposeAllGrantedPermissions: false,
+  };
+  let validFlags = true;
+  if (mode === "check") {
+    for (const flag of flags) {
+      if (flag === "--expose-diagnose") checkFlags.exposeDiagnose = true;
+      else if (flag === "--expose-all-granted-roles") checkFlags.exposeAllGrantedRoles = true;
+      else if (flag === "--expose-all-granted-permissions") checkFlags.exposeAllGrantedPermissions = true;
+      else validFlags = false;
+    }
+  } else if (mode === "manage" && flags.length > 0 && !readOnlyFlag) {
+    validFlags = false;
+  }
+  if ((mode !== "check" && mode !== "manage") || !validFlags) {
     writeStderr(USAGE);
     return 1;
   }
@@ -62,9 +87,17 @@ export async function runCli(
   let server: McpServer;
   try {
     if (mode === "check") {
-      const speedle = new SpeedleClient(loadAdsConfig(env));
+      const { exposeDiagnose, exposeAllGrantedRoles, exposeAllGrantedPermissions, ...clientOptions } =
+        loadAdsConfig(env);
+      const checkOptions: CheckServerOptions = {
+        exposeDiagnose: exposeDiagnose || checkFlags.exposeDiagnose,
+        exposeAllGrantedRoles: exposeAllGrantedRoles || checkFlags.exposeAllGrantedRoles,
+        exposeAllGrantedPermissions: exposeAllGrantedPermissions || checkFlags.exposeAllGrantedPermissions,
+      };
+      assertCheckServerOptions(clientOptions.backend, checkOptions);
+      const speedle = new SpeedleClient(clientOptions);
       client = speedle;
-      server = createCheckServer(speedle);
+      server = createCheckServer(speedle, checkOptions);
     } else {
       const { readOnly, ...options } = loadPmsConfig(env);
       const pms = new PmsClient(options);

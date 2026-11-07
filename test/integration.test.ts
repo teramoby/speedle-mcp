@@ -9,7 +9,7 @@ import { test } from "node:test";
 import { fileURLToPath } from "node:url";
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
-import { CHECK_TOOL_NAMES } from "../src/check/server.js";
+import { CHECK_TOOL_NAMES, DEFAULT_CHECK_TOOL_NAMES } from "../src/check/server.js";
 import { MANAGE_TOOL_NAMES } from "../src/manage/server.js";
 
 const speedlePlusDir = process.env.SPEEDLE_PLUS_DIR;
@@ -171,7 +171,7 @@ test(
       const { tools } = await mcpClient.listTools();
       assert.deepEqual(
         tools.map((t) => t.name),
-        [...CHECK_TOOL_NAMES],
+        [...DEFAULT_CHECK_TOOL_NAMES],
       );
 
       // 1. is_allowed: allowed when clearance >= 2
@@ -197,6 +197,27 @@ test(
         },
       });
       assert.deepEqual(JSON.parse(toolText(deniedRes)), { allowed: false, reason: 3 });
+
+      await mcpClient.close();
+      await transport.close();
+
+      transport = new StdioClientTransport({
+        command: process.execPath,
+        args: [cliPath, "check", "--expose-diagnose", "--expose-all-granted-roles", "--expose-all-granted-permissions"],
+        env: {
+          PATH: process.env.PATH ?? "",
+          SPEEDLE_ENDPOINT: adsEndpoint,
+          SPEEDLE_SERVICE_NAME: "books",
+        },
+        stderr: "pipe",
+      });
+      mcpClient = new Client({ name: "integration-test-opt-in", version: "1.0.0" });
+      await mcpClient.connect(transport);
+      const optedIn = await mcpClient.listTools();
+      assert.deepEqual(
+        optedIn.tools.map((tool) => tool.name),
+        [...CHECK_TOOL_NAMES],
+      );
 
       // 3. diagnose
       const diagRes = await mcpClient.callTool({

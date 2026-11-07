@@ -23,7 +23,7 @@ export {
   withTestingSeams,
 } from "./client.js";
 export { type Clock, type RandomSource } from "./clock.js";
-export { loadAdsConfig, loadPmsConfig, type PmsConfig } from "./config.js";
+export { type AdsConfig, loadAdsConfig, loadPmsConfig, type PmsConfig } from "./config.js";
 export {
   CircuitOpenError,
   ConfigurationError,
