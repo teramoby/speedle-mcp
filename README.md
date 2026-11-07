@@ -214,6 +214,10 @@ npm run test:package  # Build, npm pack, and smoke test the packed binary
 SPEEDLE_PLUS_DIR=/path/to/speedle-plus npm run test:integration
 ```
 
+## Contributing
+
+Contributions are welcome; see [CONTRIBUTING.md](CONTRIBUTING.md).
+
 ## License
 
 [UPL-1.0](LICENSE). Copyright (c) 2026 The Speedle Authors.
