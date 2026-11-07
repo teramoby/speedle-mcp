@@ -16,6 +16,8 @@ To enforce separation of privilege:
 - Never grant `manage` mode to an agent that is itself governed by the policies in that Speedle service.
 - Check tools only answer authorization questions; they do not enforce access control on their own.
 
+To report a security issue, see [SECURITY.md](SECURITY.md).
+
 ## Requirements & Install
 
 Requires **Node.js >= 22**.
