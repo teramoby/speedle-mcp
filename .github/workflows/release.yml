@@ -1,0 +1,184 @@
+# Release @speedle/mcp from a `vX.Y.Z` tag on a commit of `main`; see
+# RELEASING.md.
+#
+# A pushed `vX.Y.Z` tag runs:
+#   preflight  the release environment is readable
+#   verify     tag format, commit on main, tag version == package metadata
+#   build      build, unit tests, package smoke test and the package artifact;
+#              no secrets and no OIDC token
+#   publish    in the protected `release` environment, publishes the artifact
+#              built by `build`
+#
+# There is no pull_request or workflow_run trigger, so PR code never runs here.
+# Caches are off so a release never restores state written by another run.
+name: release
+
+on:
+  push:
+    tags:
+      - "v[0-9]+.[0-9]+.[0-9]+"
+
+permissions: {}
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  preflight:
+    name: Check release environment protection
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      actions: read # required to read environment protection rules
+    steps:
+      - name: Release environment exists and is readable
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if ! gh api "repos/$GITHUB_REPOSITORY/environments/release" > /dev/null; then
+            echo "::error::The release environment is missing or unreadable. Create it before releasing (RELEASING.md, Owner setup on GitHub)."
+            exit 1
+          fi
+          echo "The release environment exists and is readable"
+
+  verify:
+    name: Verify release request
+    needs: preflight
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    outputs:
+      version: ${{ steps.tag.outputs.version }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: "24"
+          package-manager-cache: false
+      - name: Release commit is on main
+        run: |
+          git merge-base --is-ancestor "$GITHUB_SHA" refs/remotes/origin/main || {
+            echo "::error::release commit $GITHUB_SHA is not on main"
+            exit 1
+          }
+          echo "$GITHUB_SHA is on main"
+      - name: Requested version matches the package metadata
+        id: tag
+        env:
+          TAG: ${{ github.ref_name }}
+        run: node scripts/release-version.mjs "$TAG" >> "$GITHUB_OUTPUT"
+
+  build:
+    name: Build and test the package
+    needs: verify
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: "24"
+          package-manager-cache: false
+      - run: npm ci
+      - name: Unit tests
+        run: npm test
+      - name: Build and package smoke test
+        run: npm run test:package
+      - name: Pack
+        env:
+          VERSION: ${{ needs.verify.outputs.version }}
+        run: |
+          mkdir -p "$RUNNER_TEMP/dist"
+          npm pack --ignore-scripts --pack-destination "$RUNNER_TEMP/dist"
+          test -f "$RUNNER_TEMP/dist/speedle-mcp-$VERSION.tgz"
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: mcp-dist
+          path: ${{ runner.temp }}/dist/
+          if-no-files-found: error
+          retention-days: 7
+
+  publish:
+    name: Publish @speedle/mcp to npm
+    needs: [verify, build]
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment:
+      name: release
+      url: https://www.npmjs.com/package/@speedle/mcp/v/${{ needs.verify.outputs.version }}
+    permissions:
+      id-token: write # npm trusted publishing and provenance
+    steps:
+      # No `registry-url` here. With it, setup-node (src/authutil.ts in v7.1.0)
+      # always writes `//registry.npmjs.org/:_authToken=${NODE_AUTH_TOKEN}` to
+      # $RUNNER_TEMP/.npmrc and points NPM_CONFIG_USERCONFIG at it, so an unset
+      # or empty NODE_AUTH_TOKEN still leaves an (empty) _authToken entry. npm
+      # tries OIDC first and falls back to that configured token
+      # (https://docs.npmjs.com/trusted-publishers), and its OIDC code
+      # (lib/utils/oidc.js) returns quietly on a failed exchange, so a broken
+      # trust setup would surface as a misleading auth error. Trusted
+      # publishing needs no token, and npm's default registry is
+      # registry.npmjs.org.
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: "24"
+          package-manager-cache: false
+      - name: npm supports trusted publishing (11.5.1 or later)
+        run: |
+          npm --version
+          node -e 'const [a,b,c]=process.argv[1].split(".").map(Number); process.exit(a>11||(a===11&&(b>5||(b===5&&c>=1)))?0:1)' "$(npm --version)"
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: mcp-dist
+          path: dist
+      # NPM_BOOTSTRAP_TOKEN is only for the first release, before the package
+      # exists and trusted publishing can be configured (RELEASING.md). Once
+      # the package exists on npm, a still-set token fails the job, so it can
+      # never silently replace trusted publishing.
+      - name: Authentication mode
+        id: mode
+        env:
+          NPM_BOOTSTRAP_TOKEN: ${{ secrets.NPM_BOOTSTRAP_TOKEN }}
+        run: |
+          if [ -n "$NPM_BOOTSTRAP_TOKEN" ]; then
+            status=$(curl -sS -o /dev/null -w '%{http_code}' https://registry.npmjs.org/@speedle%2fmcp) || status=error
+            case "$status" in
+              404) ;;
+              200)
+                echo "::error::@speedle/mcp already exists on npm but the release environment secret NPM_BOOTSTRAP_TOKEN is still set. Delete that secret (and revoke the token on npmjs.com) so this release uses trusted publishing (RELEASING.md, npm)."
+                exit 1 ;;
+              *)
+                echo "::error::could not check whether @speedle/mcp exists on npm (HTTP $status); refusing to publish with NPM_BOOTSTRAP_TOKEN"
+                exit 1 ;;
+            esac
+            echo "mode=bootstrap-token" >> "$GITHUB_OUTPUT"
+          else
+            echo "mode=trusted-publishing" >> "$GITHUB_OUTPUT"
+          fi
+      - name: npm publish (trusted publishing)
+        if: steps.mode.outputs.mode == 'trusted-publishing'
+        env:
+          VERSION: ${{ needs.verify.outputs.version }}
+        run: npm publish "./dist/speedle-mcp-$VERSION.tgz" --provenance --access public --ignore-scripts --registry https://registry.npmjs.org/
+      # Bootstrap only: a step-local userconfig with the same line setup-node
+      # would write. npm expands ${NODE_AUTH_TOKEN} from the environment when
+      # it reads the file, so the token itself never lands on disk.
+      - name: npm publish (one-time bootstrap token)
+        if: steps.mode.outputs.mode == 'bootstrap-token'
+        env:
+          VERSION: ${{ needs.verify.outputs.version }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_BOOTSTRAP_TOKEN }}
+          NPM_CONFIG_USERCONFIG: ${{ runner.temp }}/npm-bootstrap.npmrc
+        run: |
+          # shellcheck disable=SC2016 # the literal ${NODE_AUTH_TOKEN} is for npm to expand
+          printf '%s\n' '//registry.npmjs.org/:_authToken=${NODE_AUTH_TOKEN}' > "$NPM_CONFIG_USERCONFIG"
+          npm publish "./dist/speedle-mcp-$VERSION.tgz" --provenance --access public --ignore-scripts --registry https://registry.npmjs.org/
