@@ -95,7 +95,7 @@ The following example opts in to all three additional tools. Each flag is indepe
 }
 ```
 
-The equivalent environment variables are `SPEEDLE_EXPOSE_DIAGNOSE`, `SPEEDLE_EXPOSE_ALL_GRANTED_ROLES`, and `SPEEDLE_EXPOSE_ALL_GRANTED_PERMISSIONS`, each set to `"true"` or `"1"`. `diagnose` is available only with `speedle-plus`; configuring it with `speedle-cloud` fails at startup.
+The equivalent environment variables are `SPEEDLE_EXPOSE_DIAGNOSE`, `SPEEDLE_EXPOSE_ALL_GRANTED_ROLES`, and `SPEEDLE_EXPOSE_ALL_GRANTED_PERMISSIONS`, each set to `"true"` or `"1"`. `diagnose` is available only with backend `"speedle"`; configuring it with `speedle-cloud` fails at startup.
 
 ### `manage` mode — Self-hosted Speedle Policy Management (PMS)
 
@@ -119,24 +119,24 @@ For a read-only policy reviewer, use `"args": ["-y", "@speedle/mcp", "manage", "
 
 ## Environment Variables (`check` mode)
 
-| Variable                                                           | Required      | Description                                                                                                                            |
-| ------------------------------------------------------------------ | ------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
-| `SPEEDLE_ENDPOINT` (or `SPEEDLE_ADS_ENDPOINT` / `SPEEDLE_ADS_URL`) | Yes           | ADS base URL, e.g. `https://cloud.speedle.io` or `http://127.0.0.1:6734`.                                                              |
-| `SPEEDLE_SERVICE_NAME` (or `SPEEDLE_SERVICE`)                      | Yes           | Service name sent on every check request. Cannot be overridden by tool callers.                                                        |
-| `SPEEDLE_TOKEN` (or `SPEEDLE_ADS_TOKEN`)                           | Speedle Cloud | Optional bearer token (`spdl_…`). Requires `https://`. Never logged or echoed in tool output or errors.                                |
-| `SPEEDLE_BACKEND`                                                  | No            | `"speedle-cloud"` or `"speedle-plus"`. Defaults to `"speedle-cloud"` when a bearer token is configured and `"speedle-plus"` otherwise. |
-| `SPEEDLE_ALLOW_INSECURE_HTTP`                                      | No            | Set to `"true"` to allow plaintext `http://` to non-loopback hosts on `speedle-plus` without a token.                                  |
-| `SPEEDLE_CA_CERT`                                                  | No            | Extra PEM CA certificate for self-hosted `https://` servers.                                                                           |
-| `SPEEDLE_EXPOSE_DIAGNOSE`                                          | No            | Set to `"true"` or `"1"` to register `diagnose` (same as `--expose-diagnose`). Self-hosted `speedle-plus` only.                        |
-| `SPEEDLE_EXPOSE_ALL_GRANTED_ROLES`                                 | No            | Set to `"true"` or `"1"` to register `all_granted_roles` (same as `--expose-all-granted-roles`).                                       |
-| `SPEEDLE_EXPOSE_ALL_GRANTED_PERMISSIONS`                           | No            | Set to `"true"` or `"1"` to register `all_granted_permissions` (same as `--expose-all-granted-permissions`).                           |
+| Variable                                                           | Required      | Description                                                                                                                  |
+| ------------------------------------------------------------------ | ------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| `SPEEDLE_ENDPOINT` (or `SPEEDLE_ADS_ENDPOINT` / `SPEEDLE_ADS_URL`) | Yes           | ADS base URL, e.g. `https://cloud.speedle.io` or `http://127.0.0.1:6734`.                                                    |
+| `SPEEDLE_SERVICE_NAME` (or `SPEEDLE_SERVICE`)                      | Yes           | Service name sent on every check request. Cannot be overridden by tool callers.                                              |
+| `SPEEDLE_TOKEN` (or `SPEEDLE_ADS_TOKEN`)                           | Speedle Cloud | Optional bearer token (`spdl_…`). Requires `https://`. Never logged or echoed in tool output or errors.                      |
+| `SPEEDLE_BACKEND`                                                  | No            | `"speedle-cloud"` or `"speedle"`. Defaults to `"speedle-cloud"` when a bearer token is configured and `"speedle"` otherwise. |
+| `SPEEDLE_ALLOW_INSECURE_HTTP`                                      | No            | Set to `"true"` to allow plaintext `http://` to non-loopback hosts on `speedle` without a token.                             |
+| `SPEEDLE_CA_CERT`                                                  | No            | Extra PEM CA certificate for self-hosted `https://` servers.                                                                 |
+| `SPEEDLE_EXPOSE_DIAGNOSE`                                          | No            | Set to `"true"` or `"1"` to register `diagnose` (same as `--expose-diagnose`). Self-hosted Speedle (`"speedle"`) only.       |
+| `SPEEDLE_EXPOSE_ALL_GRANTED_ROLES`                                 | No            | Set to `"true"` or `"1"` to register `all_granted_roles` (same as `--expose-all-granted-roles`).                             |
+| `SPEEDLE_EXPOSE_ALL_GRANTED_PERMISSIONS`                           | No            | Set to `"true"` or `"1"` to register `all_granted_permissions` (same as `--expose-all-granted-permissions`).                 |
 
 ## Tools (`check` mode)
 
 Registered tools query `/authz-check/v1/*` on the configured ADS endpoint using `serviceName` from environment configuration:
 
 - **`is_allowed`** (`POST /authz-check/v1/is-allowed`): Registered by default. Returns `{ allowed, reason, errorMessage?, quotaDailyRemaining? }`.
-- **`diagnose`** (`POST /authz-check/v1/diagnose`): Opt in with `--expose-diagnose` or `SPEEDLE_EXPOSE_DIAGNOSE`. Returns `{ allowed, reason, requestContext?, attributes?, grantedRoles?, rolePolicies?, policies? }`. Available only on self-hosted `speedle-plus`; refused on `speedle-cloud`.
+- **`diagnose`** (`POST /authz-check/v1/diagnose`): Opt in with `--expose-diagnose` or `SPEEDLE_EXPOSE_DIAGNOSE`. Returns `{ allowed, reason, requestContext?, attributes?, grantedRoles?, rolePolicies?, policies? }`. Available only on self-hosted `speedle`; refused on `speedle-cloud`.
 - **`all_granted_roles`** (`POST /authz-check/v1/all-granted-roles`): Opt in with `--expose-all-granted-roles` or `SPEEDLE_EXPOSE_ALL_GRANTED_ROLES`. Returns the `string[]` array of granted role names.
 - **`all_granted_permissions`** (`POST /authz-check/v1/all-granted-permissions`): Opt in with `--expose-all-granted-permissions` or `SPEEDLE_EXPOSE_ALL_GRANTED_PERMISSIONS`. Returns `[{ resource, actions }]`.
 
@@ -208,10 +208,10 @@ npm run test:package  # Build, npm pack, and smoke test the packed binary
 
 ### Running the Local Speedle Integration Test
 
-`test/integration.test.ts` builds `speedle-ads` and `speedle-pms` from a local checkout of [`teramoby/speedle-plus`](https://github.com/teramoby/speedle-plus) (requires Go) and starts each on a free loopback port against a temporary file store. The `check` test verifies the default registration, then opts in to and exercises all four check tools over stdio. The `manage` test creates a service, creates a policy and a role policy (and checks that PMS rejects an invalid condition), lists them, shows the effective policies, refuses a delete with the wrong confirmation, deletes with the right one, and deletes the service. When `SPEEDLE_PLUS_DIR` is unset (and `SPEEDLE_ADS_BIN` / `SPEEDLE_PMS_BIN` are unset), the tests are skipped, including in CI.
+`test/integration.test.ts` builds `speedle-ads` and `speedle-pms` from a local checkout of [`teramoby/speedle-plus`](https://github.com/teramoby/speedle-plus) (requires Go) and starts each on a free loopback port against a temporary file store. The `check` test verifies the default registration, then opts in to and exercises all four check tools over stdio. The `manage` test creates a service, creates a policy and a role policy (and checks that PMS rejects an invalid condition), lists them, shows the effective policies, refuses a delete with the wrong confirmation, deletes with the right one, and deletes the service. When `SPEEDLE_DIR` is unset (and `SPEEDLE_ADS_BIN` / `SPEEDLE_PMS_BIN` are unset), the tests are skipped, including in CI.
 
 ```sh
-SPEEDLE_PLUS_DIR=/path/to/speedle-plus npm run test:integration
+SPEEDLE_DIR=/path/to/speedle-plus npm run test:integration
 ```
 
 ## License

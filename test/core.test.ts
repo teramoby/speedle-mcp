@@ -104,13 +104,13 @@ test("loadAdsConfig reads ADS env vars and ignores PMS env vars", () => {
   assert.equal(cloudCfg.serviceName, "books");
   assert.equal(cloudCfg.auth.kind, "bearer");
 
-  const plusCfg = loadAdsConfig({
+  const selfHostedCfg = loadAdsConfig({
     SPEEDLE_ADS_URL: "http://127.0.0.1:6734",
     SPEEDLE_SERVICE: "library",
   });
-  assert.equal(plusCfg.backend, "speedle-plus");
-  assert.equal(plusCfg.serviceName, "library");
-  assert.equal(plusCfg.auth.kind, "none");
+  assert.equal(selfHostedCfg.backend, "speedle");
+  assert.equal(selfHostedCfg.serviceName, "library");
+  assert.equal(selfHostedCfg.auth.kind, "none");
 
   assert.throws(() => loadAdsConfig({ SPEEDLE_SERVICE_NAME: "books" }), E.ConfigurationError);
   assert.throws(() => loadAdsConfig({ SPEEDLE_ENDPOINT: "http://127.0.0.1:6734" }), E.ConfigurationError);
@@ -125,6 +125,16 @@ test("loadAdsConfig reads ADS env vars and ignores PMS env vars", () => {
   );
 });
 
+test('loadAdsConfig accepts SPEEDLE_BACKEND "speedle" and rejects the old "speedle-plus" value', () => {
+  const env = { SPEEDLE_ENDPOINT: "http://127.0.0.1:6734", SPEEDLE_SERVICE_NAME: "books" };
+  assert.equal(loadAdsConfig({ ...env, SPEEDLE_BACKEND: "speedle" }).backend, "speedle");
+  assert.throws(
+    () => loadAdsConfig({ ...env, SPEEDLE_BACKEND: "speedle-plus" }),
+    (error: unknown) =>
+      error instanceof E.ConfigurationError && error.message === 'SPEEDLE_BACKEND must be "speedle-cloud" or "speedle"',
+  );
+});
+
 const baseOptions: ClientOptions = {
   backend: "speedle-cloud",
   endpoint: "https://cloud.speedle.io",
@@ -134,13 +144,14 @@ const baseOptions: ClientOptions = {
 
 const invalidConfigs: [string, Partial<ClientOptions> | (() => unknown)][] = [
   ["unknown backend", { backend: "x" as never }],
+  ["old backend name speedle-plus", { backend: "speedle-plus" as never }],
   ["empty serviceName", { serviceName: "" }],
   ["cloud without bearer", { auth: Auth.none() }],
   ["query string", { endpoint: "https://cloud.speedle.io/?a=1" }],
   ["fragment", { endpoint: "https://cloud.speedle.io/#x" }],
   ["credentials in URL", { endpoint: "https://u:p@cloud.speedle.io" }],
-  ["http with bearer", { backend: "speedle-plus", endpoint: "http://127.0.0.1:6734" }],
-  ["http to remote host", { backend: "speedle-plus", auth: Auth.none(), endpoint: "http://ads.internal:6734" }],
+  ["http with bearer", { backend: "speedle", endpoint: "http://127.0.0.1:6734" }],
+  ["http to remote host", { backend: "speedle", auth: Auth.none(), endpoint: "http://ads.internal:6734" }],
   ["empty bearer token", () => Auth.bearer("")],
   ["token with whitespace", () => Auth.bearer("spdl_a b")],
 ];
