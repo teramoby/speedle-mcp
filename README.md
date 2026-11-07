@@ -1,22 +1,8 @@
 # @speedle/mcp
 
-Local stdio [Model Context Protocol (MCP)](https://modelcontextprotocol.io) server for [self-hosted Speedle](https://github.com/teramoby/speedle-plus) and [Speedle Cloud](https://cloud.speedle.io): authorization checks (`check` mode) and policy management (`manage` mode).
+Local stdio [Model Context Protocol (MCP)](https://modelcontextprotocol.io) server for [self-hosted Speedle](https://github.com/teramoby/speedle-plus) and [Speedle Cloud](https://cloud.speedle.io): authorization checks (`check` mode) and policy management (`manage` mode). See the [Speedle documentation](https://engine.speedle.io/docs/) and [Speedle AI MCP overview](https://ai.speedle.io/#mcp).
 
-> **Note:** The shared HTTP client in `src/core` (used by both modes) follows the `teramoby/speedle-sdk` design specification (typed attributes, error model, and retry policy) and will move to `@speedle/sdk` once `@speedle/sdk` is published on npm.
-
-## Security: Why Two Modes in One Package
-
-Authorization checks are read-only queries and are typically wired into an AI agent whose actions Speedle governs. Policy management writes policy. **An agent that holds both tool sets could be prompted into granting itself access.**
-
-To enforce separation of privilege:
-
-- `npx @speedle/mcp check` registers **only** `is_allowed` by default and reads **only** ADS configuration. The other read-only authorization tools require the explicit opt-ins documented below.
-- `npx @speedle/mcp manage` registers **only** the policy management tools and reads **only** PMS configuration. `manage --read-only` registers only its read tools.
-- **There is no default mode that exposes both.** Running `speedle-mcp` without a mode prints usage and exits with a non-zero status.
-- Never grant `manage` mode to an agent that is itself governed by the policies in that Speedle service.
-- Check tools only answer authorization questions; they do not enforce access control on their own.
-
-To report a security issue, see [SECURITY.md](SECURITY.md).
+> Not yet published on npm. 0.2.0 will be the first npm release.
 
 ## Requirements & Install
 
@@ -32,25 +18,23 @@ Or run directly with `npx`:
 npx @speedle/mcp check
 ```
 
+> **Note:** The shared HTTP client in `src/core` (used by both modes) follows the `teramoby/speedle-sdk` design specification (typed attributes, error model, and retry policy). A future release may replace it with `@speedle/sdk`.
+
+## Security: Why Two Modes in One Package
+
+Authorization checks are read-only queries and are typically wired into an AI agent whose actions Speedle governs. Policy management writes policy. **An agent that holds both tool sets could be prompted into granting itself access.**
+
+To enforce separation of privilege:
+
+- `npx @speedle/mcp check` registers **only** `is_allowed` by default and reads **only** ADS configuration. The other read-only authorization tools require the explicit opt-ins documented below.
+- `npx @speedle/mcp manage` registers **only** the policy management tools and reads **only** PMS configuration. `manage --read-only` registers only its read tools.
+- **There is no default mode that exposes both.** Running `speedle-mcp` without a mode prints usage and exits with a non-zero status.
+- Never grant `manage` mode to an agent that is itself governed by the policies in that Speedle service.
+- Check tools only answer authorization questions; they do not enforce access control on their own.
+
+Report security issues privately using the [Speedle security policy](https://github.com/teramoby/speedle-mcp/blob/main/SECURITY.md).
+
 ## MCP Client Configuration
-
-### `check` mode — Speedle Cloud (HTTPS + Bearer token)
-
-```json
-{
-  "mcpServers": {
-    "speedle-check": {
-      "command": "npx",
-      "args": ["-y", "@speedle/mcp", "check"],
-      "env": {
-        "SPEEDLE_ENDPOINT": "https://cloud.speedle.io",
-        "SPEEDLE_SERVICE_NAME": "books",
-        "SPEEDLE_TOKEN": "spdl_..."
-      }
-    }
-  }
-}
-```
 
 ### `check` mode — Self-hosted Speedle (loopback or internal ADS)
 
@@ -63,6 +47,24 @@ npx @speedle/mcp check
       "env": {
         "SPEEDLE_ENDPOINT": "http://127.0.0.1:6734",
         "SPEEDLE_SERVICE_NAME": "books"
+      }
+    }
+  }
+}
+```
+
+### `check` mode — Speedle Cloud (coming soon)
+
+```json
+{
+  "mcpServers": {
+    "speedle-check": {
+      "command": "npx",
+      "args": ["-y", "@speedle/mcp", "check"],
+      "env": {
+        "SPEEDLE_ENDPOINT": "https://cloud.speedle.io",
+        "SPEEDLE_SERVICE_NAME": "books",
+        "SPEEDLE_TOKEN": "spdl_..."
       }
     }
   }
@@ -178,7 +180,7 @@ Write tools (not registered with `--read-only`); each returns what changed:
 - **`create_service`**: `POST /service`; returns the created service.
 - **`create_policy`**, **`create_role_policy`**: `POST /service/{serviceName}/policy` or `/role-policy` from one SPDL statement (`spdl`) or a structured body; returns the created policy with its ID. Creates are sent once and never retried.
 
-PMS validates every policy on create, and it is authoritative. There is no separate SPDL validation tool, because PMS has no validation endpoint and a local validator could disagree with it. `spdl` is converted to the PMS JSON body by a TypeScript port of the speedle-plus `pkg/pdl` parser (`src/manage/spdl.ts`). It rejects the statements that parser rejects, with the same message and position, before anything is sent; the condition after `if` is checked by PMS. A differential test keeps the port in step with the Go parser (see [`test/fixtures/spdl/README.md`](test/fixtures/spdl/README.md)).
+PMS validates every policy on create, and it is authoritative. There is no separate SPDL validation tool, because PMS has no validation endpoint and a local validator could disagree with it. `spdl` is converted to the PMS JSON body by a TypeScript port of the speedle-plus `pkg/pdl` parser (`src/manage/spdl.ts`). It rejects the statements that parser rejects, with the same message and position, before anything is sent; the condition after `if` is checked by PMS. A differential test keeps the port in step with the Go parser (see [`test/fixtures/spdl/README.md`](https://github.com/teramoby/speedle-mcp/blob/main/test/fixtures/spdl/README.md)).
 
 - **`delete_service`**, **`delete_policy`**, **`delete_role_policy`**: carry the MCP `destructiveHint` annotation and require `confirm` to equal the target's `serviceName`, `policyId` or `rolePolicyId`. A missing or different `confirm` fails without sending any request. They return the deleted object as it was before the delete.
 
@@ -216,4 +218,4 @@ SPEEDLE_DIR=/path/to/speedle-plus npm run test:integration
 
 ## License
 
-[UPL-1.0](LICENSE). Copyright (c) 2026 The Speedle Authors.
+[UPL-1.0](https://github.com/teramoby/speedle-mcp/blob/main/LICENSE). Copyright (c) 2026 The Speedle Authors.
