@@ -10,7 +10,7 @@ Authorization checks are read-only queries and are typically wired into an AI ag
 
 To enforce separation of privilege:
 
-- `npx @speedle/mcp check` registers **only** the read-only authorization check tools (`is_allowed`, `diagnose`, `all_granted_roles`, `all_granted_permissions`) and reads **only** ADS configuration.
+- `npx @speedle/mcp check` registers **only** `is_allowed` by default and reads **only** ADS configuration. The other read-only authorization tools require the explicit opt-ins documented below.
 - `npx @speedle/mcp manage` registers **only** the policy management tools and reads **only** PMS configuration. `manage --read-only` registers only its read tools.
 - **There is no default mode that exposes both.** Running `speedle-mcp` without a mode prints usage and exits with a non-zero status.
 - Never grant `manage` mode to an agent that is itself governed by the policies in that Speedle service.
@@ -67,6 +67,34 @@ npx @speedle/mcp check
 }
 ```
 
+### `check` mode — Additional self-hosted tools
+
+The following example opts in to all three additional tools. Each flag is independent; omit any tool that the agent does not need. `diagnose` returns detailed policy evaluation output and is intended for trusted operators.
+
+```json
+{
+  "mcpServers": {
+    "speedle-check": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@speedle/mcp",
+        "check",
+        "--expose-diagnose",
+        "--expose-all-granted-roles",
+        "--expose-all-granted-permissions"
+      ],
+      "env": {
+        "SPEEDLE_ENDPOINT": "http://127.0.0.1:6734",
+        "SPEEDLE_SERVICE_NAME": "books"
+      }
+    }
+  }
+}
+```
+
+The equivalent environment variables are `SPEEDLE_EXPOSE_DIAGNOSE`, `SPEEDLE_EXPOSE_ALL_GRANTED_ROLES`, and `SPEEDLE_EXPOSE_ALL_GRANTED_PERMISSIONS`, each set to `"true"` or `"1"`. `diagnose` is available only with `speedle-plus`; configuring it with `speedle-cloud` fails at startup.
+
 ### `manage` mode — Self-hosted Speedle Policy Management (PMS)
 
 > **Security:** never give `manage` mode to an agent that is itself governed by the policies in this Speedle instance. Such an agent could be prompted into granting itself access. Run `manage` only for a human-supervised policy author, and prefer `--read-only` when the agent only needs to read policies.
@@ -97,15 +125,18 @@ For a read-only policy reviewer, use `"args": ["-y", "@speedle/mcp", "manage", "
 | `SPEEDLE_BACKEND`                                                  | No            | `"speedle-cloud"` or `"speedle-plus"`. Defaults to `"speedle-cloud"` when a bearer token is configured and `"speedle-plus"` otherwise. |
 | `SPEEDLE_ALLOW_INSECURE_HTTP`                                      | No            | Set to `"true"` to allow plaintext `http://` to non-loopback hosts on `speedle-plus` without a token.                                  |
 | `SPEEDLE_CA_CERT`                                                  | No            | Extra PEM CA certificate for self-hosted `https://` servers.                                                                           |
+| `SPEEDLE_EXPOSE_DIAGNOSE`                                          | No            | Set to `"true"` or `"1"` to register `diagnose` (same as `--expose-diagnose`). Self-hosted `speedle-plus` only.                        |
+| `SPEEDLE_EXPOSE_ALL_GRANTED_ROLES`                                 | No            | Set to `"true"` or `"1"` to register `all_granted_roles` (same as `--expose-all-granted-roles`).                                       |
+| `SPEEDLE_EXPOSE_ALL_GRANTED_PERMISSIONS`                           | No            | Set to `"true"` or `"1"` to register `all_granted_permissions` (same as `--expose-all-granted-permissions`).                           |
 
 ## Tools (`check` mode)
 
-All four tools query `/authz-check/v1/*` on the configured ADS endpoint using `serviceName` from environment configuration:
+Registered tools query `/authz-check/v1/*` on the configured ADS endpoint using `serviceName` from environment configuration:
 
-- **`is_allowed`** (`POST /authz-check/v1/is-allowed`): Returns `{ allowed, reason, errorMessage?, quotaDailyRemaining? }`.
-- **`diagnose`** (`POST /authz-check/v1/diagnose`): Returns `{ allowed, reason, requestContext?, attributes?, grantedRoles?, rolePolicies?, policies? }`.
-- **`all_granted_roles`** (`POST /authz-check/v1/all-granted-roles`): Returns the `string[]` array of granted role names.
-- **`all_granted_permissions`** (`POST /authz-check/v1/all-granted-permissions`): Returns `[{ resource, actions }]`.
+- **`is_allowed`** (`POST /authz-check/v1/is-allowed`): Registered by default. Returns `{ allowed, reason, errorMessage?, quotaDailyRemaining? }`.
+- **`diagnose`** (`POST /authz-check/v1/diagnose`): Opt in with `--expose-diagnose` or `SPEEDLE_EXPOSE_DIAGNOSE`. Returns `{ allowed, reason, requestContext?, attributes?, grantedRoles?, rolePolicies?, policies? }`. Available only on self-hosted `speedle-plus`; refused on `speedle-cloud`.
+- **`all_granted_roles`** (`POST /authz-check/v1/all-granted-roles`): Opt in with `--expose-all-granted-roles` or `SPEEDLE_EXPOSE_ALL_GRANTED_ROLES`. Returns the `string[]` array of granted role names.
+- **`all_granted_permissions`** (`POST /authz-check/v1/all-granted-permissions`): Opt in with `--expose-all-granted-permissions` or `SPEEDLE_EXPOSE_ALL_GRANTED_PERMISSIONS`. Returns `[{ resource, actions }]`.
 
 ### Tool Inputs
 
@@ -175,7 +206,7 @@ npm run test:package  # Build, npm pack, and smoke test the packed binary
 
 ### Running the Local Speedle Integration Test
 
-`test/integration.test.ts` builds `speedle-ads` and `speedle-pms` from a local checkout of [`teramoby/speedle-plus`](https://github.com/teramoby/speedle-plus) (requires Go) and starts each on a free loopback port against a temporary file store. The `check` test exercises all four check tools over stdio. The `manage` test creates a service, creates a policy and a role policy (and checks that PMS rejects an invalid condition), lists them, shows the effective policies, refuses a delete with the wrong confirmation, deletes with the right one, and deletes the service. When `SPEEDLE_PLUS_DIR` is unset (and `SPEEDLE_ADS_BIN` / `SPEEDLE_PMS_BIN` are unset), the tests are skipped, including in CI.
+`test/integration.test.ts` builds `speedle-ads` and `speedle-pms` from a local checkout of [`teramoby/speedle-plus`](https://github.com/teramoby/speedle-plus) (requires Go) and starts each on a free loopback port against a temporary file store. The `check` test verifies the default registration, then opts in to and exercises all four check tools over stdio. The `manage` test creates a service, creates a policy and a role policy (and checks that PMS rejects an invalid condition), lists them, shows the effective policies, refuses a delete with the wrong confirmation, deletes with the right one, and deletes the service. When `SPEEDLE_PLUS_DIR` is unset (and `SPEEDLE_ADS_BIN` / `SPEEDLE_PMS_BIN` are unset), the tests are skipped, including in CI.
 
 ```sh
 SPEEDLE_PLUS_DIR=/path/to/speedle-plus npm run test:integration

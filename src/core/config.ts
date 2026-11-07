@@ -8,9 +8,25 @@ import {
   resolvePmsOptions,
 } from "./options.js";
 
+export interface AdsConfig extends ClientOptions {
+  /** Register the detailed policy evaluation tool. Self-hosted Speedle only. */
+  exposeDiagnose: boolean;
+  /** Register the granted-role enumeration tool. */
+  exposeAllGrantedRoles: boolean;
+  /** Register the granted-permission enumeration tool. */
+  exposeAllGrantedPermissions: boolean;
+}
+
 export interface PmsConfig extends PmsClientOptions {
   /** When true, `manage` mode registers only read-only tools. */
   readOnly: boolean;
+}
+
+function readBoolean(raw: string | undefined, name: string): boolean {
+  const value = raw?.trim().toLowerCase();
+  if (value === "true" || value === "1") return true;
+  if (value === undefined || value === "" || value === "false" || value === "0") return false;
+  throw new ConfigurationError(`${name} must be "true", "false", "1", or "0"`);
 }
 
 /**
@@ -23,10 +39,13 @@ export interface PmsConfig extends PmsClientOptions {
  * - `SPEEDLE_BACKEND`: optional `"speedle-cloud"` or `"speedle-plus"` (defaults to `"speedle-cloud"` when a token is set and `"speedle-plus"` otherwise)
  * - `SPEEDLE_ALLOW_INSECURE_HTTP`: optional `"true"` or `"1"` to permit non-loopback `http://` on `speedle-plus` without a token
  * - `SPEEDLE_CA_CERT`: optional PEM trust anchor for self-hosted HTTPS endpoints
+ * - `SPEEDLE_EXPOSE_DIAGNOSE`: optional boolean to register `diagnose` (self-hosted Speedle only)
+ * - `SPEEDLE_EXPOSE_ALL_GRANTED_ROLES`: optional boolean to register `all_granted_roles`
+ * - `SPEEDLE_EXPOSE_ALL_GRANTED_PERMISSIONS`: optional boolean to register `all_granted_permissions`
  *
  * PMS configuration variables (`SPEEDLE_PMS_*`) are never read in `check` mode.
  */
-export function loadAdsConfig(env: NodeJS.ProcessEnv = process.env): ClientOptions {
+export function loadAdsConfig(env: NodeJS.ProcessEnv = process.env): AdsConfig {
   const endpoint = (env.SPEEDLE_ENDPOINT ?? env.SPEEDLE_ADS_ENDPOINT ?? env.SPEEDLE_ADS_URL ?? "").trim();
   if (endpoint === "") {
     throw new ConfigurationError(
@@ -57,7 +76,7 @@ export function loadAdsConfig(env: NodeJS.ProcessEnv = process.env): ClientOptio
 
   const caCert = env.SPEEDLE_CA_CERT !== undefined && env.SPEEDLE_CA_CERT !== "" ? env.SPEEDLE_CA_CERT : undefined;
 
-  const options: ClientOptions = {
+  const options: AdsConfig = {
     backend,
     endpoint,
     auth,
@@ -65,6 +84,12 @@ export function loadAdsConfig(env: NodeJS.ProcessEnv = process.env): ClientOptio
     allowInsecureHttp,
     caCert,
     userAgentSuffix: "speedle-mcp",
+    exposeDiagnose: readBoolean(env.SPEEDLE_EXPOSE_DIAGNOSE, "SPEEDLE_EXPOSE_DIAGNOSE"),
+    exposeAllGrantedRoles: readBoolean(env.SPEEDLE_EXPOSE_ALL_GRANTED_ROLES, "SPEEDLE_EXPOSE_ALL_GRANTED_ROLES"),
+    exposeAllGrantedPermissions: readBoolean(
+      env.SPEEDLE_EXPOSE_ALL_GRANTED_PERMISSIONS,
+      "SPEEDLE_EXPOSE_ALL_GRANTED_PERMISSIONS",
+    ),
   };
 
   // Validate options immediately and close the temporary agent created during validation.

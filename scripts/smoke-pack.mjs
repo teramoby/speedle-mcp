@@ -41,14 +41,39 @@ try {
     }
   };
 
-  // 2. check mode over stdio: lists exactly the four check tools.
+  // 2. check mode over stdio: only is_allowed by default; all tools require explicit opt-ins.
   const checkEnv = { SPEEDLE_ENDPOINT: "http://127.0.0.1:6734", SPEEDLE_SERVICE_NAME: "books" };
-  assert.deepEqual(await listTools(["check"], checkEnv), [
-    "is_allowed",
-    "diagnose",
-    "all_granted_roles",
-    "all_granted_permissions",
-  ]);
+  const allCheckTools = ["is_allowed", "diagnose", "all_granted_roles", "all_granted_permissions"];
+  assert.deepEqual(await listTools(["check"], checkEnv), ["is_allowed"]);
+  assert.deepEqual(
+    await listTools(
+      ["check", "--expose-diagnose", "--expose-all-granted-roles", "--expose-all-granted-permissions"],
+      checkEnv,
+    ),
+    allCheckTools,
+  );
+  assert.deepEqual(
+    await listTools(["check"], {
+      ...checkEnv,
+      SPEEDLE_EXPOSE_DIAGNOSE: "true",
+      SPEEDLE_EXPOSE_ALL_GRANTED_ROLES: "true",
+      SPEEDLE_EXPOSE_ALL_GRANTED_PERMISSIONS: "true",
+    }),
+    allCheckTools,
+  );
+
+  const cloudDiagnose = spawnSync(process.execPath, [binPath, "check", "--expose-diagnose"], {
+    encoding: "utf8",
+    env: {
+      PATH: process.env.PATH ?? "",
+      SPEEDLE_ENDPOINT: "https://cloud.speedle.io",
+      SPEEDLE_SERVICE_NAME: "books",
+      SPEEDLE_TOKEN: "spdl_smoke_test_token",
+      SPEEDLE_BACKEND: "speedle-cloud",
+    },
+  });
+  assert.notEqual(cloudDiagnose.status, 0, "expected cloud diagnose configuration to be refused");
+  assert.match(cloudDiagnose.stderr, /diagnose is not available with backend "speedle-cloud"/);
 
   // 3. manage mode over stdio: lists exactly the management tools; --read-only lists only the read tools.
   const readTools = [
@@ -74,7 +99,7 @@ try {
   assert.deepEqual(await listTools(["manage"], { ...manageEnv, SPEEDLE_PMS_READ_ONLY: "true" }), readTools);
 
   console.log(
-    `pack smoke ok: no-mode exited non-zero with usage; check listed the 4 check tools; manage listed the ${readTools.length + writeTools.length} management tools; manage --read-only and SPEEDLE_PMS_READ_ONLY listed only the ${readTools.length} read tools`,
+    `pack smoke ok: no-mode exited non-zero with usage; check listed only is_allowed by default and all 4 tools with flags or environment opt-ins; cloud diagnose was refused; manage listed the ${readTools.length + writeTools.length} management tools; manage --read-only and SPEEDLE_PMS_READ_ONLY listed only the ${readTools.length} read tools`,
   );
 } finally {
   rmSync(workDir, { recursive: true, force: true });

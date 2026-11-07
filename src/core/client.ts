@@ -16,6 +16,7 @@ import {
 import {
   ALL_GRANTED_PERMISSIONS_PATH,
   ALL_GRANTED_ROLES_PATH,
+  type Backend,
   type CallOptions,
   type ClientOptions,
   DIAGNOSE_PATH,
@@ -311,6 +312,11 @@ export class SpeedleClient {
 
   constructor(options: ClientOptions) {
     this.#engine = new HttpEngine(resolveOptions(options));
+  }
+
+  /** Configured Speedle backend. */
+  get backend(): Backend {
+    return this.#engine.opts.backend;
   }
 
   /** Configured service name (always sent on every request; never overridden by callers). */

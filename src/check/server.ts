@@ -3,12 +3,30 @@ import type { CallToolResult } from "@modelcontextprotocol/sdk/types.js";
 import { z } from "zod";
 import type { Attributes } from "../core/attributes.js";
 import type { Principal, SpeedleClient, Subject } from "../core/client.js";
-import { InvalidRequestError, SpeedleError, TooManyRequestsError } from "../core/errors.js";
+import { ConfigurationError, InvalidRequestError, SpeedleError, TooManyRequestsError } from "../core/errors.js";
+import type { Backend } from "../core/options.js";
 import { VERSION } from "../version.js";
 
-export const CHECK_TOOL_NAMES = ["is_allowed", "diagnose", "all_granted_roles", "all_granted_permissions"] as const;
+export const DEFAULT_CHECK_TOOL_NAMES = ["is_allowed"] as const;
+export const CHECK_OPT_IN_TOOL_NAMES = ["diagnose", "all_granted_roles", "all_granted_permissions"] as const;
+export const CHECK_TOOL_NAMES = [...DEFAULT_CHECK_TOOL_NAMES, ...CHECK_OPT_IN_TOOL_NAMES] as const;
 
 export type CheckToolName = (typeof CHECK_TOOL_NAMES)[number];
+
+export interface CheckServerOptions {
+  /** Register detailed policy evaluation output. Available only on self-hosted Speedle. */
+  exposeDiagnose?: boolean;
+  /** Register granted-role enumeration. */
+  exposeAllGrantedRoles?: boolean;
+  /** Register granted-permission enumeration. */
+  exposeAllGrantedPermissions?: boolean;
+}
+
+export function assertCheckServerOptions(backend: Backend, options: CheckServerOptions): void {
+  if (options.exposeDiagnose === true && backend === "speedle-cloud") {
+    throw new ConfigurationError('diagnose is not available with backend "speedle-cloud"');
+  }
+}
 
 const principalSchema = z.object({
   type: z.string().optional().describe('Principal type ("user", "group", "role", or "entity"). Defaults to "user".'),
@@ -92,10 +110,12 @@ function formatError(client: SpeedleClient, err: unknown): CallToolResult {
 }
 
 /**
- * Creates the MCP server for `check` mode, registering only the four read-only
- * authorization check tools against the configured Speedle ADS client.
+ * Creates the MCP server for `check` mode. Only `is_allowed` is registered by
+ * default; the other read-only authorization tools require explicit opt-ins.
  */
-export function createCheckServer(client: SpeedleClient): McpServer {
+export function createCheckServer(client: SpeedleClient, options: CheckServerOptions = {}): McpServer {
+  assertCheckServerOptions(client.backend, options);
+
   const server = new McpServer({
     name: "@speedle/mcp",
     version: VERSION,
@@ -139,94 +159,100 @@ export function createCheckServer(client: SpeedleClient): McpServer {
     },
   );
 
-  server.registerTool(
-    "diagnose",
-    {
-      title: "Diagnose Authorization Decision",
-      description:
-        "Diagnose why a subject is allowed or denied an action on a resource in the configured Speedle service (/authz-check/v1/diagnose), returning matched policies, role policies, granted roles, and condition evaluations. This tool only answers authorization questions and does not enforce anything or modify policies.",
-      inputSchema: {
-        subject: subjectSchema,
-        resource: z.string().describe('Resource identifier (for example "/books/123").'),
-        action: z.string().describe('Action name (for example "get" or "write").'),
-        attributes: attributesSchema,
+  if (options.exposeDiagnose === true) {
+    server.registerTool(
+      "diagnose",
+      {
+        title: "Diagnose Authorization Decision",
+        description:
+          "Diagnose why a subject is allowed or denied an action on a resource in the configured Speedle service (/authz-check/v1/diagnose), returning matched policies, role policies, granted roles, and condition evaluations. This tool only answers authorization questions and does not enforce anything or modify policies.",
+        inputSchema: {
+          subject: subjectSchema,
+          resource: z.string().describe('Resource identifier (for example "/books/123").'),
+          action: z.string().describe('Action name (for example "get" or "write").'),
+          attributes: attributesSchema,
+        },
+        annotations: readOnlyAnnotations,
       },
-      annotations: readOnlyAnnotations,
-    },
-    async (args, extra) => {
-      try {
-        const subject = normalizeSubject(args.subject);
-        const result = await client.diagnose(
-          subject,
-          args.action,
-          args.resource,
-          args.attributes as Attributes | undefined,
-          { signal: extra.signal },
-        );
-        return formatSuccess(client, result);
-      } catch (err) {
-        return formatError(client, err);
-      }
-    },
-  );
+      async (args, extra) => {
+        try {
+          const subject = normalizeSubject(args.subject);
+          const result = await client.diagnose(
+            subject,
+            args.action,
+            args.resource,
+            args.attributes as Attributes | undefined,
+            { signal: extra.signal },
+          );
+          return formatSuccess(client, result);
+        } catch (err) {
+          return formatError(client, err);
+        }
+      },
+    );
+  }
 
-  server.registerTool(
-    "all_granted_roles",
-    {
-      title: "List All Granted Roles",
-      description:
-        "List all roles granted to a subject in the configured Speedle service (/authz-check/v1/all-granted-roles). This tool only answers authorization questions and does not enforce anything or modify policies.",
-      inputSchema: {
-        subject: subjectSchema,
-        resource: z.string().optional().describe("Optional resource context for role evaluation."),
-        action: z.string().optional().describe("Optional action context for role evaluation."),
-        attributes: attributesSchema,
+  if (options.exposeAllGrantedRoles === true) {
+    server.registerTool(
+      "all_granted_roles",
+      {
+        title: "List All Granted Roles",
+        description:
+          "List all roles granted to a subject in the configured Speedle service (/authz-check/v1/all-granted-roles). This tool only answers authorization questions and does not enforce anything or modify policies.",
+        inputSchema: {
+          subject: subjectSchema,
+          resource: z.string().optional().describe("Optional resource context for role evaluation."),
+          action: z.string().optional().describe("Optional action context for role evaluation."),
+          attributes: attributesSchema,
+        },
+        annotations: readOnlyAnnotations,
       },
-      annotations: readOnlyAnnotations,
-    },
-    async (args, extra) => {
-      try {
-        const subject = normalizeSubject(args.subject);
-        const roles = await client.allGrantedRoles(subject, args.attributes as Attributes | undefined, {
-          resource: args.resource,
-          action: args.action,
-          signal: extra.signal,
-        });
-        return formatSuccess(client, roles);
-      } catch (err) {
-        return formatError(client, err);
-      }
-    },
-  );
+      async (args, extra) => {
+        try {
+          const subject = normalizeSubject(args.subject);
+          const roles = await client.allGrantedRoles(subject, args.attributes as Attributes | undefined, {
+            resource: args.resource,
+            action: args.action,
+            signal: extra.signal,
+          });
+          return formatSuccess(client, roles);
+        } catch (err) {
+          return formatError(client, err);
+        }
+      },
+    );
+  }
 
-  server.registerTool(
-    "all_granted_permissions",
-    {
-      title: "List All Granted Permissions",
-      description:
-        "List all permissions (resource and actions) granted to a subject in the configured Speedle service (/authz-check/v1/all-granted-permissions). This tool only answers authorization questions and does not enforce anything or modify policies.",
-      inputSchema: {
-        subject: subjectSchema,
-        resource: z.string().optional().describe("Optional resource context for permission evaluation."),
-        action: z.string().optional().describe("Optional action context for permission evaluation."),
-        attributes: attributesSchema,
+  if (options.exposeAllGrantedPermissions === true) {
+    server.registerTool(
+      "all_granted_permissions",
+      {
+        title: "List All Granted Permissions",
+        description:
+          "List all permissions (resource and actions) granted to a subject in the configured Speedle service (/authz-check/v1/all-granted-permissions). This tool only answers authorization questions and does not enforce anything or modify policies.",
+        inputSchema: {
+          subject: subjectSchema,
+          resource: z.string().optional().describe("Optional resource context for permission evaluation."),
+          action: z.string().optional().describe("Optional action context for permission evaluation."),
+          attributes: attributesSchema,
+        },
+        annotations: readOnlyAnnotations,
       },
-      annotations: readOnlyAnnotations,
-    },
-    async (args, extra) => {
-      try {
-        const subject = normalizeSubject(args.subject);
-        const permissions = await client.allGrantedPermissions(subject, args.attributes as Attributes | undefined, {
-          resource: args.resource,
-          action: args.action,
-          signal: extra.signal,
-        });
-        return formatSuccess(client, permissions);
-      } catch (err) {
-        return formatError(client, err);
-      }
-    },
-  );
+      async (args, extra) => {
+        try {
+          const subject = normalizeSubject(args.subject);
+          const permissions = await client.allGrantedPermissions(subject, args.attributes as Attributes | undefined, {
+            resource: args.resource,
+            action: args.action,
+            signal: extra.signal,
+          });
+          return formatSuccess(client, permissions);
+        } catch (err) {
+          return formatError(client, err);
+        }
+      },
+    );
+  }
 
   return server;
 }

@@ -1,4 +1,11 @@
-export { CHECK_TOOL_NAMES, type CheckToolName, createCheckServer } from "./check/server.js";
+export {
+  CHECK_OPT_IN_TOOL_NAMES,
+  CHECK_TOOL_NAMES,
+  type CheckServerOptions,
+  type CheckToolName,
+  createCheckServer,
+  DEFAULT_CHECK_TOOL_NAMES,
+} from "./check/server.js";
 export { runCli, USAGE } from "./cli.js";
 export * from "./core/index.js";
 export { PmsClient, type ServiceBody } from "./manage/client.js";
