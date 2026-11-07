@@ -36,8 +36,8 @@ function readBoolean(raw: string | undefined, name: string): boolean {
  * - `SPEEDLE_ENDPOINT` (or `SPEEDLE_ADS_ENDPOINT` / `SPEEDLE_ADS_URL`): ADS base URL (required)
  * - `SPEEDLE_SERVICE_NAME` (or `SPEEDLE_SERVICE`): service name (required)
  * - `SPEEDLE_TOKEN` (or `SPEEDLE_ADS_TOKEN`): optional bearer token (`spdl_…`)
- * - `SPEEDLE_BACKEND`: optional `"speedle-cloud"` or `"speedle-plus"` (defaults to `"speedle-cloud"` when a token is set and `"speedle-plus"` otherwise)
- * - `SPEEDLE_ALLOW_INSECURE_HTTP`: optional `"true"` or `"1"` to permit non-loopback `http://` on `speedle-plus` without a token
+ * - `SPEEDLE_BACKEND`: optional `"speedle-cloud"` or `"speedle"` (defaults to `"speedle-cloud"` when a token is set and `"speedle"` otherwise)
+ * - `SPEEDLE_ALLOW_INSECURE_HTTP`: optional `"true"` or `"1"` to permit non-loopback `http://` on backend `"speedle"` without a token
  * - `SPEEDLE_CA_CERT`: optional PEM trust anchor for self-hosted HTTPS endpoints
  * - `SPEEDLE_EXPOSE_DIAGNOSE`: optional boolean to register `diagnose` (self-hosted Speedle only)
  * - `SPEEDLE_EXPOSE_ALL_GRANTED_ROLES`: optional boolean to register `all_granted_roles`
@@ -64,11 +64,11 @@ export function loadAdsConfig(env: NodeJS.ProcessEnv = process.env): AdsConfig {
   const rawBackend = env.SPEEDLE_BACKEND?.trim();
   let backend: Backend;
   if (rawBackend === undefined || rawBackend === "") {
-    backend = auth.kind === "bearer" ? "speedle-cloud" : "speedle-plus";
-  } else if (rawBackend === "speedle-cloud" || rawBackend === "speedle-plus") {
+    backend = auth.kind === "bearer" ? "speedle-cloud" : "speedle";
+  } else if (rawBackend === "speedle-cloud" || rawBackend === "speedle") {
     backend = rawBackend;
   } else {
-    throw new ConfigurationError('SPEEDLE_BACKEND must be "speedle-cloud" or "speedle-plus"');
+    throw new ConfigurationError('SPEEDLE_BACKEND must be "speedle-cloud" or "speedle"');
   }
 
   const allowInsecureRaw = env.SPEEDLE_ALLOW_INSECURE_HTTP?.trim().toLowerCase();

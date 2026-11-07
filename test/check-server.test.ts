@@ -182,7 +182,7 @@ test("security: the bearer token never appears in tool output, errors, inspect o
   const server = await startServer(replies, { tls: true });
   after(() => server.close());
 
-  const { client, events } = build(server.url, { backend: "speedle-plus", auth: Auth.bearer(TOKEN) });
+  const { client, events } = build(server.url, { backend: "speedle", auth: Auth.bearer(TOKEN) });
   const { mcpClient, close } = await connectMcp(client, exposeAllTools);
   after(() => close());
 

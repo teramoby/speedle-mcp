@@ -12,7 +12,7 @@ import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js"
 import { CHECK_TOOL_NAMES, DEFAULT_CHECK_TOOL_NAMES } from "../src/check/server.js";
 import { MANAGE_TOOL_NAMES } from "../src/manage/server.js";
 
-const speedlePlusDir = process.env.SPEEDLE_PLUS_DIR;
+const speedleDir = process.env.SPEEDLE_DIR;
 const speedleAdsBin = process.env.SPEEDLE_ADS_BIN;
 const speedlePmsBin = process.env.SPEEDLE_PMS_BIN;
 
@@ -64,8 +64,8 @@ test(
   "integration: check mode MCP server over stdio against a real Speedle ADS",
   {
     skip:
-      !speedlePlusDir && !speedleAdsBin
-        ? "set SPEEDLE_PLUS_DIR (or SPEEDLE_ADS_BIN) to run the local Speedle integration test"
+      !speedleDir && !speedleAdsBin
+        ? "set SPEEDLE_DIR (or SPEEDLE_ADS_BIN) to run the local Speedle integration test"
         : false,
   },
   async () => {
@@ -77,11 +77,11 @@ test(
     try {
       let adsBin = speedleAdsBin;
       if (!adsBin) {
-        assert.ok(speedlePlusDir && existsSync(speedlePlusDir), `SPEEDLE_PLUS_DIR does not exist: ${speedlePlusDir}`);
+        assert.ok(speedleDir && existsSync(speedleDir), `SPEEDLE_DIR does not exist: ${speedleDir}`);
         adsBin = join(workDir, "speedle-ads");
         execFileSync(
           "go",
-          ["build", "-C", speedlePlusDir, "-mod=readonly", "-trimpath", "-o", adsBin, "./cmd/speedle-ads"],
+          ["build", "-C", speedleDir, "-mod=readonly", "-trimpath", "-o", adsBin, "./cmd/speedle-ads"],
           { stdio: "pipe" },
         );
       }
@@ -279,8 +279,8 @@ test(
   "integration: manage mode MCP server over stdio against a real Speedle PMS",
   {
     skip:
-      !speedlePlusDir && !speedlePmsBin
-        ? "set SPEEDLE_PLUS_DIR (or SPEEDLE_PMS_BIN) to run the local Speedle integration test"
+      !speedleDir && !speedlePmsBin
+        ? "set SPEEDLE_DIR (or SPEEDLE_PMS_BIN) to run the local Speedle integration test"
         : false,
   },
   async () => {
@@ -292,11 +292,11 @@ test(
     try {
       let pmsBin = speedlePmsBin;
       if (!pmsBin) {
-        assert.ok(speedlePlusDir && existsSync(speedlePlusDir), `SPEEDLE_PLUS_DIR does not exist: ${speedlePlusDir}`);
+        assert.ok(speedleDir && existsSync(speedleDir), `SPEEDLE_DIR does not exist: ${speedleDir}`);
         pmsBin = join(workDir, "speedle-pms");
         execFileSync(
           "go",
-          ["build", "-C", speedlePlusDir, "-mod=readonly", "-trimpath", "-o", pmsBin, "./cmd/speedle-pms"],
+          ["build", "-C", speedleDir, "-mod=readonly", "-trimpath", "-o", pmsBin, "./cmd/speedle-pms"],
           { stdio: "pipe" },
         );
       }
