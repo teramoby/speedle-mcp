@@ -37,8 +37,10 @@ export class ConfigurationError extends SpeedleError {}
 export class InvalidRequestError extends SpeedleError {}
 /** HTTP 401. */
 export class UnauthorizedError extends SpeedleError {}
-/** HTTP 403, including Speedle Cloud `service_mismatch`. */
+/** HTTP 403, including Speedle Cloud `service_mismatch` and `insufficient_scope`. */
 export class ForbiddenError extends SpeedleError {}
+/** HTTP 409, including Speedle Cloud `service_exists`, `policy_exists` and `quota_exceeded`. */
+export class ConflictError extends SpeedleError {}
 /** HTTP 413. */
 export class RequestTooLargeError extends SpeedleError {}
 

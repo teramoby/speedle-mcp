@@ -105,6 +105,15 @@ test("security: --read-only and SPEEDLE_PMS_READ_ONLY register only read tools o
     { args: ["manage"], env: {}, expected: MANAGE_TOOL_NAMES },
     { args: ["manage", "--read-only"], env: {}, expected: MANAGE_READ_TOOL_NAMES },
     { args: ["manage"], env: { SPEEDLE_PMS_READ_ONLY: "true" }, expected: MANAGE_READ_TOOL_NAMES },
+    {
+      args: ["manage", "--read-only"],
+      env: {
+        SPEEDLE_PMS_ENDPOINT: "https://cloud.speedle.io",
+        SPEEDLE_PMS_BACKEND: "speedle-cloud",
+        SPEEDLE_PMS_TOKEN: "spdl_cloud_018bcfe5",
+      },
+      expected: MANAGE_READ_TOOL_NAMES,
+    },
   ];
   for (const run of runs) {
     const transport = new StdioClientTransport({

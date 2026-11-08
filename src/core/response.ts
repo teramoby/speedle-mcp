@@ -1,5 +1,6 @@
 import type { IncomingHttpHeaders } from "node:http";
 import {
+  ConflictError,
   ForbiddenError,
   HttpError,
   InvalidRequestError,
@@ -103,6 +104,12 @@ const CLOUD_CODES: ReadonlySet<string> = new Set([
   "internal_error",
   "quota_unavailable",
   "snapshot_unavailable",
+  // Speedle Cloud `/policy-mgmt/v1` (the PMS-compatible management API).
+  "insufficient_scope",
+  "not_found",
+  "service_exists",
+  "policy_exists",
+  "quota_exceeded",
 ]);
 
 const MAX_MESSAGE_LENGTH = 512;
@@ -141,6 +148,18 @@ function unexpected<T>(why: string, status: number, quotaDailyRemaining: number 
   };
 }
 
+/** Parses Speedle Cloud's `X-Quota-Daily-Remaining` response header. */
+export function parseQuotaDailyRemaining(headers: IncomingHttpHeaders): number | undefined {
+  return nonNegativeInt(header(headers, "x-quota-daily-remaining"), false);
+}
+
+/** Speedle Cloud `quota_exceeded` carries the reached policy-count limit. */
+function policyLimit(parsed: unknown): number | undefined {
+  if (!isObject(parsed)) return undefined;
+  const limit = parsed.limit;
+  return typeof limit === "number" && Number.isSafeInteger(limit) && limit >= 0 ? limit : undefined;
+}
+
 export function classifyError<T>(
   backend: Backend,
   res: RawResponse,
@@ -157,7 +176,9 @@ export function classifyError<T>(
     if (backend === "speedle-cloud" && CLOUD_CODES.has(text)) code = text;
     else detail = text.length > MAX_MESSAGE_LENGTH ? `${text.slice(0, MAX_MESSAGE_LENGTH)}...` : text;
   }
-  const message = `HTTP ${status}${code ? `: ${code}` : detail ? `: ${detail}` : ""}`;
+  let message = `HTTP ${status}${code ? `: ${code}` : detail ? `: ${detail}` : ""}`;
+  const limit = code === "quota_exceeded" ? policyLimit(parsed) : undefined;
+  if (limit !== undefined) message += ` (limit ${limit})`;
   const fields = { status, code, quotaDailyRemaining };
   const retryAfter = nonNegativeInt(header(res.headers, "retry-after"), true);
   const final = (error: SpeedleError): Classified<T> => ({ error, retryable: false, retryAfterSeconds: undefined });
@@ -170,6 +191,8 @@ export function classifyError<T>(
       return final(new UnauthorizedError(message, fields));
     case 403:
       return final(new ForbiddenError(message, fields));
+    case 409:
+      return final(new ConflictError(message, fields));
     case 413:
       return final(new RequestTooLargeError(message, fields));
     case 429: {
@@ -196,7 +219,7 @@ export function classifyError<T>(
 }
 
 export function classify(backend: Backend, res: RawResponse, token?: string): Classified<Decision> {
-  const quotaDailyRemaining = nonNegativeInt(header(res.headers, "x-quota-daily-remaining"), false);
+  const quotaDailyRemaining = parseQuotaDailyRemaining(res.headers);
   const status = res.status;
   const parsed = parseJson(res.body);
 
@@ -219,7 +242,7 @@ export function classify(backend: Backend, res: RawResponse, token?: string): Cl
 }
 
 export function classifyDiagnose(backend: Backend, res: RawResponse, token?: string): Classified<DiagnoseResult> {
-  const quotaDailyRemaining = nonNegativeInt(header(res.headers, "x-quota-daily-remaining"), false);
+  const quotaDailyRemaining = parseQuotaDailyRemaining(res.headers);
   const status = res.status;
   const parsed = parseJson(res.body);
 
@@ -249,7 +272,7 @@ export function classifyDiagnose(backend: Backend, res: RawResponse, token?: str
 }
 
 export function classifyRoles(backend: Backend, res: RawResponse, token?: string): Classified<string[]> {
-  const quotaDailyRemaining = nonNegativeInt(header(res.headers, "x-quota-daily-remaining"), false);
+  const quotaDailyRemaining = parseQuotaDailyRemaining(res.headers);
   const status = res.status;
   const parsed = parseJson(res.body);
 
@@ -268,7 +291,7 @@ export function classifyPermissions(
   res: RawResponse,
   token?: string,
 ): Classified<GrantedPermission[]> {
-  const quotaDailyRemaining = nonNegativeInt(header(res.headers, "x-quota-daily-remaining"), false);
+  const quotaDailyRemaining = parseQuotaDailyRemaining(res.headers);
   const status = res.status;
   const parsed = parseJson(res.body);
 

@@ -37,8 +37,11 @@ Environment variables (check mode):
   SPEEDLE_EXPOSE_ALL_GRANTED_PERMISSIONS   Optional "true" to register all_granted_permissions
 
 Environment variables (manage mode):
-  SPEEDLE_PMS_ENDPOINT              PMS base URL (e.g. http://127.0.0.1:6733)
-  SPEEDLE_PMS_TOKEN                 Optional bearer token (requires https://)
+  SPEEDLE_PMS_ENDPOINT              PMS or Speedle Cloud base URL
+                                    (e.g. http://127.0.0.1:6733 or https://cloud.speedle.io)
+  SPEEDLE_PMS_BACKEND               Optional "speedle-cloud" or "speedle" (default)
+  SPEEDLE_PMS_TOKEN                 Optional bearer token; required for "speedle-cloud"
+                                    (needs the pms:read or pms:write scope there; https:// only)
   SPEEDLE_PMS_CERT, SPEEDLE_PMS_KEY Optional PEM client certificate and key for mutual TLS
   SPEEDLE_PMS_ALLOW_INSECURE_HTTP   Optional "true" to allow non-loopback http://
   SPEEDLE_PMS_CA_CERT               Optional extra PEM CA certificate for https://

@@ -89,7 +89,14 @@ export interface CallOptions {
   signal?: AbortSignal;
 }
 
-export type PmsClientOptions = Omit<ClientOptions, "backend" | "serviceName" | "failureMode">;
+/**
+ * Options for the policy management (PMS) client. `backend` selects a
+ * self-hosted Speedle PMS (`"speedle"`, the default) or Speedle Cloud's
+ * PMS-compatible API (`"speedle-cloud"`).
+ */
+export type PmsClientOptions = Omit<ClientOptions, "backend" | "serviceName" | "failureMode"> & {
+  backend?: Backend;
+};
 
 export const IS_ALLOWED_PATH = "/authz-check/v1/is-allowed";
 export const DIAGNOSE_PATH = "/authz-check/v1/diagnose";
@@ -243,7 +250,7 @@ export function resolvePmsOptions(options: PmsClientOptions): ResolvedOptions {
   if (options === null || typeof options !== "object") fail("options are required");
   return resolveOptions({
     ...options,
-    backend: "speedle",
+    backend: options.backend ?? "speedle",
     serviceName: "__pms__",
     failureMode: "error",
   });
