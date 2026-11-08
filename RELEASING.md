@@ -141,7 +141,11 @@ does not need to bypass 2FA.
 
 1. **First release only: create the stage-only token.** On npmjs.com, Access
    Tokens → Generate New Token → Granular Access Token:
-   - **Packages and scopes**: **All Packages**, or the `@speedle` scope. An
+   - **Packages and scopes**: the `@speedle` scope only. This is least
+     privilege: the token covers `@speedle` packages only, not every package
+     the account can access. If npm will not let a scoped token create a
+     package that does not exist yet, fall back to **All Packages** for this
+     first-release token, and delete it after the first release (step 3). An
      organization-only permission does not allow publishing.
    - Permission: **Read and write (stage only)**.
    - Do **not** check **Bypass two-factor authentication**. Staging never asks
