@@ -39,10 +39,9 @@ A pushed `vX.Y.Z` tag starts one run:
    A maintainer must approve the staged `X.Y.Z` with 2FA before it goes live;
    the job summary the workflow writes repeats the approve step.
 
-The `release` environment has no required reviewers (owner decision,
-2026-11-05): a pushed tag runs the checks and the upload without a GitHub
-approval. The 2FA approval of the staged version is a separate, deliberate npm
-step.
+The `release` environment has no required reviewers: a pushed tag runs the
+checks and the upload without a GitHub approval. The 2FA approval of the staged
+version is a separate, deliberate npm step.
 
 Only repository admins may push a release tag: the tag ruleset restricts `v*`
 tag creation, updates and deletions to admins, and the `release` environment
@@ -113,8 +112,8 @@ version and deprecate the bad one with
 Repository `teramoby/speedle-mcp`, Settings:
 
 1. **Environment** (Environments → New environment), name **`release`**:
-   - Do not configure required reviewers. The owner decided on 2026-11-05 that
-     releases require no human approval in GitHub.
+   - Do not configure required reviewers. Releases require no human approval in
+     GitHub.
    - Clear "Allow administrators to bypass configured protection rules".
    - Deployment branches and tags: "Selected branches and tags", with one rule
      of type **Tag**: `v*`.
