@@ -70,10 +70,14 @@ const deleteAnnotations = {
 } as const;
 
 const WRITE_NOTE =
-  "This tool changes live authorization policies in the configured self-hosted Speedle Policy Management Service (PMS).";
+  "This tool changes live authorization policies in the configured Speedle policy management service (a self-hosted PMS or Speedle Cloud).";
 const READ_NOTE = "Read-only: this tool does not change any policy.";
 
-const serviceNameSchema = z.string().describe('Speedle service name (for example "books").');
+const serviceNameSchema = z
+  .string()
+  .describe(
+    'Speedle service name (for example "books"). On Speedle Cloud this must be the service the token was issued for.',
+  );
 const effectSchema = z.enum(["grant", "deny"]).describe('Policy effect: "grant" or "deny".');
 const nameSchema = z.string().describe("Human-readable policy name.");
 const spdlSchema = z
@@ -125,6 +129,7 @@ function fail(client: PmsClient, err: unknown): CallToolResult {
     if (err.status !== undefined) payload.status = err.status;
     if (err.code !== undefined) payload.code = client.redact(err.code);
     if (err instanceof TooManyRequestsError && err.retryAfter !== undefined) payload.retryAfter = err.retryAfter;
+    if (err.quotaDailyRemaining !== undefined) payload.quotaDailyRemaining = err.quotaDailyRemaining;
   } else if (err instanceof SpdlError) {
     payload.error = err.name;
     payload.message = client.redact(err.message);
@@ -192,9 +197,9 @@ function rolePolicyBody(
 }
 
 /**
- * Creates the MCP server for `manage` mode. It registers only self-hosted
- * Speedle PMS policy management tools (no authorization check tools); with
- * `readOnly`, it registers only the read tools.
+ * Creates the MCP server for `manage` mode. It registers only Speedle policy
+ * management tools (no authorization check tools), for a self-hosted PMS or
+ * Speedle Cloud; with `readOnly`, it registers only the read tools.
  */
 export function createManageServer(client: PmsClient, options: ManageServerOptions = {}): McpServer {
   const server = new McpServer({ name: "@speedle/mcp", version: VERSION });
@@ -309,7 +314,7 @@ export function createManageServer(client: PmsClient, options: ManageServerOptio
     "show_effective_policies",
     {
       title: "Show Effective Policies",
-      description: `Show every policy and role policy Speedle evaluates for a service, as SPDL: the service's own policies and role policies plus the role policies of the "global" service, which apply to every service. Built from GET /service/{serviceName} and GET /service/global. ${READ_NOTE}`,
+      description: `Show every policy and role policy Speedle evaluates for a service, as SPDL: the service's own policies and role policies plus the role policies of the "global" service, which apply to every service. Built from GET /service/{serviceName} and GET /service/global. On Speedle Cloud only the token's own service is visible, so the global service is reported as not found. ${READ_NOTE}`,
       inputSchema: { serviceName: serviceNameSchema },
       annotations: readAnnotations,
     },
@@ -365,7 +370,7 @@ export function createManageServer(client: PmsClient, options: ManageServerOptio
     "create_service",
     {
       title: "Create Service",
-      description: `Create a Speedle service (POST /service) and return the created service. ${WRITE_NOTE}`,
+      description: `Create a Speedle service (POST /service) and return the created service. On Speedle Cloud a token is bound to one service, and this returns 409 service_exists when the service already exists or the account has reached its service limit. ${WRITE_NOTE}`,
       inputSchema: {
         name: serviceNameSchema,
         type: z
@@ -450,7 +455,7 @@ export function createManageServer(client: PmsClient, options: ManageServerOptio
     "delete_service",
     {
       title: "Delete Service",
-      description: `Delete a service and all of its policies and role policies (DELETE /service/{serviceName}). Destructive: "confirm" must equal serviceName, otherwise nothing is sent. Returns the deleted service as it was. ${WRITE_NOTE}`,
+      description: `Delete a service and all of its policies and role policies (DELETE /service/{serviceName}). On Speedle Cloud this also revokes the service's tokens, including the one in use. Destructive: "confirm" must equal serviceName, otherwise nothing is sent. Returns the deleted service as it was. ${WRITE_NOTE}`,
       inputSchema: {
         serviceName: serviceNameSchema,
         confirm: z.string().describe("Must be exactly the serviceName being deleted."),

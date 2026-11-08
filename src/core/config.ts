@@ -18,6 +18,7 @@ export interface AdsConfig extends ClientOptions {
 }
 
 export interface PmsConfig extends PmsClientOptions {
+  backend: Backend;
   /** When true, `manage` mode registers only read-only tools. */
   readOnly: boolean;
 }
@@ -103,8 +104,9 @@ export function loadAdsConfig(env: NodeJS.ProcessEnv = process.env): AdsConfig {
  * Reads PMS configuration from environment variables for `manage` mode.
  *
  * Supported variables:
- * - `SPEEDLE_PMS_ENDPOINT`: PMS base URL (required)
- * - `SPEEDLE_PMS_TOKEN`: optional bearer token (requires `https://`)
+ * - `SPEEDLE_PMS_ENDPOINT`: PMS or Speedle Cloud base URL (required)
+ * - `SPEEDLE_PMS_BACKEND`: optional `"speedle-cloud"` or `"speedle"` (defaults to `"speedle"`)
+ * - `SPEEDLE_PMS_TOKEN`: optional bearer token (required for `"speedle-cloud"`; requires `https://`)
  * - `SPEEDLE_PMS_CERT` and `SPEEDLE_PMS_KEY`: optional PEM client certificate and private key for mutual TLS
  * - `SPEEDLE_PMS_ALLOW_INSECURE_HTTP`: optional `"true"` or `"1"` to permit non-loopback `http://` without credentials
  * - `SPEEDLE_PMS_CA_CERT`: optional PEM trust anchor for self-hosted HTTPS endpoints
@@ -112,6 +114,10 @@ export function loadAdsConfig(env: NodeJS.ProcessEnv = process.env): AdsConfig {
  *
  * ADS configuration variables (`SPEEDLE_ENDPOINT`, `SPEEDLE_ADS_*`, `SPEEDLE_SERVICE_NAME`, `SPEEDLE_TOKEN`)
  * are never read in `manage` mode.
+ *
+ * Unlike `check` mode, a token alone never selects `"speedle-cloud"`: a
+ * self-hosted PMS with a bearer token is an existing setup, so the backend
+ * must be selected explicitly.
  */
 export function loadPmsConfig(env: NodeJS.ProcessEnv = process.env): PmsConfig {
   const endpoint = (env.SPEEDLE_PMS_ENDPOINT ?? "").trim();
@@ -141,6 +147,32 @@ export function loadPmsConfig(env: NodeJS.ProcessEnv = process.env): PmsConfig {
       ? Auth.mutualTls({ cert: rawCert, key: rawKey })
       : Auth.none();
 
+  const rawBackend = env.SPEEDLE_PMS_BACKEND?.trim();
+  let backend: Backend;
+  if (rawBackend === undefined || rawBackend === "") {
+    backend = "speedle";
+  } else if (rawBackend === "speedle-cloud" || rawBackend === "speedle") {
+    backend = rawBackend;
+  } else {
+    throw new ConfigurationError('SPEEDLE_PMS_BACKEND must be "speedle-cloud" or "speedle"');
+  }
+  if (backend === "speedle-cloud") {
+    if (!hasToken) {
+      throw new ConfigurationError('SPEEDLE_PMS_TOKEN is required when SPEEDLE_PMS_BACKEND is "speedle-cloud"');
+    }
+    let protocol: string | undefined;
+    try {
+      protocol = new URL(endpoint).protocol;
+    } catch {
+      // resolvePmsOptions below reports the invalid URL.
+    }
+    if (protocol !== undefined && protocol !== "https:") {
+      throw new ConfigurationError(
+        'SPEEDLE_PMS_ENDPOINT must use https:// when SPEEDLE_PMS_BACKEND is "speedle-cloud"',
+      );
+    }
+  }
+
   const allowInsecureRaw = env.SPEEDLE_PMS_ALLOW_INSECURE_HTTP?.trim().toLowerCase();
   const allowInsecureHttp = allowInsecureRaw === "true" || allowInsecureRaw === "1";
 
@@ -156,6 +188,7 @@ export function loadPmsConfig(env: NodeJS.ProcessEnv = process.env): PmsConfig {
   }
 
   const options: PmsConfig = {
+    backend,
     endpoint,
     auth,
     allowInsecureHttp,

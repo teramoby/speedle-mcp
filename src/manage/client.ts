@@ -2,7 +2,7 @@ import { inspect } from "node:util";
 import { HttpEngine, type Result } from "../core/client.js";
 import { InvalidRequestError, UnexpectedResponseError } from "../core/errors.js";
 import { type CallOptions, PMS_BASE_PATH, type PmsClientOptions, resolvePmsOptions } from "../core/options.js";
-import { type Classified, classifyError, parseJson } from "../core/response.js";
+import { type Classified, classifyError, parseJson, parseQuotaDailyRemaining } from "../core/response.js";
 import type { RawResponse } from "../core/transport.js";
 import type { PolicyBody, RolePolicyBody } from "./spdl.js";
 
@@ -21,7 +21,7 @@ function classifyPms(backend: "speedle-cloud" | "speedle", res: RawResponse, tok
     }
     return { value: parsed };
   }
-  return classifyError(backend, res, parsed, undefined, token);
+  return classifyError(backend, res, parsed, parseQuotaDailyRemaining(res.headers), token);
 }
 
 /** Validates a path segment: PMS splits the decoded URL path on "/", so a name must not contain one. */
@@ -33,9 +33,10 @@ function segment(value: string, what: string): string {
 }
 
 /**
- * A client for the self-hosted Speedle Policy Management Service REST API
- * (`/policy-mgmt/v1`, teramoby/speedle-plus `api/swagger/policy-manage.yaml`).
- * Reads are retried like ADS calls; creates are sent at most once.
+ * A client for the Speedle Policy Management Service REST API
+ * (`/policy-mgmt/v1`, teramoby/speedle-plus `api/swagger/policy-manage.yaml`),
+ * implemented by a self-hosted PMS and by Speedle Cloud. Reads are retried
+ * like ADS calls; creates are sent at most once.
  */
 export class PmsClient {
   readonly #engine: HttpEngine;
