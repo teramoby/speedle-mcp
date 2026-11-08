@@ -458,7 +458,31 @@ test("Cloud config: backend selection and validation", () => {
         SPEEDLE_PMS_BACKEND: "speedle-cloud",
         SPEEDLE_PMS_TOKEN: WRITE_TOKEN,
       }),
-    ConfigurationError,
+    (error: unknown) =>
+      error instanceof ConfigurationError &&
+      error.message === 'SPEEDLE_PMS_ENDPOINT must use https:// when SPEEDLE_PMS_BACKEND is "speedle-cloud"',
+  );
+  // A non-HTTP scheme gets the same Cloud message, and an unparseable URL is
+  // still reported by the normal options validation.
+  assert.throws(
+    () =>
+      loadPmsConfig({
+        SPEEDLE_PMS_ENDPOINT: "ftp://cloud.speedle.io",
+        SPEEDLE_PMS_BACKEND: "speedle-cloud",
+        SPEEDLE_PMS_TOKEN: WRITE_TOKEN,
+      }),
+    (error: unknown) =>
+      error instanceof ConfigurationError &&
+      error.message === 'SPEEDLE_PMS_ENDPOINT must use https:// when SPEEDLE_PMS_BACKEND is "speedle-cloud"',
+  );
+  assert.throws(
+    () =>
+      loadPmsConfig({
+        SPEEDLE_PMS_ENDPOINT: "not a url",
+        SPEEDLE_PMS_BACKEND: "speedle-cloud",
+        SPEEDLE_PMS_TOKEN: WRITE_TOKEN,
+      }),
+    (error: unknown) => error instanceof ConfigurationError && error.message === "endpoint is not a valid URL",
   );
 
   // manage mode never reads the check-mode backend selector.

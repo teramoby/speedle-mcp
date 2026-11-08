@@ -156,8 +156,21 @@ export function loadPmsConfig(env: NodeJS.ProcessEnv = process.env): PmsConfig {
   } else {
     throw new ConfigurationError('SPEEDLE_PMS_BACKEND must be "speedle-cloud" or "speedle"');
   }
-  if (backend === "speedle-cloud" && !hasToken) {
-    throw new ConfigurationError('SPEEDLE_PMS_TOKEN is required when SPEEDLE_PMS_BACKEND is "speedle-cloud"');
+  if (backend === "speedle-cloud") {
+    if (!hasToken) {
+      throw new ConfigurationError('SPEEDLE_PMS_TOKEN is required when SPEEDLE_PMS_BACKEND is "speedle-cloud"');
+    }
+    let protocol: string | undefined;
+    try {
+      protocol = new URL(endpoint).protocol;
+    } catch {
+      // resolvePmsOptions below reports the invalid URL.
+    }
+    if (protocol !== undefined && protocol !== "https:") {
+      throw new ConfigurationError(
+        'SPEEDLE_PMS_ENDPOINT must use https:// when SPEEDLE_PMS_BACKEND is "speedle-cloud"',
+      );
+    }
   }
 
   const allowInsecureRaw = env.SPEEDLE_PMS_ALLOW_INSECURE_HTTP?.trim().toLowerCase();
