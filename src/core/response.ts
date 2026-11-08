@@ -107,6 +107,7 @@ const CLOUD_CODES: ReadonlySet<string> = new Set([
   // Speedle Cloud `/policy-mgmt/v1` (the PMS-compatible management API).
   "insufficient_scope",
   "not_found",
+  // `service_exists`: the service already exists or the account has reached its service limit.
   "service_exists",
   "policy_exists",
   "quota_exceeded",

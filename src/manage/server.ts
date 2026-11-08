@@ -370,7 +370,7 @@ export function createManageServer(client: PmsClient, options: ManageServerOptio
     "create_service",
     {
       title: "Create Service",
-      description: `Create a Speedle service (POST /service) and return the created service. On Speedle Cloud the token is already bound to one service, so this returns 409 service_exists. ${WRITE_NOTE}`,
+      description: `Create a Speedle service (POST /service) and return the created service. On Speedle Cloud a token is bound to one service, and this returns 409 service_exists when the service already exists or the account has reached its service limit. ${WRITE_NOTE}`,
       inputSchema: {
         name: serviceNameSchema,
         type: z

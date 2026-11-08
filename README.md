@@ -152,7 +152,7 @@ Sign-in opens soon; once you can sign in, create a token in the Speedle Cloud co
 Cloud notes:
 
 - A Cloud token is bound to one service. `serviceName` must be that service's name; any other name returns `404 not_found`.
-- v1 allows one service per account, so `create_service` returns `409 service_exists`.
+- `create_service` returns `409 service_exists` when the service already exists or the account has reached its service limit.
 - `delete_service` also revokes the service's tokens, including the token in use.
 - Every management request counts toward the account's daily PMS + ADS quota. A burst or daily-quota limit returns `429` with `Retry-After`; the tool result includes `retryAfter` and, when the server sends it, `quotaDailyRemaining`.
 
@@ -215,7 +215,7 @@ Read tools (registered in every `manage` run):
 
 Write tools (not registered with `--read-only`); each returns what changed:
 
-- **`create_service`**: `POST /service`; returns the created service. On Speedle Cloud the token is already bound to one service, so this returns `409 service_exists`.
+- **`create_service`**: `POST /service`; returns the created service. On Speedle Cloud a token is bound to one service, and this returns `409 service_exists` when the service already exists or the account has reached its service limit.
 - **`create_policy`**, **`create_role_policy`**: `POST /service/{serviceName}/policy` or `/role-policy` from one SPDL statement (`spdl`) or a structured body; returns the created policy with its ID. Creates are sent once and never retried.
 
 PMS validates every policy on create, and it is authoritative. There is no separate SPDL validation tool, because PMS has no validation endpoint and a local validator could disagree with it. `spdl` is converted to the PMS JSON body by a TypeScript port of the speedle-plus `pkg/pdl` parser (`src/manage/spdl.ts`). It rejects the statements that parser rejects, with the same message and position, before anything is sent; the condition after `if` is checked by PMS. A differential test keeps the port in step with the Go parser (see [`test/fixtures/spdl/README.md`](https://github.com/teramoby/speedle-mcp/blob/main/test/fixtures/spdl/README.md)).
