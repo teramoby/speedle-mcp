@@ -117,6 +117,12 @@ jobs:
     needs: [verify, build]
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    # The top-level group is per tag, so two tag runs can proceed at the same
+    # time and both pass the first-release check before either stages. One
+    # shared group serializes the publish jobs.
+    concurrency:
+      group: publish-mcp
+      cancel-in-progress: false
     environment:
       name: release
       url: https://www.npmjs.com/package/@speedle/mcp/v/${{ needs.verify.outputs.version }}
