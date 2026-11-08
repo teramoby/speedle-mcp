@@ -53,7 +53,7 @@ Report security issues privately using the [Speedle security policy](https://git
 }
 ```
 
-### `check` mode — Speedle Cloud (coming soon)
+### `check` mode — Speedle Cloud (sign-in opens soon)
 
 ```json
 {
@@ -70,6 +70,8 @@ Report security issues privately using the [Speedle security policy](https://git
   }
 }
 ```
+
+Speedle Cloud sign-in opens soon; the `spdl_…` token becomes available then.
 
 ### `check` mode — Additional self-hosted tools
 
@@ -119,6 +121,41 @@ The equivalent environment variables are `SPEEDLE_EXPOSE_DIAGNOSE`, `SPEEDLE_EXP
 
 For a read-only policy reviewer, use `"args": ["-y", "@speedle/mcp", "manage", "--read-only"]` or set `SPEEDLE_PMS_READ_ONLY` to `"true"`.
 
+### `manage` mode — Speedle Cloud
+
+> **Security:** the warning above applies here too. Never give `manage` mode to an agent that is itself governed by the policies in this Speedle service; a `pms:write` token can change those policies, including the agent's own access.
+
+Speedle Cloud exposes the same PMS-compatible API at `https://cloud.speedle.io/policy-mgmt/v1`, so `manage` mode uses the same tools. Select the backend explicitly; a token alone does not switch the mode away from a self-hosted PMS.
+
+```json
+{
+  "mcpServers": {
+    "speedle-manage": {
+      "command": "npx",
+      "args": ["-y", "@speedle/mcp", "manage", "--read-only"],
+      "env": {
+        "SPEEDLE_PMS_ENDPOINT": "https://cloud.speedle.io",
+        "SPEEDLE_PMS_BACKEND": "speedle-cloud",
+        "SPEEDLE_PMS_TOKEN": "spdl_..."
+      }
+    }
+  }
+}
+```
+
+Sign-in opens soon; once you can sign in, create a token in the Speedle Cloud console under Tokens and choose its scope:
+
+- `pms:read` allows the read tools. Pair it with `--read-only` (or `SPEEDLE_PMS_READ_ONLY=true`) so the write tools are not registered at all.
+- `pms:write` allows every tool, including creates and deletes.
+- `ads` tokens answer authorization checks only; the management API rejects them with `403 insufficient_scope`.
+
+Cloud notes:
+
+- A Cloud token is bound to one service. `serviceName` must be that service's name; any other name returns `404 not_found`.
+- v1 allows one service per account, so `create_service` returns `409 service_exists`.
+- `delete_service` also revokes the service's tokens, including the token in use.
+- Every management request counts toward the account's daily PMS + ADS quota. A burst or daily-quota limit returns `429` with `Retry-After`; the tool result includes `retryAfter` and, when the server sends it, `quotaDailyRemaining`.
+
 ## Environment Variables (`check` mode)
 
 | Variable                                                           | Required      | Description                                                                                                                  |
@@ -155,18 +192,19 @@ Registered tools query `/authz-check/v1/*` on the configured ADS endpoint using 
 
 `manage` mode reads only these variables. It never reads `SPEEDLE_ENDPOINT`, `SPEEDLE_SERVICE_NAME`, `SPEEDLE_TOKEN` or any other ADS variable.
 
-| Variable                               | Required | Description                                                                               |
-| -------------------------------------- | -------- | ----------------------------------------------------------------------------------------- |
-| `SPEEDLE_PMS_ENDPOINT`                 | Yes      | PMS base URL, e.g. `http://127.0.0.1:6733`. A trailing `/policy-mgmt/v1` is accepted.     |
-| `SPEEDLE_PMS_TOKEN`                    | No       | Bearer token. Requires `https://`. Never logged or echoed in tool output or errors.       |
-| `SPEEDLE_PMS_CERT` / `SPEEDLE_PMS_KEY` | No       | PEM client certificate and private key for mutual TLS. The key is never logged or echoed. |
-| `SPEEDLE_PMS_ALLOW_INSECURE_HTTP`      | No       | Set to `"true"` to allow plaintext `http://` to non-loopback hosts without credentials.   |
-| `SPEEDLE_PMS_CA_CERT`                  | No       | Extra PEM CA certificate for self-hosted `https://` servers.                              |
-| `SPEEDLE_PMS_READ_ONLY`                | No       | Set to `"true"` to register only the read tools (same as `--read-only`).                  |
+| Variable                               | Required      | Description                                                                                                                                                             |
+| -------------------------------------- | ------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `SPEEDLE_PMS_ENDPOINT`                 | Yes           | PMS or Speedle Cloud base URL, e.g. `http://127.0.0.1:6733` or `https://cloud.speedle.io`. A trailing `/policy-mgmt/v1` is accepted.                                    |
+| `SPEEDLE_PMS_BACKEND`                  | No            | `"speedle-cloud"` or `"speedle"` (default, self-hosted PMS). Unlike `check` mode, a token alone does not select Cloud.                                                  |
+| `SPEEDLE_PMS_TOKEN`                    | Speedle Cloud | Bearer token. Required for `"speedle-cloud"`, where it needs the `pms:read` or `pms:write` scope. Requires `https://`. Never logged or echoed in tool output or errors. |
+| `SPEEDLE_PMS_CERT` / `SPEEDLE_PMS_KEY` | No            | PEM client certificate and private key for mutual TLS. The key is never logged or echoed.                                                                               |
+| `SPEEDLE_PMS_ALLOW_INSECURE_HTTP`      | No            | Set to `"true"` to allow plaintext `http://` to non-loopback hosts without credentials.                                                                                 |
+| `SPEEDLE_PMS_CA_CERT`                  | No            | Extra PEM CA certificate for self-hosted `https://` servers.                                                                                                            |
+| `SPEEDLE_PMS_READ_ONLY`                | No            | Set to `"true"` to register only the read tools (same as `--read-only`).                                                                                                |
 
 ## Tools (`manage` mode)
 
-All tools call the self-hosted Speedle PMS REST API (`/policy-mgmt/v1`, see `api/swagger/policy-manage.yaml` in teramoby/speedle-plus). Policies and role policies are returned with an `spdl` field that renders them as one SPDL statement (or `null` when SPDL cannot express them).
+All tools call the Speedle PMS REST API (`/policy-mgmt/v1`, see `api/swagger/policy-manage.yaml` in teramoby/speedle-plus), which both a self-hosted PMS and Speedle Cloud implement. Policies and role policies are returned with an `spdl` field that renders them as one SPDL statement (or `null` when SPDL cannot express them).
 
 Read tools (registered in every `manage` run):
 
@@ -177,12 +215,12 @@ Read tools (registered in every `manage` run):
 
 Write tools (not registered with `--read-only`); each returns what changed:
 
-- **`create_service`**: `POST /service`; returns the created service.
+- **`create_service`**: `POST /service`; returns the created service. On Speedle Cloud the token is already bound to one service, so this returns `409 service_exists`.
 - **`create_policy`**, **`create_role_policy`**: `POST /service/{serviceName}/policy` or `/role-policy` from one SPDL statement (`spdl`) or a structured body; returns the created policy with its ID. Creates are sent once and never retried.
 
 PMS validates every policy on create, and it is authoritative. There is no separate SPDL validation tool, because PMS has no validation endpoint and a local validator could disagree with it. `spdl` is converted to the PMS JSON body by a TypeScript port of the speedle-plus `pkg/pdl` parser (`src/manage/spdl.ts`). It rejects the statements that parser rejects, with the same message and position, before anything is sent; the condition after `if` is checked by PMS. A differential test keeps the port in step with the Go parser (see [`test/fixtures/spdl/README.md`](https://github.com/teramoby/speedle-mcp/blob/main/test/fixtures/spdl/README.md)).
 
-- **`delete_service`**, **`delete_policy`**, **`delete_role_policy`**: carry the MCP `destructiveHint` annotation and require `confirm` to equal the target's `serviceName`, `policyId` or `rolePolicyId`. A missing or different `confirm` fails without sending any request. They return the deleted object as it was before the delete.
+- **`delete_service`**, **`delete_policy`**, **`delete_role_policy`**: carry the MCP `destructiveHint` annotation and require `confirm` to equal the target's `serviceName`, `policyId` or `rolePolicyId`. A missing or different `confirm` fails without sending any request. They return the deleted object as it was before the delete. On Speedle Cloud, deleting a service also revokes its tokens, including the token in use.
 
 The PMS bulk deletes (`DELETE /service`, `DELETE /service/{serviceName}/policy`, `/role-policy`), functions and discover requests are not exposed.
 
