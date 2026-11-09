@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.2.0 (unreleased)
+## 0.2.0 (2026-11-10)
 
 - `manage` mode supports Speedle Cloud through `SPEEDLE_PMS_BACKEND="speedle-cloud"` and a `pms:read` or `pms:write` token. The backend defaults to `"speedle"`, so existing self-hosted setups do not change.
 - On Speedle Cloud, `create_service` returns `409 service_exists` when the service already exists or the account has reached its service limit.
