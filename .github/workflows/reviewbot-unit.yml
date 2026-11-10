@@ -1,0 +1,38 @@
+# GitHub-hosted unit tests for ReviewBot. Runs only when ReviewBot code or
+# workflows change. These tests do not call a model provider.
+name: ReviewBot unit tests
+
+on:
+  pull_request:
+    paths:
+      - ".github/codex/**"
+      - ".github/workflows/reviewbot*.yml"
+  push:
+    branches: [main]
+    paths:
+      - ".github/codex/**"
+      - ".github/workflows/reviewbot*.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: reviewbot-unit-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: ReviewBot unit tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: "22"
+      - name: Python unit tests
+        run: python3 -I -m unittest discover -s .github/codex/tests
+      - name: Node tests
+        run: node --test .github/codex/tests/reviewbot_github.test.js
