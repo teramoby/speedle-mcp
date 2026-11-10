@@ -1,0 +1,148 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.teramoby/speedle-mcp",
+  "title": "Speedle",
+  "description": "MCP server for self-hosted Speedle and Speedle Cloud: authorization checks and policy management",
+  "repository": {
+    "url": "https://github.com/teramoby/speedle-mcp",
+    "source": "github",
+    "id": "1447714586"
+  },
+  "version": "0.2.1",
+  "packages": [
+    {
+      "registryType": "npm",
+      "registryBaseUrl": "https://registry.npmjs.org",
+      "identifier": "@speedle/mcp",
+      "version": "0.2.1",
+      "runtimeHint": "npx",
+      "transport": {
+        "type": "stdio"
+      },
+      "packageArguments": [
+        {
+          "type": "positional",
+          "valueHint": "mode",
+          "value": "check",
+          "description": "Authorization check mode. Registers only the check tools and reads only ADS configuration."
+        }
+      ],
+      "environmentVariables": [
+        {
+          "name": "SPEEDLE_ENDPOINT",
+          "description": "ADS base URL, for example https://cloud.speedle.io or http://127.0.0.1:6734.",
+          "isRequired": true
+        },
+        {
+          "name": "SPEEDLE_ADS_ENDPOINT",
+          "description": "Alias of SPEEDLE_ENDPOINT."
+        },
+        {
+          "name": "SPEEDLE_ADS_URL",
+          "description": "Alias of SPEEDLE_ENDPOINT."
+        },
+        {
+          "name": "SPEEDLE_SERVICE_NAME",
+          "description": "Service name sent on every authorization check. Callers cannot override it.",
+          "isRequired": true
+        },
+        {
+          "name": "SPEEDLE_SERVICE",
+          "description": "Alias of SPEEDLE_SERVICE_NAME."
+        },
+        {
+          "name": "SPEEDLE_TOKEN",
+          "description": "Bearer token for Speedle Cloud. Required for Speedle Cloud; omit it for a self-hosted ADS without a token. The endpoint must use https://. Never logged or echoed.",
+          "isRequired": false,
+          "isSecret": true
+        },
+        {
+          "name": "SPEEDLE_ADS_TOKEN",
+          "description": "Alias of SPEEDLE_TOKEN.",
+          "isSecret": true
+        },
+        {
+          "name": "SPEEDLE_BACKEND",
+          "description": "speedle-cloud or speedle. Defaults to speedle-cloud when a bearer token is set, and speedle otherwise."
+        },
+        {
+          "name": "SPEEDLE_ALLOW_INSECURE_HTTP",
+          "description": "Set to true to allow http:// to a non-loopback host for backend speedle without a token."
+        },
+        {
+          "name": "SPEEDLE_CA_CERT",
+          "description": "Extra PEM CA certificate for a self-hosted https:// server."
+        },
+        {
+          "name": "SPEEDLE_EXPOSE_DIAGNOSE",
+          "description": "Set to true or 1 to register diagnose. Self-hosted speedle only; refused on speedle-cloud."
+        },
+        {
+          "name": "SPEEDLE_EXPOSE_ALL_GRANTED_ROLES",
+          "description": "Set to true or 1 to register all_granted_roles."
+        },
+        {
+          "name": "SPEEDLE_EXPOSE_ALL_GRANTED_PERMISSIONS",
+          "description": "Set to true or 1 to register all_granted_permissions."
+        }
+      ]
+    },
+    {
+      "registryType": "npm",
+      "registryBaseUrl": "https://registry.npmjs.org",
+      "identifier": "@speedle/mcp",
+      "version": "0.2.1",
+      "runtimeHint": "npx",
+      "transport": {
+        "type": "stdio"
+      },
+      "packageArguments": [
+        {
+          "type": "positional",
+          "valueHint": "mode",
+          "value": "manage",
+          "description": "Policy management mode. Registers only the management tools and reads only PMS configuration."
+        }
+      ],
+      "environmentVariables": [
+        {
+          "name": "SPEEDLE_PMS_ENDPOINT",
+          "description": "PMS or Speedle Cloud base URL, for example http://127.0.0.1:6733 or https://cloud.speedle.io. A trailing /policy-mgmt/v1 is accepted.",
+          "isRequired": true
+        },
+        {
+          "name": "SPEEDLE_PMS_BACKEND",
+          "description": "speedle-cloud or speedle. Defaults to speedle. A token alone does not select Speedle Cloud."
+        },
+        {
+          "name": "SPEEDLE_PMS_TOKEN",
+          "description": "Bearer token. Required for speedle-cloud, with scope pms:read or pms:write. The endpoint must use https://. Never logged or echoed.",
+          "isRequired": false,
+          "isSecret": true
+        },
+        {
+          "name": "SPEEDLE_PMS_CERT",
+          "description": "PEM client certificate for mutual TLS. Requires SPEEDLE_PMS_KEY. Cannot be combined with SPEEDLE_PMS_TOKEN."
+        },
+        {
+          "name": "SPEEDLE_PMS_KEY",
+          "description": "PEM private key for mutual TLS. Requires SPEEDLE_PMS_CERT. Never logged or echoed.",
+          "isRequired": false,
+          "isSecret": true
+        },
+        {
+          "name": "SPEEDLE_PMS_ALLOW_INSECURE_HTTP",
+          "description": "Set to true to allow http:// to a non-loopback host without credentials."
+        },
+        {
+          "name": "SPEEDLE_PMS_CA_CERT",
+          "description": "Extra PEM CA certificate for a self-hosted https:// server."
+        },
+        {
+          "name": "SPEEDLE_PMS_READ_ONLY",
+          "description": "Set to true to register only the read tools. Same effect as passing --read-only."
+        }
+      ]
+    }
+  ]
+}

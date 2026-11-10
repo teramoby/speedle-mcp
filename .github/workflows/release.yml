@@ -9,7 +9,10 @@
 #   publish    in the `release` environment, publishes the artifact built by
 #              `build` with `npm publish --provenance --access public` through
 #              trusted publishing (OIDC). The job fails if NPM_STAGE_TOKEN or
-#              NPM_BOOTSTRAP_TOKEN is set.
+#              NPM_BOOTSTRAP_TOKEN is set. After that publish succeeds, it
+#              publishes server.json to the MCP Registry with
+#              `mcp-publisher login github-oidc` (same OIDC permission, no
+#              registry secret).
 #
 # There is no pull_request or workflow_run trigger, so PR code never runs here.
 # Caches are off so a release never restores state written by another run.
@@ -123,7 +126,8 @@ jobs:
       name: release
       url: https://www.npmjs.com/package/@speedle/mcp/v/${{ needs.verify.outputs.version }}
     permissions:
-      id-token: write # npm trusted publishing and provenance
+      id-token: write # npm trusted publishing and MCP Registry GitHub OIDC
+      contents: read # server.json for the registry publish
     steps:
       # Fail before any publish if an npm token secret is present. Trusted
       # publishing authenticates with OIDC only; a token must not be able to
@@ -168,10 +172,49 @@ jobs:
         with:
           name: mcp-dist
           path: dist
+      # A re-run after npm publish succeeded must still reach the registry
+      # step. npm refuses to replace a version, so skip only when that exact
+      # version is already on npm.
       - name: npm publish
         env:
           VERSION: ${{ needs.verify.outputs.version }}
-        run: npm publish "./dist/speedle-mcp-$VERSION.tgz" --provenance --access public --ignore-scripts --registry https://registry.npmjs.org/
+        run: |
+          set -euo pipefail
+          published="$(npm view "@speedle/mcp@$VERSION" version --registry https://registry.npmjs.org/ 2>/dev/null || true)"
+          if [ "$published" = "$VERSION" ]; then
+            echo "@speedle/mcp@$VERSION is already on npm; continuing to the MCP Registry publish"
+          else
+            npm publish "./dist/speedle-mcp-$VERSION.tgz" --provenance --access public --ignore-scripts --registry https://registry.npmjs.org/
+          fi
+      - name: Checkout server.json
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Install cosign
+        uses: sigstore/cosign-installer@6f9f17788090df1f26f669e9d70d6ae9567deba6 # v4.1.2
+      - name: Download and verify mcp-publisher
+        env:
+          MCP_PUBLISHER_VERSION: v1.8.1
+        run: |
+          set -euo pipefail
+          os="$(uname -s | tr '[:upper:]' '[:lower:]')"
+          arch="$(uname -m | sed 's/x86_64/amd64/;s/aarch64/arm64/')"
+          archive="mcp-publisher_${os}_${arch}.tar.gz"
+          base_url="https://github.com/modelcontextprotocol/registry/releases/download/${MCP_PUBLISHER_VERSION}"
+
+          curl --fail --location --silent --show-error --output "$archive" "$base_url/$archive"
+          curl --fail --location --silent --show-error --output "$archive.sigstore.json" "$base_url/$archive.sigstore.json"
+          cosign verify-blob \
+            --bundle "$archive.sigstore.json" \
+            --certificate-identity "https://github.com/modelcontextprotocol/registry/.github/workflows/release.yml@refs/tags/${MCP_PUBLISHER_VERSION}" \
+            --certificate-oidc-issuer "https://token.actions.githubusercontent.com" \
+            "$archive"
+          tar xzf "$archive" mcp-publisher
+          rm -f "$archive" "$archive.sigstore.json"
+      - name: Authenticate to MCP Registry
+        run: ./mcp-publisher login github-oidc
+      - name: Publish server to MCP Registry
+        run: ./mcp-publisher publish
       - name: Record the published release
         env:
           VERSION: ${{ needs.verify.outputs.version }}
@@ -181,9 +224,12 @@ jobs:
             echo
             echo "Published with \`npm publish --provenance --access public\` through trusted publishing."
             echo
+            echo "Published \`io.github.teramoby/speedle-mcp\` version \`$VERSION\` to the MCP Registry."
+            echo
             echo "Verify:"
             echo
             echo '```sh'
             echo "npm view @speedle/mcp@$VERSION version dist.integrity dist.attestations"
+            echo "curl \"https://registry.modelcontextprotocol.io/v0.1/servers?search=io.github.teramoby/speedle-mcp\""
             echo '```'
           } >> "$GITHUB_STEP_SUMMARY"

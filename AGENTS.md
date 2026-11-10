@@ -27,4 +27,4 @@ speedle-mcp holds the official Model Context Protocol (MCP) server for self-host
 
 ## Releases
 
-- Never publish packages by hand.
+- Never publish the npm package or the MCP Registry entry by hand. `.github/workflows/release.yml` publishes both from a `vX.Y.Z` tag.

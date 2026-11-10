@@ -32,6 +32,8 @@ jobs:
       - run: npm ci
       - name: Lint and typecheck
         run: npm run lint
+      - name: Validate server.json against the published schema
+        run: node scripts/validate-server-json.mjs
       - name: Unit tests
         run: npm test
       - name: Package and binary smoke test

@@ -2,7 +2,8 @@
 
 `@speedle/mcp` is published only by `.github/workflows/release.yml`, from a tag
 on a commit of `main`, with `npm publish --provenance --access public` through
-npm trusted publishing. Never upload the package by hand.
+npm trusted publishing. The same workflow then publishes `server.json` to the
+MCP Registry. Never upload the package, or the registry entry, by hand.
 
 Versions are plain `X.Y.Z` (no pre-release suffix). The first release on npm
 is `0.2.0`; `0.1.0` was never published.
@@ -29,6 +30,19 @@ A pushed `vX.Y.Z` tag starts one run:
    `NPM_STAGE_TOKEN` or `NPM_BOOTSTRAP_TOKEN` set. Those secrets stay unset so
    a token cannot replace trusted publishing.
 
+   After the npm publish succeeds, the same job checks out `server.json` and
+   publishes it to the MCP Registry. It installs `mcp-publisher` v1.8.1,
+   verifies the release archive with cosign, then runs
+   `mcp-publisher login github-oidc` and `mcp-publisher publish`. GitHub OIDC
+   grants this repository `io.github.teramoby/*`, so the server name is
+   `io.github.teramoby/speedle-mcp`. No registry secret and no DNS change are
+   required. If that version is already on npm, the npm publish is skipped and
+   the registry publish still runs, so a failed registry step can be retried
+   with "Re-run failed jobs". The published `@speedle/mcp@0.2.1` package has
+   no `mcpName`, and the registry rejects an npm package without it, so
+   `0.2.1` is not registered. The first tag that contains `mcpName` registers
+   that tag's version.
+
 The `release` environment has no required reviewers. A pushed tag runs the
 checks and publishes the version. The version is installable when the publish
 job succeeds.
@@ -53,6 +67,11 @@ and the only artifact it stores is the package built for that run.
    | `package-lock.json` `version`              | same                                                                                      |
    | `package-lock.json` `packages[""].version` | same                                                                                      |
    | `src/version.ts` `VERSION`                 | edit by hand                                                                              |
+   | `server.json` `version`                    | edit by hand                                                                              |
+   | `server.json` `packages[].version`         | edit by hand; every package entry                                                         |
+
+   `package.json` `mcpName` must equal `server.json` `name`
+   (`io.github.teramoby/speedle-mcp`). The release check fails if they differ.
 
    To check locally: `node scripts/release-version.mjs vX.Y.Z`.
 
@@ -70,7 +89,8 @@ and the only artifact it stores is the package built for that run.
    - the run is for the requested tag and the expected `main` commit;
    - `preflight` passed, `verify` printed `... is on main` and an `ok:` line for
      every version source, and `build` is green;
-   - `publish` reports the tarball it published, with provenance.
+   - `publish` reports the tarball it published, with provenance, then publishes
+     `io.github.teramoby/speedle-mcp` to the MCP Registry.
 5. **Check** the registry. The npm page is linked from the `release`
    environment in the run. From any machine that can reach the registry:
 
@@ -81,10 +101,18 @@ and the only artifact it stores is the package built for that run.
    `version` is `X.Y.Z`. `dist.integrity` is the tarball integrity.
    `dist.attestations` is present when provenance was published.
 
+   The MCP Registry entry for that version:
+
+   ```sh
+   curl "https://registry.modelcontextprotocol.io/v0.1/servers?search=io.github.teramoby/speedle-mcp"
+   ```
+
 If the publish job fails before the version is on npm, fix the cause and use
-"Re-run failed jobs". Never move or reuse a tag that was created. Once
-published, npm does not allow a version to be replaced: to fix a bad release,
-release the next patch version and deprecate the bad one with
+"Re-run failed jobs". If it fails after the version is on npm, re-run the
+failed publish job: npm publish is skipped for a version already on npm, and
+the MCP Registry publish runs again. Never move or reuse a tag that was
+created. Once published, npm does not allow a version to be replaced: to fix a
+bad release, release the next patch version and deprecate the bad one with
 `npm deprecate @speedle/mcp@X.Y.Z "..."`.
 
 ## Owner setup on GitHub
