@@ -16,6 +16,8 @@ Or run directly with `npx`:
 npx @speedle/mcp check
 ```
 
+The MCP Registry name is `io.github.teramoby/speedle-mcp` (`server.json`). `check` and `manage` are separate package entries, one mode at a time.
+
 > **Note:** The shared HTTP client in `src/core` (used by both modes) follows the `teramoby/speedle-sdk` design specification (typed attributes, error model, and retry policy). A future release may replace it with `@speedle/sdk`.
 
 ## Security: Why Two Modes in One Package

@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
-import { readFileSync } from "node:fs";
+import { copyFileSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { test } from "node:test";
 import { fileURLToPath } from "node:url";
@@ -80,6 +81,21 @@ test("the publish job name and summary record a direct publish", () => {
   assert.doesNotMatch(publish, /0\.0\.0-stage/);
 });
 
+test("publish sends server.json to the MCP Registry after npm publish", () => {
+  const publish = jobBlocks().get("publish") ?? "";
+  assert.match(publish, /contents: read/);
+  assert.match(publish, /MCP_PUBLISHER_VERSION: v1\.8\.1/);
+  assert.match(publish, /mcp-publisher login github-oidc/);
+  assert.match(publish, /\.\/mcp-publisher publish/);
+  assert.match(publish, /sigstore\/cosign-installer@6f9f17788090df1f26f669e9d70d6ae9567deba6/);
+  assert.doesNotMatch(publish, /releases\/latest/);
+  assert.doesNotMatch(publish, /secrets\.MCP_/);
+  const npmPublish = publish.indexOf("name: npm publish");
+  const registryLogin = publish.indexOf("mcp-publisher login github-oidc");
+  const registryPublish = publish.indexOf("./mcp-publisher publish");
+  assert.ok(npmPublish >= 0 && npmPublish < registryLogin && registryLogin < registryPublish);
+});
+
 test("publish requires npm 11.5.1 or later for trusted publishing", () => {
   const publish = jobBlocks().get("publish") ?? "";
   assert.match(publish, /npm supports trusted publishing \(11\.5\.1 or later\)/);
@@ -132,10 +148,51 @@ test("release-version accepts only the current version as a plain vX.Y.Z tag", (
   const accepted = runReleaseVersion(`v${version}`);
   assert.equal(accepted.status, 0, accepted.stderr);
   assert.equal(accepted.stdout.trim(), `version=${version}`);
+  assert.match(accepted.stderr, new RegExp(`ok: server\\.json version = ${version}`));
+  assert.match(accepted.stderr, new RegExp(`ok: server\\.json packages\\[0\\]\\.version = ${version}`));
+  assert.match(accepted.stderr, new RegExp(`ok: server\\.json packages\\[1\\]\\.version = ${version}`));
+  assert.match(accepted.stderr, /ok: package\.json mcpName = io\.github\.teramoby\/speedle-mcp/);
 
   const other = version === "0.0.0" ? "0.0.1" : "0.0.0";
   for (const tag of [version, `v${other}`, `v${version}.0`, `v${version}-rc.1`]) {
     assert.equal(runReleaseVersion(tag).status, 1, `tag ${tag} must be rejected`);
   }
   assert.equal(runReleaseVersion().status, 2);
+});
+
+test("release-version rejects a server.json version or mcpName mismatch", () => {
+  const { version } = JSON.parse(readFileSync(join(root, "package.json"), "utf8")) as { version: string };
+  const mismatches: Array<(server: Record<string, unknown>, pkg: Record<string, unknown>) => void> = [
+    (server) => {
+      server.version = "9.9.9";
+    },
+    (server) => {
+      const packages = server.packages as Array<{ version: string }>;
+      packages[0].version = "9.9.9";
+    },
+    (_server, pkg) => {
+      pkg.mcpName = "io.github.teramoby/other";
+    },
+  ];
+  for (const mutate of mismatches) {
+    const dir = mkdtempSync(join(tmpdir(), "speedle-mcp-release-"));
+    try {
+      mkdirSync(join(dir, "src"));
+      copyFileSync(join(root, "package-lock.json"), join(dir, "package-lock.json"));
+      copyFileSync(join(root, "src", "version.ts"), join(dir, "src", "version.ts"));
+      const pkg = JSON.parse(readFileSync(join(root, "package.json"), "utf8")) as Record<string, unknown>;
+      const server = JSON.parse(readFileSync(join(root, "server.json"), "utf8")) as Record<string, unknown>;
+      mutate(server, pkg);
+      writeFileSync(join(dir, "package.json"), JSON.stringify(pkg));
+      writeFileSync(join(dir, "server.json"), JSON.stringify(server));
+      const result = spawnSync(process.execPath, [join(root, "scripts", "release-version.mjs"), `v${version}`], {
+        cwd: dir,
+        encoding: "utf8",
+      });
+      assert.equal(result.status, 1, result.stderr);
+      assert.match(result.stderr, /MISMATCH:/);
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  }
 });

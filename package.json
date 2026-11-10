@@ -1,6 +1,7 @@
 {
   "name": "@speedle/mcp",
   "version": "0.2.1",
+  "mcpName": "io.github.teramoby/speedle-mcp",
   "description": "MCP server for self-hosted Speedle and Speedle Cloud: authorization checks and policy management",
   "license": "UPL-1.0",
   "author": "The Speedle Authors",
@@ -62,6 +63,8 @@
   "devDependencies": {
     "@eslint/js": "10.0.1",
     "@types/node": "22.20.5",
+    "ajv": "8.20.0",
+    "ajv-formats": "3.0.1",
     "eslint": "10.14.0",
     "globals": "17.14.0",
     "prettier": "3.9.10",
