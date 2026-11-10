@@ -4,3 +4,11 @@ coverage/
 node_modules/
 package-lock.json
 test/fixtures/spdl/*.json
+
+# Ported ReviewBot scripts keep their original formatting. Prompts,
+# package.json and REVIEWBOT.md stay in the Prettier check.
+.github/codex/*.py
+.github/codex/*.js
+.github/codex/*.sh
+.github/codex/*.txt
+.github/codex/tests/**

@@ -244,6 +244,18 @@ npm test              # Unit and security tests against a mock HTTP server
 npm run test:package  # Build, npm pack, and smoke test the packed binary
 ```
 
+### Pull request review
+
+Opening or updating an open, non-draft pull request from this repository starts a ReviewBot review. ReviewBot reads the diff and does not run pull-request code. Collaborators with write access can request another pass by commenting on the pull request:
+
+```text
+@reviewbot review
+@reviewbot recheck
+@reviewbot explain why does this tool read that environment variable?
+```
+
+See [ReviewBot](.github/REVIEWBOT.md).
+
 ### Running the Local Speedle Integration Test
 
 `test/integration.test.ts` builds `speedle-ads` and `speedle-pms` from a local checkout of [`teramoby/speedle-plus`](https://github.com/teramoby/speedle-plus) (requires Go) and starts each on a free loopback port against a temporary file store. The `check` test verifies the default registration, then opts in to and exercises all four check tools over stdio. The `manage` test creates a service, creates a policy and a role policy (and checks that PMS rejects an invalid condition), lists them, shows the effective policies, refuses a delete with the wrong confirmation, deletes with the right one, and deletes the service. When `SPEEDLE_DIR` is unset (and `SPEEDLE_ADS_BIN` / `SPEEDLE_PMS_BIN` are unset), the tests are skipped, including in CI.

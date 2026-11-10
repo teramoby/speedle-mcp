@@ -1,0 +1,25 @@
+# pull_request plus workflow_run split; see .github/REVIEWBOT.md.
+name: ReviewBot PR Event
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+
+# This event runs untrusted PR code context. It may only complete as a pointer
+# (the run's PR and head SHA): no checkout, secrets, artifacts or token scopes.
+# ReviewBot (reviewbot-review.yml) does the review from the default branch.
+permissions: {}
+
+concurrency:
+  group: reviewbot-pr-event-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  route:
+    name: Record pull request pointer
+    if: github.event.pull_request.draft == false
+    runs-on: ubuntu-24.04
+    timeout-minutes: 1
+    steps:
+      - name: Complete pointer-only router
+        run: ":"
