@@ -6,13 +6,10 @@
 #   verify     tag format, commit on main, tag version == package metadata
 #   build      build, unit tests, package smoke test and the package artifact;
 #              no secrets and no OIDC token
-#   publish    in the protected `release` environment, stages the artifact
-#              built by `build` with `npm stage publish`. A maintainer approves
-#              the staged version on npmjs.com with 2FA before it goes live.
-#
-# The first release, before the package exists and trusted publishing can be
-# configured, authenticates with the stage-only token NPM_STAGE_TOKEN. Later
-# releases use trusted publishing (OIDC); the token must be deleted by then.
+#   publish    in the `release` environment, publishes the artifact built by
+#              `build` with `npm publish --provenance --access public` through
+#              trusted publishing (OIDC). The job fails if NPM_STAGE_TOKEN or
+#              NPM_BOOTSTRAP_TOKEN is set.
 #
 # There is no pull_request or workflow_run trigger, so PR code never runs here.
 # Caches are off so a release never restores state written by another run.
@@ -113,13 +110,12 @@ jobs:
           retention-days: 7
 
   publish:
-    name: Stage @speedle/mcp on npm
+    name: Publish @speedle/mcp on npm
     needs: [verify, build]
     runs-on: ubuntu-latest
     timeout-minutes: 10
     # The top-level group is per tag, so two tag runs can proceed at the same
-    # time and both pass the first-release check before either stages. One
-    # shared group serializes the publish jobs.
+    # time. One shared group serializes the publish jobs.
     concurrency:
       group: publish-mcp
       cancel-in-progress: false
@@ -129,6 +125,24 @@ jobs:
     permissions:
       id-token: write # npm trusted publishing and provenance
     steps:
+      # Fail before any publish if an npm token secret is present. Trusted
+      # publishing authenticates with OIDC only; a token must not be able to
+      # come back and take over the release (RELEASING.md).
+      - name: Refuse npm token secrets
+        env:
+          NPM_STAGE_TOKEN: ${{ secrets.NPM_STAGE_TOKEN }}
+          NPM_BOOTSTRAP_TOKEN: ${{ secrets.NPM_BOOTSTRAP_TOKEN }}
+        run: |
+          failed=0
+          if [ -n "$NPM_STAGE_TOKEN" ]; then
+            echo "::error::NPM_STAGE_TOKEN is set on the release environment. Delete it so releases use trusted publishing only (RELEASING.md)."
+            failed=1
+          fi
+          if [ -n "$NPM_BOOTSTRAP_TOKEN" ]; then
+            echo "::error::NPM_BOOTSTRAP_TOKEN is set on the release environment. Delete it so releases use trusted publishing only (RELEASING.md)."
+            failed=1
+          fi
+          exit "$failed"
       # No `registry-url` here. With it, setup-node (src/authutil.ts in v7.1.0)
       # always writes `//registry.npmjs.org/:_authToken=${NODE_AUTH_TOKEN}` to
       # $RUNNER_TEMP/.npmrc and points NPM_CONFIG_USERCONFIG at it, so an unset
@@ -143,81 +157,33 @@ jobs:
         with:
           node-version: "24"
           package-manager-cache: false
-      - name: npm supports staged publishing (11.15.0 or later)
+      - name: npm supports trusted publishing (11.5.1 or later)
         run: |
           npm --version
-          node -e 'const [a, b] = process.argv[1].split(".").map(Number); process.exit(a > 11 || (a === 11 && b >= 15) ? 0 : 1)' "$(npm --version)" || {
-            echo "::error::staged publishing needs npm 11.15.0 or later; upgrade the npm bundled with Node 24"
+          node -e 'const [a, b, c] = process.argv[1].split(".").map(Number); const ok = a > 11 || (a === 11 && (b > 5 || (b === 5 && c >= 1))); process.exit(ok ? 0 : 1)' "$(npm --version)" || {
+            echo "::error::trusted publishing needs npm 11.5.1 or later; this workflow uses Node 24"
             exit 1
           }
       - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         with:
           name: mcp-dist
           path: dist
-      # NPM_STAGE_TOKEN is only for the first release, before the package
-      # exists and trusted publishing can be configured (RELEASING.md). Once
-      # the package exists on npm, a still-set token fails the job, so it can
-      # never silently replace trusted publishing.
-      - name: Authentication mode
-        id: mode
-        env:
-          NPM_STAGE_TOKEN: ${{ secrets.NPM_STAGE_TOKEN }}
-        run: |
-          if [ -n "$NPM_STAGE_TOKEN" ]; then
-            status=$(curl -sS --max-time 30 -o /dev/null -w '%{http_code}' https://registry.npmjs.org/@speedle%2fmcp) || status=error
-            case "$status" in
-              404) ;;
-              200)
-                echo "::error::@speedle/mcp already exists on npm but the release environment secret NPM_STAGE_TOKEN is still set. Delete that secret (and revoke the token on npmjs.com) so this release uses trusted publishing (RELEASING.md, npm)."
-                exit 1 ;;
-              *)
-                echo "::error::could not check whether @speedle/mcp exists on npm (HTTP $status); refusing to publish with NPM_STAGE_TOKEN"
-                exit 1 ;;
-            esac
-            echo "mode=first-release" >> "$GITHUB_OUTPUT"
-          else
-            echo "mode=trusted-publishing" >> "$GITHUB_OUTPUT"
-          fi
-      # First release only: a stage-only token may create the package and
-      # stage its first version, but it cannot publish it. Provenance still
-      # comes from the GitHub OIDC token. The userconfig keeps the token out of
-      # the command line and off disk (npm expands ${NODE_AUTH_TOKEN}).
-      - name: npm stage publish (first release, stage-only token)
-        if: steps.mode.outputs.mode == 'first-release'
+      - name: npm publish
         env:
           VERSION: ${{ needs.verify.outputs.version }}
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_STAGE_TOKEN }}
-          NPM_CONFIG_USERCONFIG: ${{ runner.temp }}/npm-stage.npmrc
-        run: |
-          # shellcheck disable=SC2016 # the literal ${NODE_AUTH_TOKEN} is for npm to expand
-          printf '%s\n' '//registry.npmjs.org/:_authToken=${NODE_AUTH_TOKEN}' > "$NPM_CONFIG_USERCONFIG"
-          npm stage publish "./dist/speedle-mcp-$VERSION.tgz" --provenance --access public --ignore-scripts --registry https://registry.npmjs.org/
-      - name: npm stage publish (trusted publishing)
-        if: steps.mode.outputs.mode == 'trusted-publishing'
+        run: npm publish "./dist/speedle-mcp-$VERSION.tgz" --provenance --access public --ignore-scripts --registry https://registry.npmjs.org/
+      - name: Record the published release
         env:
           VERSION: ${{ needs.verify.outputs.version }}
-        run: npm stage publish "./dist/speedle-mcp-$VERSION.tgz" --provenance --access public --ignore-scripts --registry https://registry.npmjs.org/
-      # Staging defers the proof of presence. A maintainer finishes the release
-      # with 2FA on npmjs.com; nothing is installable before that.
-      - name: Approval required
-        env:
-          VERSION: ${{ needs.verify.outputs.version }}
-          FIRST_RELEASE: ${{ steps.mode.outputs.mode == 'first-release' && 'yes' || 'no' }}
         run: |
           {
-            echo "## Staged: a maintainer must approve this version"
+            echo "## Published @speedle/mcp@$VERSION"
             echo
-            echo "@speedle/mcp@$VERSION was uploaded with \`npm stage publish\` and is **not installable yet**."
+            echo "Published with \`npm publish --provenance --access public\` through trusted publishing."
             echo
-            echo "Approve it with 2FA:"
+            echo "Verify:"
             echo
-            echo "1. npmjs.com -> @speedle/mcp -> **Staged Packages** -> approve $VERSION, or"
-            echo "2. run \`npm stage approve <stage-id>\`."
-            echo
-            echo "The stage id is printed above as \`staged with id ...\`, or run \`npm stage list @speedle/mcp\`."
-            echo "The full steps are in RELEASING.md."
-            if [ "$FIRST_RELEASE" = "yes" ]; then
-              echo
-              echo "First release: npm already shows the public placeholder \`0.0.0-stage\`. Do not announce the package until $VERSION is approved."
-            fi
+            echo '```sh'
+            echo "npm view @speedle/mcp@$VERSION version dist.integrity dist.attestations"
+            echo '```'
           } >> "$GITHUB_STEP_SUMMARY"

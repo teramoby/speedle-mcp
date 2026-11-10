@@ -7,7 +7,7 @@ import { fileURLToPath } from "node:url";
 
 // Static checks of .github/workflows/release.yml. They keep the release
 // boundary that the workflow and RELEASING.md promise: a tag-only trigger, a
-// secret-free build, SHA-pinned actions and a single staging job.
+// secret-free build, SHA-pinned actions and a single trusted-publishing job.
 
 const root = fileURLToPath(new URL("../..", import.meta.url));
 const workflow = readFileSync(join(root, ".github", "workflows", "release.yml"), "utf8");
@@ -49,41 +49,41 @@ test("only the publish job has an OIDC token and the release environment", () =>
   assert.match(publish, /--registry https:\/\/registry\.npmjs\.org\//);
 });
 
-test("first release stages with the stage-only token and later releases use trusted publishing", () => {
+test("publish uses trusted publishing and fails if an npm token secret is set", () => {
   const publish = jobBlocks().get("publish") ?? "";
   const secrets = [...workflow.matchAll(/secrets\.([A-Z0-9_]+)/g)].map((match) => match[1]);
-  assert.deepEqual([...new Set(secrets)], ["NPM_STAGE_TOKEN"]);
-  assert.match(publish, /echo "mode=first-release" >> "\$GITHUB_OUTPUT"/);
-  assert.match(publish, /echo "mode=trusted-publishing" >> "\$GITHUB_OUTPUT"/);
-  assert.match(publish, /^ {8}if: steps\.mode\.outputs\.mode == 'first-release'$/m);
-  assert.match(publish, /^ {8}if: steps\.mode\.outputs\.mode == 'trusted-publishing'$/m);
-  assert.equal([...publish.matchAll(/npm stage publish "\.\/dist\/speedle-mcp-\$VERSION\.tgz"/g)].length, 2);
-  assert.doesNotMatch(publish, /^\s*(?:run: )?npm publish\b/m);
-});
-
-test("a lingering stage token fails once the package exists", () => {
-  const publish = jobBlocks().get("publish") ?? "";
-  assert.match(publish, /https:\/\/registry\.npmjs\.org\/@speedle%2fmcp/);
-  assert.match(publish, /404\)/);
+  assert.deepEqual([...new Set(secrets)].sort(), ["NPM_BOOTSTRAP_TOKEN", "NPM_STAGE_TOKEN"]);
+  assert.match(publish, /NPM_STAGE_TOKEN is set on the release environment/);
+  assert.match(publish, /NPM_BOOTSTRAP_TOKEN is set on the release environment/);
+  assert.match(publish, /exit "\$failed"/);
+  assert.ok(publish.indexOf("Refuse npm token secrets") < publish.indexOf("name: npm publish"));
   assert.match(
     publish,
-    /::error::@speedle\/mcp already exists on npm but the release environment secret NPM_STAGE_TOKEN is still set/,
+    /npm publish "\.\/dist\/speedle-mcp-\$VERSION\.tgz" --provenance --access public --ignore-scripts/,
   );
-  assert.match(publish, /refusing to publish with NPM_STAGE_TOKEN/);
+  assert.equal([...publish.matchAll(/npm publish "\.\/dist\/speedle-mcp-\$VERSION\.tgz"/g)].length, 1);
+  assert.doesNotMatch(workflow, /npm stage/);
+  assert.doesNotMatch(workflow, /NODE_AUTH_TOKEN:\s*\$\{\{\s*secrets\./);
+  assert.doesNotMatch(workflow, /first-release/);
+  assert.doesNotMatch(workflow, /staged/i);
+  assert.doesNotMatch(workflow, /approval required/i);
 });
 
-test("the job summary asks for the 2FA approval of the staged version", () => {
+test("the publish job name and summary record a direct publish", () => {
   const publish = jobBlocks().get("publish") ?? "";
+  assert.match(publish, /^ {4}name: Publish @speedle\/mcp on npm$/m);
   assert.match(publish, /GITHUB_STEP_SUMMARY/);
-  assert.match(publish, /Staged Packages/);
-  assert.match(publish, /npm stage approve <stage-id>/);
-  assert.match(publish, /0\.0\.0-stage/);
+  assert.match(publish, /Published @speedle\/mcp@\$VERSION/);
+  assert.match(publish, /npm view @speedle\/mcp@\$VERSION version dist\.integrity dist\.attestations/);
+  assert.doesNotMatch(publish, /Staged Packages/);
+  assert.doesNotMatch(publish, /npm stage approve/);
+  assert.doesNotMatch(publish, /0\.0\.0-stage/);
 });
 
-test("publish requires npm 11.15.0 or later for staged publishing", () => {
+test("publish requires npm 11.5.1 or later for trusted publishing", () => {
   const publish = jobBlocks().get("publish") ?? "";
-  assert.match(publish, /npm supports staged publishing \(11\.15\.0 or later\)/);
-  assert.match(publish, /a === 11 && b >= 15/);
+  assert.match(publish, /npm supports trusted publishing \(11\.5\.1 or later\)/);
+  assert.match(publish, /a === 11 && \(b > 5 \|\| \(b === 5 && c >= 1\)\)/);
 });
 
 test("release workflow pins every action by commit SHA", () => {
