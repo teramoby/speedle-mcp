@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.2.1 (2026-11-10)
+
+- Releases now publish to npm directly with provenance through trusted publishing. No tool or behaviour changes.
+
 ## 0.2.0 (2026-11-10)
 
 - `manage` mode supports Speedle Cloud through `SPEEDLE_PMS_BACKEND="speedle-cloud"` and a `pms:read` or `pms:write` token. The backend defaults to `"speedle"`, so existing self-hosted setups do not change.
