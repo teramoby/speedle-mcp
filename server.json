@@ -52,7 +52,7 @@
         },
         {
           "name": "SPEEDLE_TOKEN",
-          "description": "Bearer token for Speedle Cloud. Required for Speedle Cloud; omit it for a self-hosted ADS without a token. The endpoint must use https://. Never logged or echoed.",
+          "description": "API key (bearer token) for Speedle Cloud. Required for Speedle Cloud; omit it for a self-hosted ADS without an API key or bearer token. The endpoint must use https://. Never logged or echoed.",
           "isRequired": false,
           "isSecret": true
         },
@@ -63,11 +63,11 @@
         },
         {
           "name": "SPEEDLE_BACKEND",
-          "description": "speedle-cloud or speedle. Defaults to speedle-cloud when a bearer token is set, and speedle otherwise."
+          "description": "speedle-cloud or speedle. Defaults to speedle-cloud when SPEEDLE_TOKEN is set, and speedle otherwise."
         },
         {
           "name": "SPEEDLE_ALLOW_INSECURE_HTTP",
-          "description": "Set to true to allow http:// to a non-loopback host for backend speedle without a token."
+          "description": "Set to true to allow http:// to a non-loopback host for backend speedle without an API key or bearer token."
         },
         {
           "name": "SPEEDLE_CA_CERT",
@@ -112,11 +112,11 @@
         },
         {
           "name": "SPEEDLE_PMS_BACKEND",
-          "description": "speedle-cloud or speedle. Defaults to speedle. A token alone does not select Speedle Cloud."
+          "description": "speedle-cloud or speedle. Defaults to speedle. SPEEDLE_PMS_TOKEN alone does not select Speedle Cloud."
         },
         {
           "name": "SPEEDLE_PMS_TOKEN",
-          "description": "Bearer token. Required for speedle-cloud, with scope pms:read or pms:write. The endpoint must use https://. Never logged or echoed.",
+          "description": "API key (bearer token). Required for speedle-cloud, with scope pms:read or pms:write. The endpoint must use https://. Never logged or echoed.",
           "isRequired": false,
           "isSecret": true
         },

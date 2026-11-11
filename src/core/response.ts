@@ -98,6 +98,7 @@ const CLOUD_CODES: ReadonlySet<string> = new Set([
   "unsupported_token_assertion",
   "unauthorized",
   "service_mismatch",
+  "service_not_found",
   "request_too_large",
   "rate_limited",
   "daily_quota_exceeded",
@@ -180,6 +181,8 @@ export function classifyError<T>(
   let message = `HTTP ${status}${code ? `: ${code}` : detail ? `: ${detail}` : ""}`;
   const limit = code === "quota_exceeded" ? policyLimit(parsed) : undefined;
   if (limit !== undefined) message += ` (limit ${limit})`;
+  else if (code === "service_not_found") message += " (service not found in the Speedle Cloud account)";
+  else if (code === "service_mismatch") message += " (service does not match the Speedle Cloud credential)";
   const fields = { status, code, quotaDailyRemaining };
   const retryAfter = nonNegativeInt(header(res.headers, "retry-after"), true);
   const final = (error: SpeedleError): Classified<T> => ({ error, retryable: false, retryAfterSeconds: undefined });

@@ -36,9 +36,9 @@ function readBoolean(raw: string | undefined, name: string): boolean {
  * Supported variables:
  * - `SPEEDLE_ENDPOINT` (or `SPEEDLE_ADS_ENDPOINT` / `SPEEDLE_ADS_URL`): ADS base URL (required)
  * - `SPEEDLE_SERVICE_NAME` (or `SPEEDLE_SERVICE`): service name (required)
- * - `SPEEDLE_TOKEN` (or `SPEEDLE_ADS_TOKEN`): optional bearer token (`spdl_…`)
- * - `SPEEDLE_BACKEND`: optional `"speedle-cloud"` or `"speedle"` (defaults to `"speedle-cloud"` when a token is set and `"speedle"` otherwise)
- * - `SPEEDLE_ALLOW_INSECURE_HTTP`: optional `"true"` or `"1"` to permit non-loopback `http://` on backend `"speedle"` without a token
+ * - `SPEEDLE_TOKEN` (or `SPEEDLE_ADS_TOKEN`): optional API key / bearer token (`spdl_…`)
+ * - `SPEEDLE_BACKEND`: optional `"speedle-cloud"` or `"speedle"` (defaults to `"speedle-cloud"` when an API key is set and `"speedle"` otherwise)
+ * - `SPEEDLE_ALLOW_INSECURE_HTTP`: optional `"true"` or `"1"` to permit non-loopback `http://` on backend `"speedle"` without an API key or bearer token
  * - `SPEEDLE_CA_CERT`: optional PEM trust anchor for self-hosted HTTPS endpoints
  * - `SPEEDLE_EXPOSE_DIAGNOSE`: optional boolean to register `diagnose` (self-hosted Speedle only)
  * - `SPEEDLE_EXPOSE_ALL_GRANTED_ROLES`: optional boolean to register `all_granted_roles`
@@ -106,7 +106,7 @@ export function loadAdsConfig(env: NodeJS.ProcessEnv = process.env): AdsConfig {
  * Supported variables:
  * - `SPEEDLE_PMS_ENDPOINT`: PMS or Speedle Cloud base URL (required)
  * - `SPEEDLE_PMS_BACKEND`: optional `"speedle-cloud"` or `"speedle"` (defaults to `"speedle"`)
- * - `SPEEDLE_PMS_TOKEN`: optional bearer token (required for `"speedle-cloud"`; requires `https://`)
+ * - `SPEEDLE_PMS_TOKEN`: optional API key / bearer token (required for `"speedle-cloud"`; requires `https://`)
  * - `SPEEDLE_PMS_CERT` and `SPEEDLE_PMS_KEY`: optional PEM client certificate and private key for mutual TLS
  * - `SPEEDLE_PMS_ALLOW_INSECURE_HTTP`: optional `"true"` or `"1"` to permit non-loopback `http://` without credentials
  * - `SPEEDLE_PMS_CA_CERT`: optional PEM trust anchor for self-hosted HTTPS endpoints
@@ -115,7 +115,7 @@ export function loadAdsConfig(env: NodeJS.ProcessEnv = process.env): AdsConfig {
  * ADS configuration variables (`SPEEDLE_ENDPOINT`, `SPEEDLE_ADS_*`, `SPEEDLE_SERVICE_NAME`, `SPEEDLE_TOKEN`)
  * are never read in `manage` mode.
  *
- * Unlike `check` mode, a token alone never selects `"speedle-cloud"`: a
+ * Unlike `check` mode, `SPEEDLE_PMS_TOKEN` alone never selects `"speedle-cloud"`: a
  * self-hosted PMS with a bearer token is an existing setup, so the backend
  * must be selected explicitly.
  */

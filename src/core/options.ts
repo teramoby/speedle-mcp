@@ -70,7 +70,7 @@ export interface ClientOptions {
   /** Base URL, for example "https://cloud.speedle.io". */
   endpoint: string;
   auth: Auth;
-  /** Required; on Speedle Cloud, the token's service. */
+  /** Required; selects the Speedle service evaluated on each request. */
   serviceName: string;
   retry?: RetryPolicy;
   failureMode?: FailureMode;
