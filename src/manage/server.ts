@@ -76,7 +76,12 @@ const READ_NOTE = "Read-only: this tool does not change any policy.";
 const serviceNameSchema = z
   .string()
   .describe(
-    'Speedle service name (for example "books"). On Speedle Cloud this must be the service the token was issued for.',
+    'Speedle service name (for example "books"). On Speedle Cloud this selects a service in the API key\'s account.',
+  );
+const newServiceNameSchema = z
+  .string()
+  .describe(
+    'Name for the new service (for example "books"). On Speedle Cloud it is created in the API key\'s account.',
   );
 const effectSchema = z.enum(["grant", "deny"]).describe('Policy effect: "grant" or "deny".');
 const nameSchema = z.string().describe("Human-readable policy name.");
@@ -314,7 +319,7 @@ export function createManageServer(client: PmsClient, options: ManageServerOptio
     "show_effective_policies",
     {
       title: "Show Effective Policies",
-      description: `Show every policy and role policy Speedle evaluates for a service, as SPDL: the service's own policies and role policies plus the role policies of the "global" service, which apply to every service. Built from GET /service/{serviceName} and GET /service/global. On Speedle Cloud only the token's own service is visible, so the global service is reported as not found. ${READ_NOTE}`,
+      description: `Show every policy and role policy Speedle evaluates for a service, as SPDL: the service's own policies and role policies plus the role policies of the "global" service, which apply to every service. Built from GET /service/{serviceName} and GET /service/global (if the "global" service does not exist, globalServiceFound is false). ${READ_NOTE}`,
       inputSchema: { serviceName: serviceNameSchema },
       annotations: readAnnotations,
     },
@@ -370,9 +375,9 @@ export function createManageServer(client: PmsClient, options: ManageServerOptio
     "create_service",
     {
       title: "Create Service",
-      description: `Create a Speedle service (POST /service) and return the created service. On Speedle Cloud a token is bound to one service, and this returns 409 service_exists when the service already exists or the account has reached its service limit. ${WRITE_NOTE}`,
+      description: `Create a Speedle service (POST /service) and return the created service. On Speedle Cloud this returns 409 service_exists when the service already exists or the account has reached its service limit. ${WRITE_NOTE}`,
       inputSchema: {
-        name: serviceNameSchema,
+        name: newServiceNameSchema,
         type: z
           .enum(["application", "k8s-cluster"])
           .optional()
@@ -455,7 +460,7 @@ export function createManageServer(client: PmsClient, options: ManageServerOptio
     "delete_service",
     {
       title: "Delete Service",
-      description: `Delete a service and all of its policies and role policies (DELETE /service/{serviceName}). On Speedle Cloud this also revokes the service's tokens, including the one in use. Destructive: "confirm" must equal serviceName, otherwise nothing is sent. Returns the deleted service as it was. ${WRITE_NOTE}`,
+      description: `Delete a service and all of its policies and role policies (DELETE /service/{serviceName}). Destructive: "confirm" must equal serviceName, otherwise nothing is sent. Returns the deleted service as it was. ${WRITE_NOTE}`,
       inputSchema: {
         serviceName: serviceNameSchema,
         confirm: z.string().describe("Must be exactly the serviceName being deleted."),

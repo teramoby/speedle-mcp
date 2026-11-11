@@ -64,7 +64,7 @@ function cloudApi(req: RecordedRequest): Reply {
   if (path === `/policy-mgmt/v1/service/books/role-policy/${ROLE_POLICY.id}`) {
     return req.method === "GET" ? { status: 200, body: ROLE_POLICY } : { status: 204 };
   }
-  // Cloud exposes only the token's own service; the global service is absent.
+  // Unknown services (including "global" when the account has none) return 404 not_found.
   return { status: 404, body: { error: "not_found" } };
 }
 
@@ -297,11 +297,29 @@ const errorCases: ErrorCase[] = [
     requests: 1,
   },
   {
+    name: "403 service_mismatch (legacy Cloud deployment)",
+    reply: { status: 403, body: { error: "service_mismatch" } },
+    error: "ForbiddenError",
+    status: 403,
+    code: "service_mismatch",
+    message: /service_mismatch/,
+    requests: 1,
+  },
+  {
     name: "404 not_found",
     reply: { status: 404, body: { error: "not_found" } },
     error: "HttpError",
     status: 404,
     code: "not_found",
+    requests: 1,
+  },
+  {
+    name: "404 service_not_found",
+    reply: { status: 404, body: { error: "service_not_found" } },
+    error: "HttpError",
+    status: 404,
+    code: "service_not_found",
+    message: /service_not_found.*service not found in the Speedle Cloud account/,
     requests: 1,
   },
   {

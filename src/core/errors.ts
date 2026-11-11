@@ -37,7 +37,7 @@ export class ConfigurationError extends SpeedleError {}
 export class InvalidRequestError extends SpeedleError {}
 /** HTTP 401. */
 export class UnauthorizedError extends SpeedleError {}
-/** HTTP 403, including Speedle Cloud `service_mismatch` and `insufficient_scope`. */
+/** HTTP 403, including Speedle Cloud `insufficient_scope` and legacy `service_mismatch`. */
 export class ForbiddenError extends SpeedleError {}
 /** HTTP 409, including Speedle Cloud `service_exists`, `policy_exists` and `quota_exceeded`. */
 export class ConflictError extends SpeedleError {}
@@ -61,7 +61,7 @@ export class QuotaExceededError extends TooManyRequestsError {}
 export class ServiceUnavailableError extends SpeedleError {}
 /** HTTP 500 and other 5xx. */
 export class ServerError extends SpeedleError {}
-/** Any other HTTP status, including 3xx and 404. */
+/** Any other HTTP status, including 3xx and 404 (such as Speedle Cloud `service_not_found` and `not_found`). */
 export class HttpError extends SpeedleError {}
 /** The response body is not the expected JSON. */
 export class UnexpectedResponseError extends SpeedleError {}

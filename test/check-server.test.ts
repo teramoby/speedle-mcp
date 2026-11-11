@@ -440,3 +440,68 @@ test("check tools execute against mock ADS with typed and inferred attributes an
   assert.equal(JSON.parse(toolText(badRes)).error, "InvalidRequestError");
   assert.equal(server.requests.length, 4);
 });
+
+test("check tools on Speedle Cloud report 404 service_not_found and legacy 403 service_mismatch without retrying", async () => {
+  const server = await startServer(
+    [
+      { status: 404, headers: { "X-Quota-Daily-Remaining": "9997" }, body: { error: "service_not_found" } },
+      { status: 403, headers: { "X-Quota-Daily-Remaining": "9996" }, body: { error: "service_mismatch" } },
+      { status: 404, headers: { "X-Quota-Daily-Remaining": "9995" }, body: { error: "service_not_found" } },
+      { status: 404, headers: { "X-Quota-Daily-Remaining": "9994" }, body: { error: "service_not_found" } },
+    ],
+    { tls: true },
+  );
+  after(() => server.close());
+
+  const { client } = build(server.url, {
+    backend: "speedle-cloud",
+    serviceName: "unknown-service",
+    retry: { maxAttempts: 3 },
+  });
+  const { mcpClient, close } = await connectMcp(client, {
+    exposeAllGrantedRoles: true,
+    exposeAllGrantedPermissions: true,
+  });
+  after(() => close());
+
+  const notFound = await mcpClient.callTool({
+    name: "is_allowed",
+    arguments: { subject: "alice", resource: "/books/1", action: "get" },
+  });
+  assert.equal(notFound.isError, true);
+  const notFoundPayload = JSON.parse(toolText(notFound)) as Record<string, unknown>;
+  assert.equal(notFoundPayload.error, "HttpError");
+  assert.equal(notFoundPayload.status, 404);
+  assert.equal(notFoundPayload.code, "service_not_found");
+  assert.equal(notFoundPayload.quotaDailyRemaining, 9997);
+  assert.match(notFoundPayload.message as string, /service_not_found/);
+  assert.match(notFoundPayload.message as string, /service not found in the Speedle Cloud account/);
+
+  const mismatch = await mcpClient.callTool({
+    name: "is_allowed",
+    arguments: { subject: "alice", resource: "/books/1", action: "get" },
+  });
+  assert.equal(mismatch.isError, true);
+  const mismatchPayload = JSON.parse(toolText(mismatch)) as Record<string, unknown>;
+  assert.equal(mismatchPayload.error, "ForbiddenError");
+  assert.equal(mismatchPayload.status, 403);
+  assert.equal(mismatchPayload.code, "service_mismatch");
+  assert.equal(mismatchPayload.quotaDailyRemaining, 9996);
+  assert.match(mismatchPayload.message as string, /service_mismatch/);
+
+  const rolesNotFound = await mcpClient.callTool({
+    name: "all_granted_roles",
+    arguments: { subject: "alice" },
+  });
+  assert.equal(rolesNotFound.isError, true);
+  assert.equal((JSON.parse(toolText(rolesNotFound)) as { code?: string }).code, "service_not_found");
+
+  const permsNotFound = await mcpClient.callTool({
+    name: "all_granted_permissions",
+    arguments: { subject: "alice" },
+  });
+  assert.equal(permsNotFound.isError, true);
+  assert.equal((JSON.parse(toolText(permsNotFound)) as { code?: string }).code, "service_not_found");
+
+  assert.equal(server.requests.length, 4);
+});

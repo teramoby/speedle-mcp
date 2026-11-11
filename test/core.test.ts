@@ -218,6 +218,7 @@ test("error classification and retry policy follow speedle-sdk design §3.4, §6
       r503,
       { status: 502 },
       allow,
+      { status: 404, headers: { "X-Quota-Daily-Remaining": "9999" }, body: { error: "service_not_found" } },
       { status: 403, headers: { "X-Quota-Daily-Remaining": "9998" }, body: { error: "service_mismatch" } },
       { status: 429, headers: { "Retry-After": "3600" }, body: { error: "daily_quota_exceeded" } },
       { status: 429, headers: { "Retry-After": "6" }, body: { error: "rate_limited" } },
@@ -230,10 +231,19 @@ test("error classification and retry policy follow speedle-sdk design §3.4, §6
   assert.equal(await client.isAllowed("alice", "get", "/books/1"), true);
   assert.deepEqual(clock.sleeps, [50, 100]);
 
+  const serviceNotFound = await rejection(client.isAllowed("alice", "get", "/books/1"));
+  assert.ok(serviceNotFound instanceof E.HttpError);
+  assert.equal(serviceNotFound.status, 404);
+  assert.equal(serviceNotFound.code, "service_not_found");
+  assert.match(serviceNotFound.message, /^HTTP 404: service_not_found\b/);
+  assert.match(serviceNotFound.message, /service not found in the Speedle Cloud account/);
+  assert.equal(serviceNotFound.quotaDailyRemaining, 9999);
+
   const forbidden = await rejection(client.isAllowed("alice", "get", "/books/1"));
   assert.ok(forbidden instanceof E.ForbiddenError);
   assert.equal(forbidden.status, 403);
   assert.equal(forbidden.code, "service_mismatch");
+  assert.match(forbidden.message, /^HTTP 403: service_mismatch\b/);
   assert.equal(forbidden.quotaDailyRemaining, 9998);
 
   const quota = await rejection(client.isAllowed("alice", "get", "/books/1"));
