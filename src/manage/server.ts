@@ -78,6 +78,11 @@ const serviceNameSchema = z
   .describe(
     'Speedle service name (for example "books"). On Speedle Cloud this selects a service in the API key\'s account.',
   );
+const newServiceNameSchema = z
+  .string()
+  .describe(
+    'Name for the new service (for example "books"). On Speedle Cloud it is created in the API key\'s account.',
+  );
 const effectSchema = z.enum(["grant", "deny"]).describe('Policy effect: "grant" or "deny".');
 const nameSchema = z.string().describe("Human-readable policy name.");
 const spdlSchema = z
@@ -372,7 +377,7 @@ export function createManageServer(client: PmsClient, options: ManageServerOptio
       title: "Create Service",
       description: `Create a Speedle service (POST /service) and return the created service. On Speedle Cloud this returns 409 service_exists when the service already exists or the account has reached its service limit. ${WRITE_NOTE}`,
       inputSchema: {
-        name: serviceNameSchema,
+        name: newServiceNameSchema,
         type: z
           .enum(["application", "k8s-cluster"])
           .optional()

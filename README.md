@@ -151,7 +151,7 @@ Sign-in opens soon; once you can sign in, create an API key in the Speedle Cloud
 
 Cloud notes:
 
-- A Cloud API key covers the account. In `manage` mode, `list_services` lists the account's services and the other tools take `serviceName` (or `name` for `create_service`) per call to select a service in the account; an unknown service returns `404 not_found`. In `check` mode, `SPEEDLE_SERVICE_NAME` selects the service for the server; an unknown service returns `404 service_not_found` (or `403 service_mismatch` on older Cloud deployments).
+- A Cloud API key covers the account. In `manage` mode, `list_services` lists the account's services, the other tools take `serviceName` to select one of them per call, and `create_service` takes `name` for the new service. An unknown service returns `404 not_found`. In `check` mode, `SPEEDLE_SERVICE_NAME` selects the service for the server; an unknown service returns `404 service_not_found` (or `403 service_mismatch` on older Cloud deployments).
 - `create_service` returns `409 service_exists` when the service already exists or the account has reached its service limit.
 - Every management request counts toward the account's daily PMS + ADS quota. A burst or daily-quota limit returns `429` with `Retry-After`; the tool result includes `retryAfter` and, when the server sends it, `quotaDailyRemaining`.
 
