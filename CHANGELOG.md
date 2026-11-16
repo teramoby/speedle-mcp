@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.2.2 (2026-11-16)
+
+- Publish Speedle to the official MCP Registry through the existing release workflow.
+- Support account-level Speedle Cloud API keys and report missing services as `404 service_not_found`.
+
 ## 0.2.1 (2026-11-10)
 
 - Releases now publish to npm directly with provenance through trusted publishing. No tool or behaviour changes.
