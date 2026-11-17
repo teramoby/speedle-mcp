@@ -8,6 +8,11 @@ MCP Registry. Never upload the package, or the registry entry, by hand.
 Versions are plain `X.Y.Z` (no pre-release suffix). The first release on npm
 is `0.2.0`; `0.1.0` was never published.
 
+`@speedle/mcp` follows the Speedle Engine release line: its major and minor
+version equal the Engine's (`1.9.x` works with Engine 1.9), and it releases
+`X.Y.0` together with each Engine `X.Y.0`. Patch versions are independent:
+`@speedle/mcp` `1.9.2` and Engine `1.9.1` are unrelated fixes on the same line.
+
 ## What the workflow does
 
 A pushed `vX.Y.Z` tag starts one run:

@@ -8,13 +8,13 @@
     "source": "github",
     "id": "1447714586"
   },
-  "version": "0.2.1",
+  "version": "1.9.0",
   "packages": [
     {
       "registryType": "npm",
       "registryBaseUrl": "https://registry.npmjs.org",
       "identifier": "@speedle/mcp",
-      "version": "0.2.1",
+      "version": "1.9.0",
       "runtimeHint": "npx",
       "transport": {
         "type": "stdio"
@@ -91,7 +91,7 @@
       "registryType": "npm",
       "registryBaseUrl": "https://registry.npmjs.org",
       "identifier": "@speedle/mcp",
-      "version": "0.2.1",
+      "version": "1.9.0",
       "runtimeHint": "npx",
       "transport": {
         "type": "stdio"
