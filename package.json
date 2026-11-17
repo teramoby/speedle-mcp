@@ -1,6 +1,6 @@
 {
   "name": "@speedle/mcp",
-  "version": "0.2.1",
+  "version": "1.9.0",
   "mcpName": "io.github.teramoby/speedle-mcp",
   "description": "MCP server for self-hosted Speedle and Speedle Cloud: authorization checks and policy management",
   "license": "UPL-1.0",
