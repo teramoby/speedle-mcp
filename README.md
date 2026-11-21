@@ -2,6 +2,8 @@
 
 Local stdio [Model Context Protocol (MCP)](https://modelcontextprotocol.io) server for [self-hosted Speedle](https://github.com/teramoby/speedle-plus) and [Speedle Cloud](https://cloud.speedle.io): authorization checks (`check` mode) and policy management (`manage` mode). See the [Speedle documentation](https://engine.speedle.io/docs/) and [Speedle AI MCP overview](https://ai.speedle.io/#mcp).
 
+[MCPRush security scan: Grade A — v1.9.0, scanned 2026-11-18](https://mcprush.com/teramoby/speedle-mcp)
+
 ## Requirements & Install
 
 Requires **Node.js >= 22**.
